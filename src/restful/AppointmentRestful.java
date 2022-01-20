@@ -8,6 +8,8 @@ package restful;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
+import logic.AppointmentInterface;
 
 /**
  * Jersey REST client generated for REST resource:AppointmentFacadeREST
@@ -22,13 +24,13 @@ import javax.ws.rs.client.WebTarget;
  *
  * @author Usuario
  */
-public class Appointment {
+public class AppointmentRestful {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:21159/AppsyServer/webresources";
+    private static final String BASE_URI = "http://localhost:8080/AppsyServer/webresources";
 
-    public Appointment() {
+    public AppointmentRestful() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(BASE_URI).path("entities.appointment");
     }
@@ -71,7 +73,7 @@ public class Appointment {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T findAll(Class<T> responseType) throws ClientErrorException {
+    public <T> T findAll(GenericType<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
