@@ -8,6 +8,7 @@ package restful;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import logica.UserInterface;
 
 /**
  * Jersey REST client generated for REST resource:UserFacadeREST
@@ -22,7 +23,7 @@ import javax.ws.rs.client.WebTarget;
  *
  * @author Usuario
  */
-public class User {
+public class User implements UserInterface{
 
     private WebTarget webTarget;
     private Client client;
