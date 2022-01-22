@@ -6,6 +6,7 @@
 package logic;
 
 import entities.Appointment;
+import entities.Psychologist;
 import java.util.Set;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
@@ -25,7 +26,7 @@ public class AppointmentManager implements AppointmentInterface{
 
     @Override
     public void edit(Object requestEntity, String id) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        appointmentRestful.edit(requestEntity, id);
     }
 
     @Override
@@ -40,12 +41,13 @@ public class AppointmentManager implements AppointmentInterface{
 
     @Override
     public void create(Object requestEntity) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        appointmentRestful.create(requestEntity);
     }
 
     @Override
-    public <T> T findAppointmentsByPsychologist(Class<T> responseType, String psychologistId) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Set<Appointment> findAppointmentsByPsychologist(String psychologistId) throws ClientErrorException {
+        Set<Appointment> appointments = appointmentRestful.findAppointmentsByPsychologist(new GenericType<Set<Appointment>>(){}, psychologistId);
+        return appointments;
     }
 
     @Override
@@ -61,12 +63,13 @@ public class AppointmentManager implements AppointmentInterface{
 
     @Override
     public void remove(String id) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        appointmentRestful.remove(id);
     }
 
     @Override
     public void close() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
     
 }

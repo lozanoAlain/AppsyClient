@@ -8,29 +8,31 @@ package restful;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
+//import logica.UserInterface;
 
 /**
- * Jersey REST client generated for REST resource:PsychologistFacadeREST
- * [entities.psychologist]<br>
+ * Jersey REST client generated for REST resource:UserFacadeREST
+ * [entities.user]<br>
  * USAGE:
  * <pre>
- *        Psychologist client = new Psychologist();
- *        Object response = client.XXX(...);
- *        // do whatever with response
- *        client.close();
- * </pre>
+        UserRestFul client = new UserRestFul();
+        Object response = client.XXX(...);
+        // do whatever with response
+        client.close();
+ </pre>
  *
  * @author Usuario
  */
-public class Psychologist {
+public class UserRestFul{
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:21159/AppsyServer/webresources";
+    private static final String BASE_URI = "http://localhost:8080/AppsyServer/webresources";
 
-    public Psychologist() {
+    public UserRestFul() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
-        webTarget = client.target(BASE_URI).path("entities.psychologist");
+        webTarget = client.target(BASE_URI).path("entities.user");
     }
 
     public String countREST() throws ClientErrorException {
@@ -41,6 +43,12 @@ public class Psychologist {
 
     public void edit(Object requestEntity, String id) throws ClientErrorException {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
+    }
+
+    public <T> T resetPasswordByEmail(Class<T> responseType, String email) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("resetPassword/{0}", new Object[]{email}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
     public <T> T find(Class<T> responseType, String id) throws ClientErrorException {
@@ -59,6 +67,18 @@ public class Psychologist {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
+    public <T> T findUserByLoginAndPassword(Class<T> responseType, String login, String password) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("login/{0}/{1}", new Object[]{login, password}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+
+    public <T> T changePasswordByLogin(Class<T> responseType, String login, String password) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("changePassword/{0}/{1}", new Object[]{login, password}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+
     public <T> T findAll(Class<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
@@ -68,8 +88,16 @@ public class Psychologist {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request().delete();
     }
 
+    public <T> T findUserByLogin(GenericType<T> responseType, String login) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("login/{0}", new Object[]{login}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+
     public void close() {
         client.close();
     }
+
+    
     
 }

@@ -22,7 +22,7 @@ public interface AppointmentInterface {
     public <T> T find(Class<T> responseType, String id) throws ClientErrorException;
     public <T> T findRange(Class<T> responseType, String from, String to) throws ClientErrorException;
     public void create(Object requestEntity) throws ClientErrorException;
-    public <T> T findAppointmentsByPsychologist(Class<T> responseType, String psychologistId) throws ClientErrorException;
+    public <T> T findAppointmentsByPsychologist(String psychologistId) throws ClientErrorException;
     public <T> T findAppointmentsByClient(Class<T> responseType, String clientId) throws ClientErrorException;
     public Set<Appointment> findAll() throws ClientErrorException;
     public void remove(String id) throws ClientErrorException;
