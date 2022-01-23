@@ -6,6 +6,7 @@
 package view;
 
 import entities.Appointment;
+import entities.Client;
 import entities.Psychologist;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -37,6 +38,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import logic.AppointmentManager;
 import logic.PsychologistManager;
 
@@ -71,6 +73,7 @@ public class AppointmentWindowController {
     private AppointmentManager appointmentManager;
     private PsychologistManager psychologistManager;
     private TableView tableView;
+    private Client client = null;
 
     @FXML
     private ImageView imgCerebro;
@@ -100,8 +103,6 @@ public class AppointmentWindowController {
     private Button btnModify;
     @FXML
     private Button btnDelete;
-    
-    
 
     public void initStage(Parent root) {
         stage = new Stage();
@@ -112,22 +113,30 @@ public class AppointmentWindowController {
 
         appointmentManager = new AppointmentManager();
 
-        tblDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-        tblPsychologist.setCellValueFactory(new PropertyValueFactory<>("psychologist"));
-        tblDiagnose.setCellValueFactory(new PropertyValueFactory<>("diagnose"));
-
         comboPsychologist.setVisible(false);
         datePicker.setVisible(false);
         btnModify.setDisable(true);
         btnDelete.setDisable(true);
 
-        ObservableList<Appointment> appointments = FXCollections.observableArrayList(appointmentManager.findAll());
+        btnAdd.setOnAction(this::handleButtonAdd);
+        btnBack.setOnAction(this::handleButtonBack);
+
+        stage.show();
+    }
+
+    public void initWhenClient(Client client) {
+        this.client = client;
+        tblDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        tblPsychologist.setCellValueFactory(new PropertyValueFactory<>("psychologist"));
+        tblDiagnose.setCellValueFactory(new PropertyValueFactory<>("diagnose"));
+
+        ObservableList<Appointment> appointments = FXCollections.observableArrayList(appointmentManager.findAppointmentsByClient(client.getId().toString()));
         tblAppointment.setItems(appointments);
         tableView = new TableView<>(appointments);
+
         //If the table has no elements to display, a message is shown
         if (appointments.isEmpty()) {
             tableView.setPlaceholder(new Label("No rows to display"));
-
         }
 
         // set selection mode to only 1 row        
@@ -137,18 +146,12 @@ public class AppointmentWindowController {
         //ObservableList<Appointment> selectedItems = selectionModel.getSelectedItems();
         //if there is a row selected, the btnModify and btnDelete will be enabled
         tblAppointment.getSelectionModel().selectedItemProperty().addListener(this::handleTableSelectionChange);
-
         ObservableList<String> items = FXCollections.observableArrayList();
         items.addAll("psychologist", "date");
 
         comboBox.setItems(items);
 
         comboBox.setOnAction(this::handleComboBox);
-
-        btnAdd.setOnAction(this::handleButtonAdd);
-        btnBack.setOnAction(this::handleButtonBack);
-
-        stage.show();
     }
 
     private void handleComboBox(Event event) {
@@ -162,7 +165,7 @@ public class AppointmentWindowController {
                         = FXCollections.observableArrayList(psychologistManager.findAllPsychologist());
                 comboPsychologist.setItems(psychologists);
                 Psychologist psychologist = (Psychologist) comboPsychologist.getSelectionModel().getSelectedItem();
-                ObservableList<Appointment> appointmentsbyPsychologist 
+                ObservableList<Appointment> appointmentsbyPsychologist
                         = FXCollections.observableArrayList(appointmentManager.findAppointmentsByPsychologist(psychologist.getId().toString()));
                 tblAppointment.setItems(appointmentsbyPsychologist);
                 tableView = new TableView<>(appointmentsbyPsychologist);
@@ -174,10 +177,10 @@ public class AppointmentWindowController {
             txtSelect.setVisible(false);
             datePicker.setVisible(true);
             LocalDate dateSelected = datePicker.getValue();
-            if(dateSelected == null){
+            if (dateSelected == null) {
                 tableView.setPlaceholder(new Label("No rows to display"));
-            }else{
-                ObservableList<Appointment> appointmentsbyDate 
+            } else {
+                ObservableList<Appointment> appointmentsbyDate
                         = FXCollections.observableArrayList(appointmentManager.findAppointmentsByDate(date));
                 tblAppointment.setItems(appointmentsbyDate);
                 tableView = new TableView<>(appointmentsbyDate);
@@ -196,6 +199,7 @@ public class AppointmentWindowController {
         if (newValue != null) {
             btnModify.setDisable(false);
             btnDelete.setDisable(false);
+
             btnModify.setOnAction(this::handleButtonModify);
             btnDelete.setOnAction(this::handleButtonDelete);
         } else {
@@ -204,8 +208,8 @@ public class AppointmentWindowController {
         }
     }
 
-    private void handleButtonModify(ActionEvent event){
-         try {
+    private void handleButtonModify(ActionEvent event) {
+        try {
             //Gets the AddAppointmentWindow FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ModifyAppontmentWindow.fxml"));
 
@@ -224,30 +228,34 @@ public class AppointmentWindowController {
 
             Logger.getLogger(AddAppointmentWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
             modifyAppointmentController.initStage(root);
+            Appointment selectedAppointment = (Appointment) tblAppointment.getSelectionModel().getSelectedItem();
+
+            modifyAppointmentController.initModifyWhenClient(client, selectedAppointment);
+
         } catch (IOException ex) {
             Logger.getLogger(AppointmentWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    private void handleButtonDelete(ActionEvent event){
-            //Get selected user data from table view model
-            Appointment selectedAppointment=((Appointment)tblAppointment.getSelectionModel()
-                                                        .getSelectedItem());
-             //Ask user for confirmation on delete
-            Alert alert=new Alert(Alert.AlertType.CONFIRMATION,
-                                    "¿are you sure you want to delete the appointment?",
-                                    ButtonType.OK,ButtonType.CANCEL);
-            Optional<ButtonType> result = alert.showAndWait();
-            
-             if (result.isPresent() && result.get() == ButtonType.OK) {
-                //delete appointment from server side
-                this.appointmentManager.remove(selectedAppointment.getAppointmentId().toString());
-                //removes selected appointment from table
-                tblAppointment.getItems().remove(selectedAppointment);
-                tblAppointment.refresh();               
-            }
+
+    private void handleButtonDelete(ActionEvent event) {
+        //Get selected user data from table view model
+        Appointment selectedAppointment = ((Appointment) tblAppointment.getSelectionModel()
+                .getSelectedItem());
+        //Ask user for confirmation on delete
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                "¿are you sure you want to delete the appointment?",
+                ButtonType.OK, ButtonType.CANCEL);
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            //delete appointment from server side
+            this.appointmentManager.remove(selectedAppointment.getAppointmentId().toString());
+            //removes selected appointment from table
+            tblAppointment.getItems().remove(selectedAppointment);
+            tblAppointment.refresh();
+        }
     }
-    
+
     private void handleButtonAdd(ActionEvent event) {
         try {
             //Gets the AddAppointmentWindow FXML
@@ -268,6 +276,7 @@ public class AppointmentWindowController {
 
             Logger.getLogger(AddAppointmentWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
             addAppointmentController.initStage(root);
+            addAppointmentController.initAddWhenClient(client);
         } catch (IOException ex) {
             Logger.getLogger(AppointmentWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -67,7 +67,7 @@ public class AppointmentRestful {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T findAppointmentsByClient(Class<T> responseType, String clientId) throws ClientErrorException {
+    public <T> T findAppointmentsByClient(GenericType<T> responseType, String clientId) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("clientId/{0}", new Object[]{clientId}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);

@@ -51,8 +51,9 @@ public class AppointmentManager implements AppointmentInterface{
     }
 
     @Override
-    public <T> T findAppointmentsByClient(Class<T> responseType, String clientId) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Set<Appointment> findAppointmentsByClient(String clientId) throws ClientErrorException {
+        Set<Appointment> appointments = appointmentRestful.findAppointmentsByClient(new GenericType<Set<Appointment>>(){}, clientId);
+        return appointments;
     }
 
     @Override
