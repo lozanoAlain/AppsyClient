@@ -26,7 +26,7 @@ public class ClientResource {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:21159/AppsyServer/webresources";
+    private static final String BASE_URI = "http://localhost:35293/appsyServer/webresources";
 
     public ClientResource() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
