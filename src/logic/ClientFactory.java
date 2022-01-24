@@ -6,7 +6,7 @@
 package logic;
 
 import javax.naming.OperationNotSupportedException;
-import restful.Client;
+import restful.ClientRestful;
 
 /**
  *
@@ -15,7 +15,7 @@ import restful.Client;
 public class ClientFactory {
     public static ClientInterface createClientInterface() throws OperationNotSupportedException {
         ClientInterface clientInterface = null;
-        clientInterface = new Client();
+        clientInterface = new ClientManager();
         return clientInterface;
         
     }

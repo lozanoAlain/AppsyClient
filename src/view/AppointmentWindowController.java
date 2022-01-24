@@ -8,8 +8,12 @@ package view;
 import entities.Appointment;
 import entities.Client;
 import entities.Psychologist;
+import entities.User;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,7 +77,21 @@ public class AppointmentWindowController {
     private AppointmentManager appointmentManager;
     private PsychologistManager psychologistManager;
     private TableView tableView;
-    private Client client = null;
+    private Client client;
+    
+    /**
+     * @return the client
+     */
+    public Client getClient() {
+        return client;
+    }
+
+    /**
+     * @param client the client to set
+     */
+    public void setClient(Client client) {
+        this.client = client;
+    }
 
     @FXML
     private ImageView imgCerebro;
@@ -120,17 +138,21 @@ public class AppointmentWindowController {
 
         btnAdd.setOnAction(this::handleButtonAdd);
         btnBack.setOnAction(this::handleButtonBack);
+        
+        if(client.getEnumPrivilege().equals("CLIENT")){
+            initWhenClient(client);
+        }
 
         stage.show();
     }
 
     public void initWhenClient(Client client) {
-        this.client = client;
+        this.setClient(client);
         tblDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         tblPsychologist.setCellValueFactory(new PropertyValueFactory<>("psychologist"));
         tblDiagnose.setCellValueFactory(new PropertyValueFactory<>("diagnose"));
 
-        ObservableList<Appointment> appointments = FXCollections.observableArrayList(appointmentManager.findAppointmentsByClient(client.getId().toString()));
+        ObservableList<Appointment> appointments = FXCollections.observableArrayList(appointmentManager.findAppointmentsOfClient(client.getId().toString()));
         tblAppointment.setItems(appointments);
         tableView = new TableView<>(appointments);
 
@@ -166,7 +188,7 @@ public class AppointmentWindowController {
                 comboPsychologist.setItems(psychologists);
                 Psychologist psychologist = (Psychologist) comboPsychologist.getSelectionModel().getSelectedItem();
                 ObservableList<Appointment> appointmentsbyPsychologist
-                        = FXCollections.observableArrayList(appointmentManager.findAppointmentsByPsychologist(psychologist.getId().toString()));
+                        = FXCollections.observableArrayList(appointmentManager.findAppointmentsOfClientByPsychologist(psychologist.getId().toString(), getClient().getId().toString()));
                 tblAppointment.setItems(appointmentsbyPsychologist);
                 tableView = new TableView<>(appointmentsbyPsychologist);
             } catch (Exception ex) {
@@ -176,12 +198,14 @@ public class AppointmentWindowController {
         } else if (comboBox.getValue().toString().equalsIgnoreCase("date")) {
             txtSelect.setVisible(false);
             datePicker.setVisible(true);
-            LocalDate dateSelected = datePicker.getValue();
-            if (dateSelected == null) {
+            Date date = (Date) Date.from(datePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            if (simpleDateFormat == null) {
                 tableView.setPlaceholder(new Label("No rows to display"));
             } else {
-                ObservableList<Appointment> appointmentsbyDate
-                        = FXCollections.observableArrayList(appointmentManager.findAppointmentsByDate(date));
+                
+                ObservableList<Appointment> appointmentsbyDate;
+                appointmentsbyDate = FXCollections.observableArrayList(appointmentManager.findAppointmentsByDate(simpleDateFormat.format(date)));
                 tblAppointment.setItems(appointmentsbyDate);
                 tableView = new TableView<>(appointmentsbyDate);
             }
@@ -230,7 +254,7 @@ public class AppointmentWindowController {
             modifyAppointmentController.initStage(root);
             Appointment selectedAppointment = (Appointment) tblAppointment.getSelectionModel().getSelectedItem();
 
-            modifyAppointmentController.initModifyWhenClient(client, selectedAppointment);
+            modifyAppointmentController.initModifyWhenClient(getClient(), selectedAppointment);
 
         } catch (IOException ex) {
             Logger.getLogger(AppointmentWindowController.class.getName()).log(Level.SEVERE, null, ex);
@@ -276,7 +300,7 @@ public class AppointmentWindowController {
 
             Logger.getLogger(AddAppointmentWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
             addAppointmentController.initStage(root);
-            addAppointmentController.initAddWhenClient(client);
+            addAppointmentController.initAddWhenClient(getClient());
         } catch (IOException ex) {
             Logger.getLogger(AppointmentWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -285,5 +309,6 @@ public class AppointmentWindowController {
     private void handleButtonBack(ActionEvent event) {
         getStage().close();
     }
+
 
 }

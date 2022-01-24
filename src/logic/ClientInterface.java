@@ -5,6 +5,7 @@
  */
 package logic;
 
+import entities.Client;
 import javax.ws.rs.ClientErrorException;
 
 /**
@@ -14,7 +15,7 @@ import javax.ws.rs.ClientErrorException;
 public interface ClientInterface {
     public String countREST() throws ClientErrorException;
     public void edit(Object requestEntity, String id) throws ClientErrorException;
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException;
+    public Client find(String id) throws ClientErrorException;
     public <T> T findRange(Class<T> responseType, String from, String to) throws ClientErrorException;
     public void create(Object requestEntity) throws ClientErrorException;
     public <T> T findAll(Class<T> responseType) throws ClientErrorException;

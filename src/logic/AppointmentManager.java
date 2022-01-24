@@ -30,7 +30,7 @@ public class AppointmentManager implements AppointmentInterface{
     }
 
     @Override
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException {
+    public Appointment find(String id) throws ClientErrorException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -45,20 +45,32 @@ public class AppointmentManager implements AppointmentInterface{
     }
 
     @Override
-    public Set<Appointment> findAppointmentsByPsychologist(String psychologistId) throws ClientErrorException {
-        Set<Appointment> appointments = appointmentRestful.findAppointmentsByPsychologist(new GenericType<Set<Appointment>>(){}, psychologistId);
+    public Set<Appointment> findAppointmentsOfPsychologist(String psychologistId) throws ClientErrorException {
+        Set<Appointment> appointments = appointmentRestful.findAppointmentsOfPsychologist(new GenericType<Set<Appointment>>(){}, psychologistId);
         return appointments;
     }
 
     @Override
-    public Set<Appointment> findAppointmentsByClient(String clientId) throws ClientErrorException {
-        Set<Appointment> appointments = appointmentRestful.findAppointmentsByClient(new GenericType<Set<Appointment>>(){}, clientId);
+    public Set<Appointment> findAppointmentsOfClient(String clientId) throws ClientErrorException {
+        Set<Appointment> appointments = appointmentRestful.findAppointmentsOfClient(new GenericType<Set<Appointment>>(){}, clientId);
+        return appointments;
+    }
+    
+    @Override
+    public Set<Appointment> findAppointmentsOfClientByPsychologist(String psychologistId, String clientId) throws ClientErrorException {
+        Set<Appointment> appointments = appointmentRestful.findAppointmentsOfClientByPsychologist(new GenericType<Set<Appointment>>(){}, psychologistId, clientId);
         return appointments;
     }
 
     @Override
     public Set<Appointment> findAll() throws ClientErrorException { 
         Set<Appointment> appointments = appointmentRestful.findAll(new GenericType<Set<Appointment>>(){});
+        return appointments;
+    }
+    
+    @Override
+    public Set<Appointment> findAppointmentsByDate(String date) throws ClientErrorException {
+        Set<Appointment> appointments = appointmentRestful.findAppointmentsByDate(new GenericType<Set<Appointment>>(){}, date);
         return appointments;
     }
 
@@ -71,6 +83,10 @@ public class AppointmentManager implements AppointmentInterface{
     public void close() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    
+
+    
 
     
 }

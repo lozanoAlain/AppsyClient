@@ -61,18 +61,30 @@ public class AppointmentRestful {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
-    public <T> T findAppointmentsByPsychologist(GenericType<T> responseType, String psychologistId) throws ClientErrorException {
+    public <T> T findAppointmentsOfPsychologist(GenericType<T> responseType, String psychologistId) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("psychologistId/{0}", new Object[]{psychologistId}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T findAppointmentsByClient(GenericType<T> responseType, String clientId) throws ClientErrorException {
+    public <T> T findAppointmentsOfClient(GenericType<T> responseType, String clientId) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("clientId/{0}", new Object[]{clientId}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
+    
+    public <T> T findAppointmentsOfClientByPsychologist(GenericType<T> responseType, String psychologistId, String clientId) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("clientId/{0}/{1}", new Object[]{psychologistId,clientId}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
 
+    public <T> T findAppointmentsByDate(GenericType<T> responseType, String date) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("date/{0}", new Object[]{date}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+    
     public <T> T findAll(GenericType<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);

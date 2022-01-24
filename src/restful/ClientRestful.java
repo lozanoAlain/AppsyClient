@@ -5,8 +5,10 @@
  */
 package restful;
 
+import entities.Client;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import logic.ClientInterface;
 
 /**
@@ -22,13 +24,13 @@ import logic.ClientInterface;
  *
  * @author Usuario
  */
-public class Client implements ClientInterface{
+public class ClientRestful{
 
     private WebTarget webTarget;
     private javax.ws.rs.client.Client client;
     private static final String BASE_URI = "http://localhost:21159/AppsyServer/webresources";
 
-    public Client() {
+    public ClientRestful() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(BASE_URI).path("entities.client");
     }
@@ -43,10 +45,10 @@ public class Client implements ClientInterface{
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException {
+    public Client find(GenericType responseType, String id) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+        return (Client) resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
     public <T> T findRange(Class<T> responseType, String from, String to) throws ClientErrorException {
