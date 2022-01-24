@@ -139,9 +139,9 @@ public class AppointmentWindowController {
         btnAdd.setOnAction(this::handleButtonAdd);
         btnBack.setOnAction(this::handleButtonBack);
         
-        if(client.getEnumPrivilege().equals("CLIENT")){
-            initWhenClient(client);
-        }
+        
+        initWhenClient(client);
+        
 
         stage.show();
     }
@@ -152,7 +152,7 @@ public class AppointmentWindowController {
         tblPsychologist.setCellValueFactory(new PropertyValueFactory<>("psychologist"));
         tblDiagnose.setCellValueFactory(new PropertyValueFactory<>("diagnose"));
 
-        ObservableList<Appointment> appointments = FXCollections.observableArrayList(appointmentManager.findAppointmentsOfClient(client.getId().toString()));
+        ObservableList<Appointment> appointments = FXCollections.observableArrayList(appointmentManager.findAppointmentsOfClient(String.valueOf(client.getId())));
         tblAppointment.setItems(appointments);
         tableView = new TableView<>(appointments);
 
@@ -235,7 +235,7 @@ public class AppointmentWindowController {
     private void handleButtonModify(ActionEvent event) {
         try {
             //Gets the AddAppointmentWindow FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("ModifyAppontmentWindow.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ModifyAppointmentClient.fxml"));
 
             //Creates a new stage
             Stage stageModifyAppointmentWindow = new Stage();
@@ -282,21 +282,21 @@ public class AppointmentWindowController {
 
     private void handleButtonAdd(ActionEvent event) {
         try {
-            //Gets the AddAppointmentWindow FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddAppontmentWindow.fxml"));
+            //Gets the AddAppointmentClient FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddAppointmentClient.fxml"));
 
             //Creates a new stage
-            Stage stageAddAppointmentWindow = new Stage();
+            Stage stageAddAppointmentClient = new Stage();
             Parent root = (Parent) loader.load();
 
             //Gets AddAppointment controller
             AddAppointmentWindowController addAppointmentController = ((AddAppointmentWindowController) loader.getController());
 
             //Set the stage for the addAppojntmentWindow
-            addAppointmentController.setStage(stageAddAppointmentWindow);
+            addAppointmentController.setStage(stageAddAppointmentClient);
 
             //Opening application as modal
-            stageAddAppointmentWindow.initModality(Modality.APPLICATION_MODAL);
+            stageAddAppointmentClient.initModality(Modality.APPLICATION_MODAL);
 
             Logger.getLogger(AddAppointmentWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
             addAppointmentController.initStage(root);

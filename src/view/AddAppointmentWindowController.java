@@ -26,6 +26,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import logic.AppointmentManager;
+import logic.PsychologistInterface;
 import logic.PsychologistManager;
 
 /**
@@ -58,6 +59,7 @@ public class AddAppointmentWindowController {
     private final static Logger logger = Logger.getLogger(AppointmentWindowController.class.getName());
     private AppointmentManager appointmentManager;
     private PsychologistManager psychologistManager;
+    private PsychologistInterface psychologistInterface;
     private Client client = null;
     private Appointment appointment;
 
@@ -89,6 +91,8 @@ public class AddAppointmentWindowController {
 
         btnBack.setOnAction(this::handleButtonBack);
         btnAdd.setOnAction(this::handleButtonAdd);
+        
+        stage.show();
 
     }
 
@@ -97,7 +101,7 @@ public class AddAppointmentWindowController {
             this.client = client;
 
             ObservableList<Psychologist> psychologists
-                    = FXCollections.observableArrayList(psychologistManager.findAllPsychologist());
+                    = FXCollections.observableArrayList(psychologistInterface.findAllPsychologist());
             comboPsychologist.setItems(psychologists);
             Psychologist psychologist = (Psychologist) comboPsychologist.getSelectionModel().getSelectedItem();
             LocalDate dateSelected = datePicker.getValue();

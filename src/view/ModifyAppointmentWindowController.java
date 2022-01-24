@@ -91,6 +91,8 @@ public class ModifyAppointmentWindowController {
 
         btnBack.setOnAction(this::handleButtonBack);
         btnModify.setOnAction(this::handleButtonModify);
+        
+        stage.show();
 
     }
 
