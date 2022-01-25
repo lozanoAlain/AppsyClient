@@ -29,7 +29,7 @@ public class ClientRestful{
 
     private WebTarget webTarget;
     private javax.ws.rs.client.Client client;
-    private static final String BASE_URI = "http://localhost:8080/AppsyServer/webresources";
+    private static final String BASE_URI = "http://localhost:8080/AppsyServerPU/webresources";
 
     public ClientRestful() {
         client = javax.ws.rs.client.ClientBuilder.newClient();

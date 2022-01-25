@@ -28,5 +28,6 @@ public interface AppointmentInterface {
     public Set<Appointment> findAppointmentsByDate(String date) throws ClientErrorException;
     public Set<Appointment> findAll() throws ClientErrorException;
     public void remove(String id) throws ClientErrorException;
+    public void removeAppointment(String psychologistId, String clientId) throws ClientErrorException;
     public void close();
 }

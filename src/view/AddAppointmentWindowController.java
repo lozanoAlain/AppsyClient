@@ -25,7 +25,9 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import logic.AppointmentInterface;
 import logic.AppointmentManager;
+import logic.PsychologistFactory;
 import logic.PsychologistInterface;
 import logic.PsychologistManager;
 
@@ -57,8 +59,7 @@ public class AddAppointmentWindowController {
     }
 
     private final static Logger logger = Logger.getLogger(AppointmentWindowController.class.getName());
-    private AppointmentManager appointmentManager;
-    private PsychologistManager psychologistManager;
+    private AppointmentInterface appointmentInterface;
     private PsychologistInterface psychologistInterface;
     private Client client = null;
     private Appointment appointment;
@@ -87,8 +88,6 @@ public class AddAppointmentWindowController {
         stage.setTitle("Add Appointment");
         stage.setResizable(false);
 
-        appointmentManager = new AppointmentManager();
-
         btnBack.setOnAction(this::handleButtonBack);
         btnAdd.setOnAction(this::handleButtonAdd);
         
@@ -100,6 +99,7 @@ public class AddAppointmentWindowController {
         try {
             this.client = client;
 
+            psychologistInterface = PsychologistFactory.createPsychologistRestful();
             ObservableList<Psychologist> psychologists
                     = FXCollections.observableArrayList(psychologistInterface.findAllPsychologist());
             comboPsychologist.setItems(psychologists);
@@ -118,7 +118,7 @@ public class AddAppointmentWindowController {
 
     private void handleButtonAdd(ActionEvent event) {
 
-        appointmentManager.create(appointment);
+        appointmentInterface.create(appointment);
 
         Alert alertAppointmentAdded = new Alert(Alert.AlertType.INFORMATION);
         alertAppointmentAdded.setTitle("SIGN UP");

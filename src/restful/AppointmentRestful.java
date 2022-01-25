@@ -28,7 +28,7 @@ public class AppointmentRestful {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/AppsyServer/webresources";
+    private static final String BASE_URI = "http://localhost:8080/AppsyServerPU/webresources";
 
     public AppointmentRestful() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
@@ -93,9 +93,16 @@ public class AppointmentRestful {
     public void remove(String id) throws ClientErrorException {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request().delete();
     }
+    
+    public void removeAppointment(String psychologistId, String clientId) throws ClientErrorException {
+        webTarget.path(java.text.MessageFormat.format("delete/{0}/{1}", new Object[]{psychologistId, clientId})).request().delete();
+    }
 
     public void close() {
         client.close();
     }
     
 }
+
+
+

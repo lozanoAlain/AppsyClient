@@ -43,7 +43,12 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javax.naming.OperationNotSupportedException;
+import logic.AppointmentFactory;
+import logic.AppointmentInterface;
 import logic.AppointmentManager;
+import logic.PsychologistFactory;
+import logic.PsychologistInterface;
 import logic.PsychologistManager;
 
 /**
@@ -74,8 +79,8 @@ public class AppointmentWindowController {
     }
 
     private final static Logger logger = Logger.getLogger(AppointmentWindowController.class.getName());
-    private AppointmentManager appointmentManager;
-    private PsychologistManager psychologistManager;
+    private AppointmentInterface appointmentInterface;
+    private PsychologistInterface psychologistInterface;
     private TableView tableView;
     private Client client;
     
@@ -123,36 +128,41 @@ public class AppointmentWindowController {
     private Button btnDelete;
 
     public void initStage(Parent root) {
-        stage = new Stage();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.setTitle("Appointments");
-        stage.setResizable(false);
-
-        appointmentManager = new AppointmentManager();
-
-        comboPsychologist.setVisible(false);
-        datePicker.setVisible(false);
-        btnModify.setDisable(true);
-        btnDelete.setDisable(true);
-
-        btnAdd.setOnAction(this::handleButtonAdd);
-        btnBack.setOnAction(this::handleButtonBack);
-        
-        
-        initWhenClient(client);
-        
-
-        stage.show();
+        try {
+            stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Appointments");
+            stage.setResizable(false);
+            
+            comboPsychologist.setVisible(false);
+            datePicker.setVisible(false);
+            btnModify.setDisable(true);
+            btnDelete.setDisable(true);
+            
+            btnAdd.setOnAction(this::handleButtonAdd);
+            btnBack.setOnAction(this::handleButtonBack);
+            
+            appointmentInterface = AppointmentFactory.createAppointmentInterface();
+            psychologistInterface = PsychologistFactory.createPsychologistRestful();
+            
+            initWhenClient(client);
+            
+            
+            stage.show();
+        } catch (OperationNotSupportedException ex) {
+            Logger.getLogger(AppointmentWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    public void initWhenClient(Client client) {
+    public void initWhenClient(Client client) throws OperationNotSupportedException {
         this.setClient(client);
         tblDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         tblPsychologist.setCellValueFactory(new PropertyValueFactory<>("psychologist"));
         tblDiagnose.setCellValueFactory(new PropertyValueFactory<>("diagnose"));
 
-        ObservableList<Appointment> appointments = FXCollections.observableArrayList(appointmentManager.findAppointmentsOfClient(String.valueOf(client.getId())));
+        
+        ObservableList<Appointment> appointments = FXCollections.observableArrayList(appointmentInterface.findAppointmentsOfClient(String.valueOf(client.getId())));
         tblAppointment.setItems(appointments);
         tableView = new TableView<>(appointments);
 
@@ -182,13 +192,14 @@ public class AppointmentWindowController {
                 txtSelect.setVisible(false);
                 comboPsychologist.setVisible(true);
 
+                
                 //Set psychologist combo data model.
                 ObservableList<Psychologist> psychologists
-                        = FXCollections.observableArrayList(psychologistManager.findAllPsychologist());
+                        = FXCollections.observableArrayList(psychologistInterface.findAllPsychologist());
                 comboPsychologist.setItems(psychologists);
                 Psychologist psychologist = (Psychologist) comboPsychologist.getSelectionModel().getSelectedItem();
                 ObservableList<Appointment> appointmentsbyPsychologist
-                        = FXCollections.observableArrayList(appointmentManager.findAppointmentsOfClientByPsychologist(psychologist.getId().toString(), getClient().getId().toString()));
+                        = FXCollections.observableArrayList(appointmentInterface.findAppointmentsOfClientByPsychologist(String.valueOf(psychologist.getId()), String.valueOf(getClient().getId())));
                 tblAppointment.setItems(appointmentsbyPsychologist);
                 tableView = new TableView<>(appointmentsbyPsychologist);
             } catch (Exception ex) {
@@ -205,7 +216,7 @@ public class AppointmentWindowController {
             } else {
                 
                 ObservableList<Appointment> appointmentsbyDate;
-                appointmentsbyDate = FXCollections.observableArrayList(appointmentManager.findAppointmentsByDate(simpleDateFormat.format(date)));
+                appointmentsbyDate = FXCollections.observableArrayList(appointmentInterface.findAppointmentsByDate(simpleDateFormat.format(date)));
                 tblAppointment.setItems(appointmentsbyDate);
                 tableView = new TableView<>(appointmentsbyDate);
             }
@@ -251,10 +262,9 @@ public class AppointmentWindowController {
             stageModifyAppointmentWindow.initModality(Modality.APPLICATION_MODAL);
 
             Logger.getLogger(AddAppointmentWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
-            modifyAppointmentController.initStage(root);
             Appointment selectedAppointment = (Appointment) tblAppointment.getSelectionModel().getSelectedItem();
 
-            modifyAppointmentController.initModifyWhenClient(getClient(), selectedAppointment);
+            modifyAppointmentController.initModifyWhenClient(root, getClient(), selectedAppointment);
 
         } catch (IOException ex) {
             Logger.getLogger(AppointmentWindowController.class.getName()).log(Level.SEVERE, null, ex);
@@ -273,7 +283,7 @@ public class AppointmentWindowController {
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
             //delete appointment from server side
-            this.appointmentManager.remove(selectedAppointment.getAppointmentId().toString());
+            this.appointmentInterface.removeAppointment(String.valueOf(selectedAppointment.getAppointmentId().getPsychologistId()), String.valueOf(selectedAppointment.getAppointmentId().getClientId()));
             //removes selected appointment from table
             tblAppointment.getItems().remove(selectedAppointment);
             tblAppointment.refresh();

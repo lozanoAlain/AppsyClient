@@ -25,8 +25,8 @@ public class AppointmentManager implements AppointmentInterface{
     }
 
     @Override
-    public void edit(Object requestEntity, String id) throws ClientErrorException {
-        appointmentRestful.edit(requestEntity, id);
+    public void edit(Object appointment, String id) throws ClientErrorException {
+        appointmentRestful.edit(appointment, id);
     }
 
     @Override
@@ -82,6 +82,11 @@ public class AppointmentManager implements AppointmentInterface{
     @Override
     public void close() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void removeAppointment(String psychologistId, String clientId) throws ClientErrorException {
+        appointmentRestful.removeAppointment(psychologistId, clientId);
     }
 
     

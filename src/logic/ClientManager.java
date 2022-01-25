@@ -24,8 +24,8 @@ public class ClientManager implements ClientInterface{
     }
 
     @Override
-    public void edit(Object requestEntity, String id) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void edit(Object client, String id) throws ClientErrorException {
+        clientRestful.edit(client, id);
     }
 
     @Override
@@ -40,8 +40,8 @@ public class ClientManager implements ClientInterface{
     }
 
     @Override
-    public void create(Object requestEntity) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void create(Object client) throws ClientErrorException {
+        clientRestful.create(client);
     }
 
     @Override
