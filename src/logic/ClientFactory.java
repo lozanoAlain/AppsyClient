@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package logica;
+package logic;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -11,14 +11,14 @@ import javax.naming.OperationNotSupportedException;
  *
  * @author Alain Lozano
  */
-public class PsychologistFactory {
-    public static PsychologistInterface createPsychologistRestful() 
+public class ClientFactory {
+    public static ClientInterface createClientRestful() 
             throws OperationNotSupportedException{
         
-        PsychologistInterface psychologistinterface=null;
+        ClientInterface clientInterface=null;
         
-        psychologistinterface = new PsychologistManager();
+        clientInterface = new ClientManager();
         
-        return psychologistinterface;
+        return clientInterface;
     }
 }

@@ -32,10 +32,7 @@ public class User implements Serializable {
     private String email;
     private String login;
     private HashSet<LastSignIn> lastSignIns;
-    
-    
-
-    
+   
 
    @Override
     public int hashCode() {
@@ -57,34 +54,34 @@ public class User implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
+        /* if (getClass() != obj.getClass()) {
+        return false;
         }
         final User other = (User) obj;
         if (!Objects.equals(this.password, other.password)) {
-            return false;
+        return false;
         }
         if (!Objects.equals(this.fullName, other.fullName)) {
-            return false;
+        return false;
         }
         if (!Objects.equals(this.email, other.email)) {
-            return false;
+        return false;
         }
         if (!Objects.equals(this.login, other.login)) {
-            return false;
+        return false;
         }
         if (!Objects.equals(this.id, other.id)) {
-            return false;
+        return false;
         }
         if (this.getEnumPrivilege() != other.getEnumPrivilege()) {
-            return false;
+        return false;
         }
         if (this.getEnumStatus() != other.getEnumStatus()) {
-            return false;
+        return false;
         }
         if (!Objects.equals(this.lastSignIns, other.lastSignIns)) {
-            return false;
-        }
+        return false;
+        }*/
         return true;
     }
     /**

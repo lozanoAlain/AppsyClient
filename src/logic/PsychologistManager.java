@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package logica;
+package logic;
 
 import entities.Psychologist;
 import java.util.Set;
@@ -15,7 +15,8 @@ import restful.PsychologistRestFul;
  *
  * @author Usuario
  */
-public class PsychologistManager implements PsychologistInterface{
+public class PsychologistManager implements PsychologistInterface {
+
     private PsychologistRestFul psychologistRestFul;
 
     public PsychologistManager() {
@@ -28,9 +29,9 @@ public class PsychologistManager implements PsychologistInterface{
     }
 
     @Override
-    public void editPsychologist(Object requestEntity, String id) throws ClientErrorException {
-        psychologistRestFul.editPsychologist(requestEntity, id);
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void editPsychologist(Psychologist psychologist, String id) throws ClientErrorException {
+        psychologistRestFul.edit(psychologist, id);
+      
     }
 
     @Override
@@ -39,27 +40,45 @@ public class PsychologistManager implements PsychologistInterface{
     }
 
     @Override
-    public void createPsychologist(Object requestEntity) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void createPsychologist(Psychologist psychologist) throws ClientErrorException {
+        psychologistRestFul.create(psychologist);
     }
 
     @Override
     public void removePsychologist(String id) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        psychologistRestFul.remove(id);
     }
 
     @Override
     public Psychologist findPsychologist(String id) throws ClientErrorException {
         Psychologist psychologist = null;
-        psychologist=psychologistRestFul.find(new GenericType<Psychologist>(){}, id);
+        psychologist = psychologistRestFul.find(new GenericType<Psychologist>() {
+        }, id);
         return psychologist;
     }
 
     @Override
     public Set<Psychologist> findAllPsychologist() throws Exception {
-        Set <Psychologist> psychologists;       
-        psychologists = psychologistRestFul.findAll(new GenericType<Set<Psychologist>>(){});       
+        Set<Psychologist> psychologists;
+        psychologists = psychologistRestFul.findAll(new GenericType<Set<Psychologist>>() {
+        });
         return psychologists;
     }
-    
+
+    @Override
+    public Psychologist findPsychologistByFullName(String fullName) throws ClientErrorException {
+        Psychologist psychologist = null;
+        psychologist = psychologistRestFul.findPsychologistByFullName(new GenericType<Psychologist>() {
+        }, fullName);
+        return psychologist;
+    }
+
+    @Override
+    public Psychologist findPsychologistByMail(String email) throws ClientErrorException {
+        Psychologist psychologist = null;
+        psychologist = psychologistRestFul.findPsychologistByMail(new GenericType<Psychologist>() {
+        }, email);
+        return psychologist;
+    }
+
 }

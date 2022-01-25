@@ -3,13 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package logica;
+package logic;
 
 import entities.Psychologist;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.core.GenericType;
 
 /**
  *
@@ -17,10 +18,12 @@ import javax.ws.rs.ClientErrorException;
  */
 public interface PsychologistInterface {
     public String countREST() throws ClientErrorException;
-    public void editPsychologist(Object requestEntity, String id) throws ClientErrorException;
+    public void editPsychologist(Psychologist psychologist, String id) throws ClientErrorException;
     public Psychologist findPsychologist(String id) throws ClientErrorException;
     public <T> T findRange(Class<T> responseType, String from, String to) throws ClientErrorException;
-    public void createPsychologist(Object requestEntity) throws ClientErrorException;
+    public void createPsychologist(Psychologist psychologist) throws ClientErrorException;
     public Set<Psychologist> findAllPsychologist() throws Exception;
     public void removePsychologist(String id) throws ClientErrorException;
+    public Psychologist findPsychologistByFullName(String fullName) throws ClientErrorException;
+    public Psychologist findPsychologistByMail(String email) throws ClientErrorException;
 }

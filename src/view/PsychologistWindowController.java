@@ -6,26 +6,40 @@
 package view;
 
 import entities.Psychologist;
+import java.io.IOException;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import logica.PsychologistFactory;
-import logica.PsychologistInterface;
-import restful.PsychologistRestFul;
-import restful.User;
+import javax.naming.OperationNotSupportedException;
+import javax.ws.rs.ClientErrorException;
+import logic.PsychologistFactory;
+import logic.PsychologistInterface;
+import logic.UserFactory;
+import logic.UserInterface;
 
 /**
  *
@@ -60,15 +74,22 @@ public class PsychologistWindowController {
     @FXML
     Button btnBack;
 
+    private int idSelected = 0;
+    Stage stage = new Stage();
+    PsychologistInterface interfacePsychologist;
+    UserInterface userInterface;
+
     public void initStage(Parent root) {
         try {
             btnDelete.setDisable(true);
             btnModify.setDisable(true);
-            PsychologistInterface interfacePsychologist = PsychologistFactory.createPsychologistRestful();
+
             Scene scene = new Scene(root);
-            Stage stage = new Stage();
+            interfacePsychologist = PsychologistFactory.createPsychologistRestful();
+            userInterface = UserFactory.createUsersRestful();
             stage.setScene(scene);
             stage.setResizable(false);
+            ObservableList<Psychologist> psychologists=null;
             //tfLogin.focusedProperty().addListener(this::focusChanged);
             //Set factories for cell values in users table columns.
             columnLogin.setCellValueFactory(
@@ -80,31 +101,149 @@ public class PsychologistWindowController {
             columnStatus.setCellValueFactory(
                     new PropertyValueFactory<>("enumStatus"));
             //Create an obsrvable list for users table.
-            ObservableList<Psychologist> psychologists = FXCollections.observableArrayList(interfacePsychologist.findAllPsychologist());
+            psychologists = FXCollections.observableArrayList(interfacePsychologist.findAllPsychologist());
             //Set table model.
             tablePsychologist.setItems(psychologists);
-            if(psychologists.isEmpty()){
-                btnReport.isDisable();
-                btnSearch.isDisable();
+            TableViewSelectionModel<Psychologist> selectionModel = tablePsychologist.getSelectionModel();
+            selectionModel.setSelectionMode(SelectionMode.SINGLE);
+            if (psychologists.size()==0) {
+                btnReport.setDisable(true);
+                btnSearch.setDisable(true);
             }
             //Show window.
-            stage.show();
+            
 
             tablePsychologist.getSelectionModel().selectedItemProperty().addListener(this::handleUserSelectionChanged);
-            btnBack.setOnAction(value);
-
+            btnModify.setOnAction(this::handleButtonModify);
+            btnDelete.setOnAction(this::handleButtonDelete);
+            btnAdd.setOnAction(this::handleButtonAdd);
+            btnSearch.setOnAction(this::handleButtonSearch);
+            comboSearch.setValue("All");
+            comboSearch.getItems().addAll("All", new Separator(), "Name",
+                    "Email");
+            comboSearch.setTooltip(new Tooltip("Select the search criteria"));
+            stage.show();
         } catch (Exception ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void handleUserSelectionChanged(ObservableValue observableValue, Object oldValue, Object newValue) {
-        if(newValue!=null){
-            Psychologist psychologist = (Psychologist)newValue;
-            String loginSelected = psychologist.getLogin();
+        if (newValue != null) {
+            Psychologist psychologist = (Psychologist) newValue;
+            idSelected = psychologist.getId();
             btnModify.setDisable(false);
             btnDelete.setDisable(false);
+        } else {
+            btnModify.setDisable(true);
+            btnDelete.setDisable(true);
         }
+    }
+
+    public void handleButtonModify(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("PsychologistProfile.fxml"));
+            Stage stagePsychologistProfile = new Stage();
+            Parent root = (Parent) loader.load();
+
+            PsychologistProfileController psychologistModifyProfileController = ((PsychologistProfileController) loader.getController());
+
+            psychologistModifyProfileController.setStage(stagePsychologistProfile);
+            stagePsychologistProfile.initModality(Modality.WINDOW_MODAL);
+            stagePsychologistProfile.initOwner(
+                    ((Node) event.getSource()).getScene().getWindow());
+
+            Logger.getLogger(PsychologistProfileController.class.getName()).log(Level.INFO, "Initializing stage.");
+            psychologistModifyProfileController.initStage(root, idSelected);
+        } catch (IOException ex) {
+            Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void handleButtonDelete(ActionEvent event) {
+        try {
+            Alert alertDeletePsychologist = new Alert(AlertType.CONFIRMATION);
+            alertDeletePsychologist.setHeaderText("Confirmation");
+            alertDeletePsychologist.setContentText("Are you sure you want to delete the psychologist?");
+            Optional<ButtonType> action = alertDeletePsychologist.showAndWait();
+            interfacePsychologist = PsychologistFactory.createPsychologistRestful();
+            if (action.get() != ButtonType.OK) {
+                //Doesn´t want to exit
+                Alert alertDeletePsychologistCancel = new Alert(AlertType.INFORMATION);
+                alertDeletePsychologistCancel.setHeaderText("Confirmation");
+                alertDeletePsychologistCancel.setContentText("The psychologist hasnt been deleted");
+            } else {
+                interfacePsychologist.removePsychologist(String.valueOf(idSelected));
+                tablePsychologist.getItems().remove(tablePsychologist.getSelectionModel().getSelectedIndex());
+                tablePsychologist.refresh();
+            }
+        } catch (ClientErrorException ex) {
+            Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (OperationNotSupportedException ex) {
+            Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void handleButtonAdd(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("PsychologistProfile.fxml"));
+            Stage stagePsychologistProfile = new Stage();
+            Parent root = (Parent) loader.load();
+
+            //Gets Welcome window controller
+            PsychologistProfileController psychologistModifyProfileController = ((PsychologistProfileController) loader.getController());
+
+            psychologistModifyProfileController.setStage(stagePsychologistProfile);
+            stagePsychologistProfile.initModality(Modality.WINDOW_MODAL);
+            stagePsychologistProfile.initOwner(
+                    ((Node) event.getSource()).getScene().getWindow());
+
+            Logger.getLogger(PsychologistProfileController.class.getName()).log(Level.INFO, "Initializing stage.");
+            psychologistModifyProfileController.initStage(root,0);
+        } catch (IOException ex) {
+            Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void handleButtonSearch(ActionEvent event) {
+        try {
+            ObservableList<Psychologist> psychologists = null;
+
+            String selectedSearch = comboSearch.getSelectionModel().getSelectedItem().toString();
+
+            switch (selectedSearch) {
+                case "Name":
+                    checkTextFieldisEmpty();
+                    psychologists = FXCollections.observableArrayList(interfacePsychologist.findPsychologistByFullName(txtFieldSearch.getText()));
+                    break;
+                case "Email":
+                    checkTextFieldisEmpty();
+                    psychologists = FXCollections.observableArrayList(interfacePsychologist.findPsychologistByMail(txtFieldSearch.getText()));
+                    break;
+                case "All":
+                    psychologists = FXCollections.observableArrayList(interfacePsychologist.findAllPsychologist());
+
+            }
+
+            tablePsychologist.setItems(psychologists);
+
+        } catch (NullPointerException e) {
+            Alert alertDeletePsychologistCancel = new Alert(AlertType.INFORMATION);
+            alertDeletePsychologistCancel.setHeaderText("Select criteria");
+            alertDeletePsychologistCancel.setContentText("Select a criteria to search a psychologist");
+            alertDeletePsychologistCancel.show();
+        } catch (Exception ex) {
+            Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+    public void checkTextFieldisEmpty(){
+        if (txtFieldSearch.getText().trim().isEmpty()) {
+                Alert alertDeletePsychologistCancel = new Alert(AlertType.INFORMATION);
+                alertDeletePsychologistCancel.setHeaderText("Text empty");
+                alertDeletePsychologistCancel.setContentText("The field is empty");
+                alertDeletePsychologistCancel.show();
+            }
     }
 
 }
