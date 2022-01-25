@@ -8,30 +8,38 @@ package entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import javafx.beans.property.SimpleObjectProperty;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity for the appointments, it has the attributes: psychologist, client,
- * date, diagnose, numApppointment and price. 
+ * date, diagnose, numApppointment and price.
+ *
  * @author Ilia Consuegra
  */
-
 @XmlRootElement
 public class Appointment implements Serializable {
 
-    
-
     private static long serialVersionUID = 1L;
 
-    
     private AppointmentId appointmentId;
-    private Psychologist psychologist;
+    private SimpleObjectProperty<Psychologist> psychologist;
     private Client client;
     private Date date;
     private String diagnose;
     private Integer numAppointment;
     private Float price;
+
+    public Appointment() {
+        this.psychologist = new SimpleObjectProperty();
+    }
+
+    public Appointment(Psychologist psychologist) {
+        this.psychologist = new SimpleObjectProperty(psychologist);
+
+    }
 
     @Override
     public int hashCode() {
@@ -109,16 +117,16 @@ public class Appointment implements Serializable {
     /**
      * @return the psychologist
      */
-    @XmlTransient
+    @XmlElement(name = "psychologist")
     public Psychologist getPsychologist() {
-        return psychologist;
+        return this.psychologist.get();
     }
 
     /**
      * @param psychologist the psychologist to set
      */
     public void setPsychologist(Psychologist psychologist) {
-        this.psychologist = psychologist;
+        this.psychologist.set(psychologist);
     }
 
     /**
