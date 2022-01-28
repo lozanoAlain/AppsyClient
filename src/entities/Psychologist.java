@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.HashSet;
 import javafx.beans.property.SimpleStringProperty;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity for the psychologist, it extends from the entity User which gives the
@@ -19,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Ilia Consuegra
  */
-@XmlRootElement
+@XmlRootElement(name="psychologist")
 public class Psychologist extends User implements Serializable {
 
     //@GeneratedValue(strategy = GenerationType.AUTO)
@@ -64,6 +65,7 @@ public class Psychologist extends User implements Serializable {
     /**
      * @return the resources
      */
+        @XmlTransient
     public HashSet<Resource> getResources() {
         return resources;
     }
@@ -88,4 +90,10 @@ public class Psychologist extends User implements Serializable {
     public void setAppointments(HashSet<Appointment> appointments) {
         this.appointments = appointments;
     }
+
+    @Override
+    public String toString() {
+        return getFullName();
+    }
+    
 }

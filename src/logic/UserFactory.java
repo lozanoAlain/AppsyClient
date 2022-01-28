@@ -3,22 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package logica;
+package logic;
 
 import javax.naming.OperationNotSupportedException;
 
 /**
  *
- * @author Alain Lozano
+ * @author Alain Lozano 
  */
-public class PsychologistFactory {
-    public static PsychologistInterface createPsychologistRestful() 
+public class UserFactory {
+    
+    public static UserInterface createUsersRestful(String type) 
             throws OperationNotSupportedException{
+        //The object to be returned.
+        UserInterface userinterface=null;
         
-        PsychologistInterface psychologistinterface=null;
+        userinterface = new restful.User();
         
-        psychologistinterface = new PsychologistManager();
-        
-        return psychologistinterface;
+        return userinterface;
     }
 }

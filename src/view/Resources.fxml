@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="480.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ResourcesController">
+    <children>
+        <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="515.0" prefWidth="851.0" VBox.vgrow="ALWAYS">
+            <children>
+                <ImageView id="imgCerebro" fitHeight="539.0" fitWidth="202.0" layoutY="-3.0" pickOnBounds="true" smooth="false">
+                    <image>
+                        <Image url="@cerebro.jpg" />
+                    </image>
+                </ImageView>
+                <AnchorPane id="anchorPane" fx:id="anchorPane" layoutX="212.0" layoutY="78.0" opacity="0.8" prefHeight="396.0" prefWidth="639.0">
+                    <children>
+                        <TableView fx:id="tableViewResource" layoutX="14.0" layoutY="83.0" prefHeight="303.0" prefWidth="530.0">
+                            <columns>
+                                <TableColumn fx:id="columTittle" prefWidth="142.0" text="Tittle" />
+                                <TableColumn fx:id="columLink" prefWidth="90.0" text="Link" />
+                                <TableColumn fx:id="columPsycho" prefWidth="159.0" text="Psychologist" />
+                                <TableColumn fx:id="columDate" prefWidth="138.0" text="Date Added" />
+                            </columns>
+                        </TableView>
+                        <TextField fx:id="txtTittle" layoutX="14.0" layoutY="27.0" prefHeight="25.0" prefWidth="100.0" />
+                        <TextField fx:id="txtLink" layoutX="135.0" layoutY="27.0" prefHeight="25.0" prefWidth="100.0" />
+                        <Label layoutX="169.0" layoutY="2.0" prefHeight="25.0" prefWidth="57.0" text="Link:" />
+                        <Button fx:id="btnSearch" defaultButton="true" layoutX="442.0" layoutY="27.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Search" textFill="#53635c">
+                    
+                        </Button>
+                        <Button fx:id="btnAdd" disable="true" layoutX="557.0" layoutY="145.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Add" textFill="#53635c">
+               
+                        </Button>
+                        <Button fx:id="btnModify" disable="true" layoutX="557.0" layoutY="192.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Modify" textFill="#53635c">
+                   
+                        </Button>
+                        <Button fx:id="btnDelete" disable="true" layoutX="557.0" layoutY="238.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Delete" textFill="#53635c">
+               
+                        </Button>
+                        <Label layoutX="255.0" layoutY="2.0" prefHeight="25.0" prefWidth="100.0" text="Psychologist:" />
+                        <Label layoutX="14.0" layoutY="2.0" prefHeight="25.0" prefWidth="57.0" text="Tittle:" />
+                        <Separator layoutX="14.0" layoutY="63.0" prefHeight="3.0" prefWidth="602.0" />
+                        <Button fx:id="btnReport" layoutX="557.0" layoutY="281.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Report" textFill="#53635c">
+                        </Button>
+                  <ComboBox fx:id="comboPsycho" layoutX="255.0" layoutY="27.0" prefWidth="150.0" />
+                    </children>
+                    <stylesheets>
+                        <URL value="@css.css" />
+                    </stylesheets>
+                </AnchorPane>
+                <Label fx:id="lblResource" layoutX="366.0" layoutY="10.0" prefHeight="77.0" prefWidth="355.0" text="RESOURCES" textFill="#93ab9b">
+                    <font>
+                        <Font size="53.0" />
+                    </font>
+                </Label>
+                <MenuBar layoutY="-3.0" prefHeight="25.0" prefWidth="865.0">
+                    <menus>
+                        <Menu mnemonicParsing="false" text="Options">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Resources" />
+                                <MenuItem mnemonicParsing="false" text="Appointments" />
+                                <MenuItem mnemonicParsing="false" text="Log Out" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Help" />
+                    </menus>
+                </MenuBar>
+                <Separator prefWidth="200.0" />
+            <Button fx:id="btnBack" layoutX="763.0" layoutY="497.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Back" textFill="#53635c" />
+            </children>
+        </AnchorPane>
+    </children>
+</VBox>

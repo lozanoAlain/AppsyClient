@@ -8,7 +8,7 @@ package restful;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
-import logica.UserInterface;
+import logic.UserInterface;
 
 /**
  * Jersey REST client generated for REST resource:UserFacadeREST
@@ -27,7 +27,7 @@ public class User implements UserInterface{
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:21159/AppsyServer/webresources";
+    private static final String BASE_URI = "http://localhost:35293/AppsyServer/webresources";
 
     public User() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
