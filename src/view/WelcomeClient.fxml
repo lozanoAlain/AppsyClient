@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="480.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.WelcomeWindowController">
+    <children>
+        <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="515.0" prefWidth="851.0" VBox.vgrow="ALWAYS">
+            <children>
+                <ImageView id="imgCerebro" fitHeight="539.0" fitWidth="216.0" layoutY="-3.0" pickOnBounds="true" smooth="false">
+                    <image>
+                        <Image url="@cerebro.jpg" />
+                    </image>
+                </ImageView>
+                <AnchorPane id="anchorPane" layoutX="238.0" layoutY="174.0" opacity="0.8" prefHeight="300.0" prefWidth="613.0" stylesheets="@../Documents/NetBeansProjects/SignInSignUpClient/src/view/css.css">
+               <children>
+                  <Label layoutX="83.0" layoutY="27.0" prefHeight="77.0" prefWidth="499.0" text="MANAGE APPOINTMENTS" textFill="#2a00ff" underline="true">
+                     <font>
+                        <Font size="37.0" />
+                     </font></Label>
+                  <Label layoutX="83.0" layoutY="123.0" prefHeight="54.0" prefWidth="382.0" text="READ RESOURCES" textFill="#2a00ff" underline="true">
+                     <font>
+                        <Font size="37.0" />
+                     </font></Label>
+                  <Label layoutX="83.0" layoutY="202.0" prefHeight="54.0" prefWidth="382.0" text="EDIT PROFILE" textFill="#2a00ff" underline="true">
+                     <font>
+                        <Font size="37.0" />
+                     </font>
+                  </Label>
+               </children>
+                </AnchorPane>
+                <Label fx:id="lblGreeting" layoutX="392.0" layoutY="47.0" prefHeight="77.0" prefWidth="355.0" text="WELCOME" textFill="#93ab9b">
+                    <font>
+                        <Font size="53.0" />
+                    </font>
+                </Label>
+            <Button fx:id="btnBack" layoutX="762.0" layoutY="491.0" mnemonicParsing="false" onAction="#handleBtnLogOutPressed" prefHeight="25.0" prefWidth="89.0" text="Exit" textFill="#53635c">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <MenuBar layoutY="-3.0" prefHeight="25.0" prefWidth="865.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="Navegation">
+                  <items>
+                        <MenuItem mnemonicParsing="false" text="Appointments" />
+                    <MenuItem mnemonicParsing="false" text="Resources" />
+                  </items>
+                </Menu>
+                  <Menu mnemonicParsing="false" text="Help" />
+              </menus>
+            </MenuBar>
+            <Separator prefWidth="200.0" />
+            <Button fx:id="btnBack1" layoutX="647.0" layoutY="491.0" mnemonicParsing="false" onAction="#handleBtnLogOutPressed" prefHeight="25.0" prefWidth="89.0" text="Log out" textFill="#53635c">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            </children>
+        </AnchorPane>
+    </children>
+</VBox>

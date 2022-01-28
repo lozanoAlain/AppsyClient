@@ -38,8 +38,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javax.naming.OperationNotSupportedException;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
@@ -108,6 +111,7 @@ public class ResourcesController {
      * Initializes the controller class.
      *
      * @param root The parent object with the parent window loaded on it.
+     * @throws java.lang.Exception
      */
     public void initStage(Parent root) throws Exception {
 
@@ -128,7 +132,24 @@ public class ResourcesController {
             stage.setOnCloseRequest((event) -> {
                 this.exitApplicationWhenXPressed(event);
             });
-
+            
+                
+            //Obtains the layout containing the menu bar from the scene node graph
+            HBox hBoxMenu= (HBox)root.getChildrenUnmodifiable().get(0);
+            //Get the menu bar from the children of the layout got before
+            MenuBar menuBar= (MenuBar)hBoxMenu.getChildren().get(0);
+            //Get the second menu from the menu bar
+            Menu menuHelp=menuBar.getMenus().get(1);
+            //Add a listener for the showing property that fires the action event
+            //on the first menu item of that menu
+            menuHelp.showingProperty().addListener(
+                (observableValue, oldValue, newValue) -> {
+                    if (newValue) {
+                        menuHelp.getItems().get(0).fire();
+                    }
+                }
+            );
+            
             //The search button (btnSearch) field is focused.
             stage.setOnShowing(this::handleOnWindow);
 
