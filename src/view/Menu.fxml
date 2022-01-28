@@ -11,7 +11,11 @@
         <menus>
           <Menu fx:id="menuActions" mnemonicParsing="false" text="Actions">
                <items>
-                  <MenuItem fx:id="menuItemReport" mnemonicParsing="false" text="Report" />
+                  <MenuItem fx:id="menuItemReport" mnemonicParsing="false" text="Add" />
+                  <MenuItem fx:id="menuItemReport1" mnemonicParsing="false" text="Modify" />
+                  <MenuItem fx:id="menuItemReport2" mnemonicParsing="false" text="Delete" />
+                  <MenuItem fx:id="menuItemReport3" mnemonicParsing="false" text="Report" />
+                  <MenuItem fx:id="menuItemReport4" mnemonicParsing="false" text="Back" />
                </items>
           </Menu>
           <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
