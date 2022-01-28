@@ -86,7 +86,7 @@
                   <Label fx:id="lblPasswordError" layoutX="90.0" layoutY="5.0" prefHeight="18.0" prefWidth="306.0" />
                   <Label fx:id="lblRepeatPasswordError" layoutX="165.0" layoutY="65.0" prefHeight="18.0" prefWidth="306.0" />
                   <PasswordField fx:id="txtPassword" layoutY="33.0" prefHeight="26.0" prefWidth="342.0" promptText="Insert your new password" />
-                  <PasswordField layoutY="93.0" prefHeight="26.0" prefWidth="342.0" promptText="Repeat your new password" />
+                  <PasswordField fx:id="txtRepeatPassword" layoutY="93.0" prefHeight="26.0" prefWidth="342.0" promptText="Repeat your new password" />
                </children>
             </AnchorPane>
             <Button fx:id="btnBack" layoutX="303.0" layoutY="414.0" mnemonicParsing="false" prefWidth="90.0" text="Back" />

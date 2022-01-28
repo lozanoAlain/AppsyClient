@@ -18,7 +18,7 @@ import javax.ws.rs.core.GenericType;
  */
 public interface PsychologistInterface {
     public String countREST() throws ClientErrorException;
-    public void editPsychologist(Psychologist psychologist, String id) throws ClientErrorException;
+   public void editPsychologist(Psychologist psychologist) throws ClientErrorException ;
     public Psychologist findPsychologist(String id) throws ClientErrorException;
     public <T> T findRange(Class<T> responseType, String from, String to) throws ClientErrorException;
     public void createPsychologist(Psychologist psychologist) throws ClientErrorException;

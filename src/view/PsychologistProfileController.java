@@ -17,12 +17,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javax.naming.OperationNotSupportedException;
+import javax.ws.rs.ClientErrorException;
 import logic.PsychologistFactory;
 import logic.PsychologistInterface;
 
@@ -103,8 +105,7 @@ public class PsychologistProfileController {
             stage.setScene(scene);
             stage.setResizable(false);
             interfacePsychologist = PsychologistFactory.createPsychologistRestful();
-            btnModify.setDisable(true);
-            
+
             if (idSelected != 0) {
                 Psychologist psychologist = interfacePsychologist.findPsychologist(String.valueOf(idSelected));
                 txtFullName.setText(psychologist.getFullName());
@@ -113,6 +114,10 @@ public class PsychologistProfileController {
                 txtOffice.setText(psychologist.getOffice());
                 txtSpezialitation.setText(psychologist.getSpecialization());
                 btnModify.setDisable(false);
+                btnAdd.setDisable(true);
+            }else{
+                  btnModify.setDisable(true);
+            btnAdd.setDisable(false);
             }
 
             txtFullName.textProperty().addListener(this::fullNameTextChanged);
@@ -124,6 +129,7 @@ public class PsychologistProfileController {
             btnAdd.setOnAction(this::handleButtonAdd);
             btnModify.setOnAction(this::handleButtonModify);
             btnBack.setOnAction(this::handleButtonBack);
+          
             //Show window.
             stage.show();
         } catch (OperationNotSupportedException ex) {
@@ -215,20 +221,29 @@ public class PsychologistProfileController {
     }
 
     private void handleButtonAdd(ActionEvent event) {
-        if (!checkEmptyFields()) {
-            Psychologist psychologistadd = new Psychologist();
+        try {
+            if (!checkEmptyFields()) {
+                Psychologist psychologistadd = new Psychologist();
 
-            psychologistadd.setId(null);
-            psychologistadd.setFullName(txtFullName.getText());
-            psychologistadd.setLogin(txtUsername.getText());
-            psychologistadd.setEmail(txtMail.getText());
-            psychologistadd.setPassword(new String(txtPassword.getText()));
-            psychologistadd.setOffice(txtOffice.getText());
-            psychologistadd.setSpecialization(txtSpezialitation.getText());
-            psychologistadd.setEnumPrivilege(EnumPrivilege.PSYCHOLOGIST);
-            psychologistadd.setEnumStatus(EnumStatus.ACTIVE);
+                psychologistadd.setId(null);
+                psychologistadd.setFullName(txtFullName.getText());
+                psychologistadd.setLogin(txtUsername.getText());
+                psychologistadd.setEmail(txtMail.getText());
+                psychologistadd.setPassword(new String(txtPassword.getText()));
+                psychologistadd.setOffice(txtOffice.getText());
+                psychologistadd.setSpecialization(txtSpezialitation.getText());
+                psychologistadd.setEnumPrivilege(EnumPrivilege.PSYCHOLOGIST);
+                psychologistadd.setEnumStatus(EnumStatus.ACTIVE);
 
-            interfacePsychologist.createPsychologist(psychologistadd);
+                interfacePsychologist.createPsychologist(psychologistadd);
+                stage.close();
+            }
+
+        } catch (ClientErrorException ex) {
+            Alert alertDeletePsychologistCancel = new Alert(Alert.AlertType.INFORMATION);
+            alertDeletePsychologistCancel.setHeaderText("Confirmation");
+            alertDeletePsychologistCancel.setContentText(ex.getMessage());
+            alertDeletePsychologistCancel.show();
         }
 
     }
@@ -237,14 +252,18 @@ public class PsychologistProfileController {
         if (!checkEmptyFields()) {
             Psychologist psychologistadd = new Psychologist();
 
+            psychologistadd.setId(idSelected);
             psychologistadd.setFullName(txtFullName.getText());
             psychologistadd.setLogin(txtUsername.getText());
             psychologistadd.setEmail(txtMail.getText());
             psychologistadd.setPassword(new String(txtPassword.getText()));
             psychologistadd.setOffice(txtOffice.getText());
             psychologistadd.setSpecialization(txtSpezialitation.getText());
+            psychologistadd.setEnumStatus(EnumStatus.ACTIVE);
+            psychologistadd.setEnumPrivilege(EnumPrivilege.PSYCHOLOGIST);
 
-            interfacePsychologist.editPsychologist(psychologistadd, String.valueOf(idSelected));
+            interfacePsychologist.editPsychologist(psychologistadd);
+            stage.close();
         }
 
     }
@@ -259,8 +278,13 @@ public class PsychologistProfileController {
             btnModify.setDisable(true);
             throw new FieldTooLongException();
         } else {
-            btnAdd.setDisable(false);
+            if (idSelected == 0) {
+                btnModify.setDisable(true);
+                btnAdd.setDisable(false);
+            }else{
+                btnAdd.setDisable(true);
             btnModify.setDisable(false);
+            }
             lbl.setVisible(false);
         }
     }
@@ -335,7 +359,7 @@ public class PsychologistProfileController {
         lbl.setText(ex.getMessage());
         lbl.setStyle("-fx-text-fill: red; -fx-font-size: 13px");
         logger.severe(ex.getMessage());
-        
+
     }
 
 }

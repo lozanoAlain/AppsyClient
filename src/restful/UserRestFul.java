@@ -29,7 +29,7 @@ public class UserRestFul{
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("USER_URI");
+    private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("URI");
 
     public UserRestFul() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
@@ -68,7 +68,7 @@ public class UserRestFul{
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
-    public <T> T findUserByLoginAndPassword(Class<T> responseType, String login, String password) throws ClientErrorException {
+    public <T> T findUserByLoginAndPassword(GenericType<T> responseType, String login, String password) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("login/{0}/{1}", new Object[]{login, password}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
@@ -87,6 +87,11 @@ public class UserRestFul{
     public <T> T findUserByLogin(GenericType<T> responseType, String login) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("login/{0}", new Object[]{login}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+    public <T> T changePasswordByLogin(GenericType<T> responseType, String login, String password) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("changePassword/{0}/{1}", new Object[]{login, password}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 

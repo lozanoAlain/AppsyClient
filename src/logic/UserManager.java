@@ -5,10 +5,13 @@
  */
 package logic;
 
+import entities.Client;
 import entities.Psychologist;
 import entities.User;
 import exceptions.BussinesLogicException;
+import exceptions.PasswordDontMatch;
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.GenericType;
 import restful.UserRestFul;
 
@@ -51,8 +54,9 @@ public class UserManager implements UserInterface{
     }
 
     @Override
-    public <T> T findUserByLoginAndPassword(Class<T> responseType, String login, String password) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public User findUserByLoginAndPassword(String login, String password) throws ClientErrorException, NotAuthorizedException {
+        User useraux=userRestFul.findUserByLoginAndPassword(new GenericType<User>(){}, login, password);
+        return useraux;
     }
 
     @Override
@@ -69,6 +73,10 @@ public class UserManager implements UserInterface{
     public User findUserByLogin(String login) throws ClientErrorException {
         User user = userRestFul.findUserByLogin(new GenericType<User>(){}, login);
         return user;
+    }
+    @Override
+    public void changePasswordByLogin(String login, String password) throws ClientErrorException{
+        userRestFul.changePasswordByLogin(new GenericType<Client>(){}, login, password);
     }
     
 }

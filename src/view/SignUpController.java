@@ -5,9 +5,9 @@
  */
 package view;
 
+import entities.Client;
 import entities.EnumPrivilege;
 import entities.EnumStatus;
-import entities.Psychologist;
 import entities.User;
 import exceptions.BussinesLogicException;
 import exceptions.EmptyFieldException;
@@ -15,15 +15,12 @@ import exceptions.FieldTooLongException;
 import exceptions.FullNameException;
 import exceptions.MailErrorException;
 import exceptions.RepeatPasswordException;
-import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -35,10 +32,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javax.ws.rs.ClientErrorException;
-import logic.PsychologistFactory;
-import logic.PsychologistInterface;
+import logic.ClientFactory;
+import logic.ClientInterface;
 import logic.UserFactory;
 import logic.UserInterface;
 
@@ -48,10 +44,6 @@ import logic.UserInterface;
  * @author Alain Lozano, Ilia Consuegra
  */
 public class SignUpController {
-
-    
-
-
 
     private final static Logger logger = Logger.getLogger(SignUpController.class.getName());
 
@@ -87,9 +79,9 @@ public class SignUpController {
     private Label lblPassword2Error;*/
     @FXML
     private Label lblRepeatPasswordError;
-    
-    Stage stage= new Stage();
-    UserInterface userInterface;
+
+    Stage stage = new Stage();
+    ClientInterface clientInterface;
 
     /*
     The fields Full name (txtFullName), Username (txtUsername), Mail (txtMail), Password (txtPassword) and Repeat password (txtRepeatPassword) are enabled.
@@ -345,15 +337,10 @@ public class SignUpController {
                     throw new MailErrorException();
                 }
                 //The mail is written correctly
-                User user = addUser();
-                userInterface = UserFactory.createUsersRestful();
-                userInterface.create(user);
-                Alert alertUserAddedCorrectly = new Alert(AlertType.INFORMATION);
-                alertUserAddedCorrectly.setTitle("SIGN UP");
-                alertUserAddedCorrectly.setHeaderText("User added correctly");
-                alertUserAddedCorrectly.showAndWait();
+                Client client = addUser();
+                clientInterface = ClientFactory.createClientRestful();
+                clientInterface.create(client);
 
-                stage.close();
 
             } catch (MailErrorException ex) {
                 errorLabel(lblMailError, ex);
@@ -362,16 +349,10 @@ public class SignUpController {
                 errorLabel(lblRepeatPasswordError, ex);
                 txtPassword.requestFocus();
             } catch (ClientErrorException ex) {
-                Alert alertConnectionError = new Alert(AlertType.INFORMATION);
-                alertConnectionError.setTitle("SIGN UP");
-                alertConnectionError.setHeaderText(ex.getMessage());
-                alertConnectionError.show();
-            } catch (BussinesLogicException ex) {
-                Alert alertConnectionError = new Alert(AlertType.INFORMATION);
-                alertConnectionError.setTitle("SIGN UP");
-                alertConnectionError.setHeaderText(ex.getMessage());
-                alertConnectionError.show();
-                logger.severe(ex.getMessage());
+                Alert alertDeletePsychologistCancel = new Alert(Alert.AlertType.INFORMATION);
+                alertDeletePsychologistCancel.setHeaderText("Confirmation");
+                alertDeletePsychologistCancel.setContentText(ex.getMessage());
+                alertDeletePsychologistCancel.show();
             } catch (Exception ex) {
                 Alert alertConnectionError = new Alert(AlertType.INFORMATION);
                 alertConnectionError.setTitle("SIGN UP");
@@ -493,16 +474,16 @@ public class SignUpController {
      *
      * @return user The user that is collected
      */
-    private User addUser() {
+    private Client addUser() {
 
-        User user = new User();
-        user.setFullName(txtFullName.getText());
-        user.setLogin(txtUsername.getText());
-        user.setEmail(txtMail.getText());
-        user.setPassword(new String(txtPassword.getText()));
-        user.setEnumStatus(EnumStatus.ACTIVE);
-        user.setEnumPrivilege(EnumPrivilege.CLIENT);
-        return user;
+        Client client = new Client();
+        client.setFullName(txtFullName.getText());
+        client.setLogin(txtUsername.getText());
+        client.setEmail(txtMail.getText());
+        client.setPassword(new String(txtPassword.getText()));
+        client.setEnumStatus(EnumStatus.ACTIVE);
+        client.setEnumPrivilege(EnumPrivilege.CLIENT);
+        return client;
     }
 
 }

@@ -6,6 +6,7 @@
 package logic;
 
 import entities.Client;
+import exceptions.PasswordDontMatch;
 import javax.ws.rs.ClientErrorException;
 
 /**
@@ -14,10 +15,11 @@ import javax.ws.rs.ClientErrorException;
  */
 public interface ClientInterface {
     
-    public void edit(Object requestEntity, String id) throws ClientErrorException;
+    public void edit(Client client) throws ClientErrorException;
     public Client find(String id) throws ClientErrorException;
     public <T> T findRange(Class<T> responseType, String from, String to) throws ClientErrorException;
     public <T> T findAll(Class<T> responseType) throws ClientErrorException;
     public void remove(String id) throws ClientErrorException;
-    public void changePasswordByLogin(String login, String password) throws ClientErrorException;
+    public void create(Client client) throws ClientErrorException;
+    public Client findClientByFullName(String fullName) throws ClientErrorException;
 }

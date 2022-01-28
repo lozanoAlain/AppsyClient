@@ -5,10 +5,14 @@
  */
 package view;
 
+import crypt.EncriptDecriptClient;
 import entities.Client;
+import entities.EnumPrivilege;
+import entities.EnumStatus;
 import entities.User;
 import exceptions.EmptyFieldException;
 import exceptions.FieldTooLongException;
+import exceptions.PasswordDontMatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -24,6 +28,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
 import javax.naming.OperationNotSupportedException;
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.NotAuthorizedException;
 import logic.ClientFactory;
 import logic.ClientInterface;
 import logic.UserFactory;
@@ -75,6 +81,7 @@ public class ProfileWindowController {
 
     Stage stage = new Stage();
     ClientInterface clientInterface;
+    UserInterface userInterface;
     int userId = 0;
     Client clientAux = null;
 
@@ -83,6 +90,7 @@ public class ProfileWindowController {
     public void initStage(Parent root, int userId) {
         try {
             clientInterface = ClientFactory.createClientRestful();
+            userInterface = UserFactory.createUsersRestful();
             this.userId = userId;
             clientAux = clientInterface.find(String.valueOf(userId));
             Scene scene = new Scene(root);
@@ -102,6 +110,8 @@ public class ProfileWindowController {
 
             stage.show();
         } catch (OperationNotSupportedException ex) {
+            Logger.getLogger(ProfileWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClientErrorException ex) {
             Logger.getLogger(ProfileWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -158,62 +168,78 @@ public class ProfileWindowController {
     }
 
     private void handleButtonModify(ActionEvent event) {
-        Client client = new Client();
-        if (txtFullName.getText().isEmpty()) {
-            try {
-                txtFullName.requestFocus();
-                throw new EmptyFieldException();
-            } catch (EmptyFieldException ex) {
-                errorLabel(lblFullNameError, ex);
+        try {
+            Client client = new Client();
+            if (txtFullName.getText().isEmpty()) {
+                try {
+                    txtFullName.requestFocus();
+                    throw new EmptyFieldException();
+                } catch (EmptyFieldException ex) {
+                    errorLabel(lblFullNameError, ex);
+                }
             }
-        }
-        if (txtUsername.getText().isEmpty()) {
-            try {
-                txtUsername.requestFocus();
-                throw new EmptyFieldException();
-            } catch (EmptyFieldException ex) {
-                errorLabel(lblUsernameError, ex);
+            if (txtUsername.getText().isEmpty()) {
+                try {
+                    txtUsername.requestFocus();
+                    throw new EmptyFieldException();
+                } catch (EmptyFieldException ex) {
+                    errorLabel(lblUsernameError, ex);
+                }
             }
-        }
-        if (txtMail.getText().isEmpty()) {
-            txtMail.requestFocus();
-            try {
-                throw new EmptyFieldException();
-            } catch (EmptyFieldException ex) {
-                errorLabel(lblMail, ex);
+            if (txtMail.getText().isEmpty()) {
+                txtMail.requestFocus();
+                try {
+                    throw new EmptyFieldException();
+                } catch (EmptyFieldException ex) {
+                    errorLabel(lblMail, ex);
+                }
             }
-        }
-        if (new String(txtPassword.getText()).isEmpty() && new String(txtRepeatPassword.getText()).isEmpty()) {
-            client.setLogin(txtUsername.getText());
-            client.setFullName(txtFullName.getText());
-            client.setEmail(txtMail.getText());
-            clientInterface.edit(client, String.valueOf(userId));
-        } else {
-            if (new String(txtPassword.getText()).equals(new String(txtRepeatPassword.getText()))) {
+            if (new String(txtPassword.getText()).isEmpty() && new String(txtRepeatPassword.getText()).isEmpty()) {
                 client.setLogin(txtUsername.getText());
                 client.setFullName(txtFullName.getText());
                 client.setEmail(txtMail.getText());
-                TextInputDialog txi = new TextInputDialog();
-                txi.setHeaderText("Password Change");
-                txi.setContentText("Put here your original password");
-                txi.showAndWait();
-                String passwordIntr = txi.getEditor().getText();
-                if (passwordIntr.equals(clientAux.getPassword())) {
-                    clientInterface.edit(client, String.valueOf(userId));
-                    clientInterface.changePasswordByLogin(new String(txtPassword.getText()), clientAux.getLogin());
-                } else {
-                    Alert alertPasswordError = new Alert(Alert.AlertType.INFORMATION);
-                    alertPasswordError.setHeaderText("Password Error");
-                    alertPasswordError.setContentText("The password introduced is incorrect");
-                    alertPasswordError.show();
-                }
+                client.setId(userId);
+                client.setEnumPrivilege(EnumPrivilege.CLIENT);
+                client.setEnumStatus(EnumStatus.ACTIVE);
+                clientInterface.edit(client);
             } else {
-                Alert alertPasswordMatch = new Alert(Alert.AlertType.INFORMATION);
-                alertPasswordMatch.setHeaderText("Password Error");
-                alertPasswordMatch.setContentText("The password introduced dont match");
-                alertPasswordMatch.show();
-            }
+                if (new String(txtPassword.getText()).equals(new String(txtRepeatPassword.getText()))) {
+                    client.setLogin(txtUsername.getText());
+                    client.setFullName(txtFullName.getText());
+                    client.setEmail(txtMail.getText());
+                    client.setId(userId);
+                    client.setEnumPrivilege(EnumPrivilege.CLIENT);
+                    client.setEnumStatus(EnumStatus.ACTIVE);
 
+                    TextInputDialog txi = new TextInputDialog();
+                    txi.setHeaderText("Password Change");
+                    txi.setContentText("Put here your original password");
+                    txi.showAndWait();
+                    String passwordIntr = txi.getEditor().getText().trim();
+                    User userAux = userInterface.findUserByLoginAndPassword(txtUsername.getText().trim(), EncriptDecriptClient.encrypt(passwordIntr));
+                    String passwordEncripted = EncriptDecriptClient.encrypt(new String(txtPassword.getText().trim()));
+                    userInterface.changePasswordByLogin(clientAux.getLogin(), passwordEncripted);
+
+                } else {
+                    Alert alertPasswordMatch = new Alert(Alert.AlertType.INFORMATION);
+                    alertPasswordMatch.setHeaderText("Password Error");
+                    alertPasswordMatch.setContentText("The password introduced dont match");
+                    alertPasswordMatch.show();
+                }
+
+            }
+        } catch (PasswordDontMatch ex) {
+            Alert alertPasswordMatch = new Alert(Alert.AlertType.INFORMATION);
+            alertPasswordMatch.setHeaderText("Password Error");
+            alertPasswordMatch.setContentText("The password dont match");
+            alertPasswordMatch.show();
+        } catch (NotAuthorizedException ex) {
+            Alert alertPasswordMatch = new Alert(Alert.AlertType.INFORMATION);
+            alertPasswordMatch.setHeaderText("User Error");
+            alertPasswordMatch.setContentText("The password introduced is incorrect");
+            alertPasswordMatch.show();
+        } catch (Exception ex) {
+            Logger.getLogger(ProfileWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }

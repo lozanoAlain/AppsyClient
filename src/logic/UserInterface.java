@@ -7,7 +7,9 @@ package logic;
 
 import entities.User;
 import exceptions.BussinesLogicException;
+import exceptions.PasswordDontMatch;
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.GenericType;
 
 /**
@@ -21,10 +23,11 @@ public interface UserInterface {
     public User find(String id) throws ClientErrorException;
     public <T> T findRange(Class<T> responseType, String from, String to) throws ClientErrorException;
     public void create(User user) throws BussinesLogicException;
-    public <T> T findUserByLoginAndPassword(Class<T> responseType, String login, String password) throws ClientErrorException;
+    public User findUserByLoginAndPassword(String login, String password) throws ClientErrorException, NotAuthorizedException;
     public <T> T findAll(Class<T> responseType) throws ClientErrorException;
     public void remove(String id) throws ClientErrorException;
     public User findUserByLogin(String login) throws ClientErrorException;
+    public void changePasswordByLogin(String login, String password) throws ClientErrorException,PasswordDontMatch;
     
     
 }

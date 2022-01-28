@@ -9,14 +9,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -26,26 +18,14 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Alain Lozano Isasi
  */
-@NamedQueries({
-    //This is the query to find a user by their login.
-    @NamedQuery(
-            name = "findClientByFullName", query = "SELECT u FROM User u  WHERE u.fullName=:fullName"
-    ),
-})
-@Entity
-@Table(name = "client", schema = "appsydb")
+
+
 @XmlRootElement
 public class Client extends User implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Temporal(TemporalType.TIMESTAMP)
     private Date dateStart;
-    
-
-    @OneToMany(mappedBy = "client",fetch=FetchType.EAGER)
     private Set<Appointment> appointments;
-    
-     @OneToMany(mappedBy = "client",fetch=FetchType.EAGER)
     private Set<ClientResource> clientResources;
 
 

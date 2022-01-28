@@ -29,8 +29,8 @@ public class PsychologistManager implements PsychologistInterface {
     }
 
     @Override
-    public void editPsychologist(Psychologist psychologist, String id) throws ClientErrorException {
-        psychologistRestFul.edit(psychologist, id);
+    public void editPsychologist(Psychologist psychologist) throws ClientErrorException {
+        psychologistRestFul.edit(psychologist, String.valueOf(psychologist.getId()));
       
     }
 
@@ -40,7 +40,7 @@ public class PsychologistManager implements PsychologistInterface {
     }
 
     @Override
-    public void createPsychologist(Psychologist psychologist) throws ClientErrorException {
+    public void createPsychologist(Psychologist psychologist) throws ClientErrorException{
         psychologistRestFul.create(psychologist);
     }
 

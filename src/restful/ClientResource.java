@@ -27,7 +27,7 @@ public class ClientResource {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("CLIENTRESOURCE_URI");
+    private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("URI");
 
     public ClientResource() {
         client = javax.ws.rs.client.ClientBuilder.newClient();

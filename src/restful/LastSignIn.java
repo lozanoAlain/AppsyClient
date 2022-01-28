@@ -27,7 +27,7 @@ public class LastSignIn {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("LASTSIGNIN_URI");
+    private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("URI");
 
     public LastSignIn() {
         client = javax.ws.rs.client.ClientBuilder.newClient();

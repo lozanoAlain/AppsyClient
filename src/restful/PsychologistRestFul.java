@@ -5,6 +5,7 @@
  */
 package restful;
 
+import entities.Psychologist;
 import java.util.ResourceBundle;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
@@ -28,7 +29,7 @@ public class PsychologistRestFul {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("PSYCHOLOGIST_URI");
+    private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("URI");
 
     public PsychologistRestFul() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
@@ -42,7 +43,8 @@ public class PsychologistRestFul {
     }
 
     public void edit(Object requestEntity, String id) throws ClientErrorException {
-        webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
+        WebTarget resource = webTarget;
+        resource.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
     public <T> T find(GenericType<T> responseType, String id) throws ClientErrorException {
@@ -64,7 +66,8 @@ public class PsychologistRestFul {
     }
 
     public void create(Object requestEntity) throws ClientErrorException {
-        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
+        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
+                .post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML),new GenericType<Psychologist>(){});
     }
 
     public <T> T findAll(GenericType<T> responseType) throws ClientErrorException {
@@ -85,5 +88,5 @@ public class PsychologistRestFul {
     public void close() {
         client.close();
     }
-    
+
 }
