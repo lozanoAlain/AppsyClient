@@ -6,10 +6,7 @@
     <field name="login" class="java.lang.String"/>
     <field name="email" class="java.lang.String"/>
     <field name="fullName" class="java.lang.String"/>
-    <field name="enumStatus" class="java.lang.String"/>
-
-
-
+    <field name="enumStatus" class="entities.EnumStatus"/>
     <background>
         <band splitType="Stretch"/>
     </background>
@@ -64,7 +61,7 @@
         </band>
     </columnHeader>
     <detail>
-        <band height="125" splitType="Stretch">
+        <band height="43" splitType="Stretch">
             <textField>
                 <reportElement x="0" y="0" width="100" height="20" uuid="4ee4616b-2f0d-45b7-87af-87ee155af7de"/>
                 <textFieldExpression><![CDATA[$F{login}]]></textFieldExpression>
