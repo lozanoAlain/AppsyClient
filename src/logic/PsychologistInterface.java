@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.GenericType;
 
 /**
@@ -18,7 +19,7 @@ import javax.ws.rs.core.GenericType;
  */
 public interface PsychologistInterface {
     public String countREST() throws ClientErrorException;
-   public void editPsychologist(Psychologist psychologist) throws ClientErrorException ;
+   public void editPsychologist(Psychologist psychologist) throws ClientErrorException, NotFoundException ;
     public Psychologist findPsychologist(String id) throws ClientErrorException;
     public <T> T findRange(Class<T> responseType, String from, String to) throws ClientErrorException;
     public void createPsychologist(Psychologist psychologist) throws ClientErrorException;

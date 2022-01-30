@@ -341,6 +341,10 @@ public class SignUpController {
                 clientInterface = ClientFactory.createClientRestful();
                 clientInterface.create(client);
 
+                Alert alertUserAddedCorrectly = new Alert(Alert.AlertType.INFORMATION);
+                alertUserAddedCorrectly.setHeaderText("User added");
+                alertUserAddedCorrectly.setContentText("User added correctly");
+                alertUserAddedCorrectly.show();
 
             } catch (MailErrorException ex) {
                 errorLabel(lblMailError, ex);
@@ -350,13 +354,13 @@ public class SignUpController {
                 txtPassword.requestFocus();
             } catch (ClientErrorException ex) {
                 Alert alertDeletePsychologistCancel = new Alert(Alert.AlertType.INFORMATION);
-                alertDeletePsychologistCancel.setHeaderText("Confirmation");
-                alertDeletePsychologistCancel.setContentText(ex.getMessage());
+                alertDeletePsychologistCancel.setHeaderText("User exits");
+                alertDeletePsychologistCancel.setContentText("The user already exist.");
                 alertDeletePsychologistCancel.show();
             } catch (Exception ex) {
                 Alert alertConnectionError = new Alert(AlertType.INFORMATION);
                 alertConnectionError.setTitle("SIGN UP");
-                alertConnectionError.setHeaderText(ex.getMessage());
+                alertConnectionError.setHeaderText("Error connecting to the server");
                 alertConnectionError.show();
                 logger.severe(ex.getMessage());
             }

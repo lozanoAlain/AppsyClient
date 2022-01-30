@@ -69,7 +69,7 @@
                         <Font size="53.0" />
                     </font>
                 </Label>
-                <Label layoutX="248.0" layoutY="80.0" prefHeight="38.0" prefWidth="106.0" text="Full name:" textFill="#53635c">
+                <Label layoutX="248.0" layoutY="80.0" prefHeight="27.0" prefWidth="106.0" text="Full name:" textFill="#53635c">
                     <font>
                         <Font size="18.0" />
                     </font>

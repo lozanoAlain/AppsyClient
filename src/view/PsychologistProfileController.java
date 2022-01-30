@@ -25,6 +25,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javax.naming.OperationNotSupportedException;
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.NotFoundException;
 import logic.PsychologistFactory;
 import logic.PsychologistInterface;
 
@@ -104,6 +105,7 @@ public class PsychologistProfileController {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setResizable(false);
+            stage.setTitle("Psychologist Profile Window");
             interfacePsychologist = PsychologistFactory.createPsychologistRestful();
 
             if (idSelected != 0) {
@@ -115,9 +117,9 @@ public class PsychologistProfileController {
                 txtSpezialitation.setText(psychologist.getSpecialization());
                 btnModify.setDisable(false);
                 btnAdd.setDisable(true);
-            }else{
-                  btnModify.setDisable(true);
-            btnAdd.setDisable(false);
+            } else {
+                btnModify.setDisable(true);
+                btnAdd.setDisable(false);
             }
 
             txtFullName.textProperty().addListener(this::fullNameTextChanged);
@@ -129,11 +131,16 @@ public class PsychologistProfileController {
             btnAdd.setOnAction(this::handleButtonAdd);
             btnModify.setOnAction(this::handleButtonModify);
             btnBack.setOnAction(this::handleButtonBack);
-          
+
             //Show window.
             stage.show();
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(PsychologistProfileController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NotFoundException ex) {
+            Alert psychologistNotFound = new Alert(Alert.AlertType.INFORMATION);
+            psychologistNotFound.setHeaderText("Psychologist not found");
+            psychologistNotFound.setContentText("Theres no psychologist found");
+            psychologistNotFound.show();
         }
     }
 
@@ -240,10 +247,10 @@ public class PsychologistProfileController {
             }
 
         } catch (ClientErrorException ex) {
-            Alert alertDeletePsychologistCancel = new Alert(Alert.AlertType.INFORMATION);
-            alertDeletePsychologistCancel.setHeaderText("Confirmation");
-            alertDeletePsychologistCancel.setContentText(ex.getMessage());
-            alertDeletePsychologistCancel.show();
+            Alert alertPsychologistExist = new Alert(Alert.AlertType.INFORMATION);
+            alertPsychologistExist.setHeaderText("Creation error");
+            alertPsychologistExist.setContentText("The Username or the email already exist");
+            alertPsychologistExist.show();
         }
 
     }
@@ -281,9 +288,9 @@ public class PsychologistProfileController {
             if (idSelected == 0) {
                 btnModify.setDisable(true);
                 btnAdd.setDisable(false);
-            }else{
+            } else {
                 btnAdd.setDisable(true);
-            btnModify.setDisable(false);
+                btnModify.setDisable(false);
             }
             lbl.setVisible(false);
         }

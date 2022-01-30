@@ -6,6 +6,7 @@
 package view;
 
 import entities.Psychologist;
+import exceptions.EmptyFieldException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,6 +42,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.naming.OperationNotSupportedException;
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.NotFoundException;
 import logic.PsychologistFactory;
 import logic.PsychologistInterface;
 import logic.UserFactory;
@@ -120,7 +122,6 @@ public class PsychologistWindowController {
             selectionModel.setSelectionMode(SelectionMode.SINGLE);
             if (psychologists.size() == 0) {
                 btnReport.setDisable(true);
-                btnSearch.setDisable(true);
             }
             //Show window.
 
@@ -202,8 +203,16 @@ public class PsychologistWindowController {
                 tablePsychologist.getItems().remove(tablePsychologist.getSelectionModel().getSelectedIndex());
                 tablePsychologist.refresh();
             }
+        } catch (NotFoundException ex) {
+            Alert psychologistNotFound = new Alert(Alert.AlertType.INFORMATION);
+            psychologistNotFound.setHeaderText("Psychologist not found");
+            psychologistNotFound.setContentText("The psychologist cant be founded ");
+            psychologistNotFound.show();
         } catch (ClientErrorException ex) {
-            Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
+            errorCreatingThePsychologist.setHeaderText("Psychologist creation");
+            errorCreatingThePsychologist.setContentText("The psychologist cant be created ");
+            errorCreatingThePsychologist.show();
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -226,11 +235,10 @@ public class PsychologistWindowController {
 
             Logger.getLogger(PsychologistProfileController.class.getName()).log(Level.INFO, "Initializing stage.");
             psychologistModifyProfileController.initStage(root, 0);
-            psychologists = FXCollections.observableArrayList(interfacePsychologist.findAllPsychologist());
-            //Set table model.
-            tablePsychologist.setItems(psychologists);
-            tablePsychologist.refresh();
+
         } catch (IOException ex) {
+            Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClientErrorException ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
@@ -245,18 +253,16 @@ public class PsychologistWindowController {
 
             switch (selectedSearch) {
                 case "Name":
-
-                    checkTextFieldisEmpty();
+                    checkTextFieldisEmpty(txtFieldSearch);
                     psychologists = FXCollections.observableArrayList(interfacePsychologist.findPsychologistByFullName(txtFieldSearch.getText()));
                     break;
                 case "Email":
-
-                    checkTextFieldisEmpty();
+                    checkTextFieldisEmpty(txtFieldSearch);
                     psychologists = FXCollections.observableArrayList(interfacePsychologist.findPsychologistByMail(txtFieldSearch.getText()));
                     break;
                 case "All":
-
                     psychologists = FXCollections.observableArrayList(interfacePsychologist.findAllPsychologist());
+                    break;
 
             }
 
@@ -268,23 +274,26 @@ public class PsychologistWindowController {
             alertDeletePsychologistCancel.setHeaderText("Select criteria");
             alertDeletePsychologistCancel.setContentText("Select a criteria to search a psychologist");
             alertDeletePsychologistCancel.show();
-        } catch (ClientErrorException ex) {
-            Alert alertDeletePsychologistCancel = new Alert(AlertType.INFORMATION);
-            alertDeletePsychologistCancel.setHeaderText("Psychologist not find");
-            alertDeletePsychologistCancel.setContentText("The psychologist does not exist");
-            alertDeletePsychologistCancel.show();
+        } catch  (EmptyFieldException ex){
+            Alert emptyField = new Alert(AlertType.INFORMATION);
+            emptyField.setHeaderText("Field empty");
+            emptyField.setContentText("The search field cant be empty");
+            emptyField.show();
+        } catch (NotFoundException ex) {
+            Alert psychologistNotFound = new Alert(Alert.AlertType.INFORMATION);
+            psychologistNotFound.setHeaderText("Psychologist not found");
+            psychologistNotFound.setContentText("The psychologist cant be founded ");
+            psychologistNotFound.show();
         } catch (Exception ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
-    public void checkTextFieldisEmpty() {
+    public void checkTextFieldisEmpty(TextField txt) throws EmptyFieldException {
         if (txtFieldSearch.getText().trim().isEmpty()) {
-            Alert alertDeletePsychologistCancel = new Alert(AlertType.INFORMATION);
-            alertDeletePsychologistCancel.setHeaderText("Text empty");
-            alertDeletePsychologistCancel.setContentText("The field is empty");
-            alertDeletePsychologistCancel.show();
+            txt.requestFocus();
+            throw new EmptyFieldException();
         }
     }
 

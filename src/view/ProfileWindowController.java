@@ -12,6 +12,7 @@ import entities.EnumStatus;
 import entities.User;
 import exceptions.EmptyFieldException;
 import exceptions.FieldTooLongException;
+import exceptions.FullNameException;
 import exceptions.PasswordDontMatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,6 +31,7 @@ import javafx.stage.Stage;
 import javax.naming.OperationNotSupportedException;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
 import logic.ClientFactory;
 import logic.ClientInterface;
 import logic.UserFactory;
@@ -98,6 +100,7 @@ public class ProfileWindowController {
             stage.setResizable(false);
 
             txtFullName.textProperty().addListener(this::fullNameTextChanged);
+            txtFullName.focusedProperty().addListener(this::fullNameFocusChanged);
             txtUsername.textProperty().addListener(this::usernameTextChanged);
             txtMail.textProperty().addListener(this::mailTextChanged);
             btnModify.setOnAction(this::handleButtonModify);
@@ -111,8 +114,11 @@ public class ProfileWindowController {
             stage.show();
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(ProfileWindowController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClientErrorException ex) {
-            Logger.getLogger(ProfileWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NotFoundException ex) {
+            Alert clientNotFound = new Alert(Alert.AlertType.INFORMATION);
+            clientNotFound.setHeaderText("Client not found");
+            clientNotFound.setContentText("Theres no client found");
+            clientNotFound.show();
         }
     }
 
@@ -127,6 +133,47 @@ public class ProfileWindowController {
             lblFullNameError.setStyle("-fx-text-fill: red; -fx-font-size: 13px");
             lblFullNameError.setText(ex.getMessage());
         }
+    }
+     /*
+    Check that the Full name (txtFullName) has at least 1 blank (checkWhiteSpace())
+    If it is not correct (FullNameException()), an error label (lblFullNameError) is shown and the register button(btnRegister is disabled.
+    When the error is corrected the register button(btnRegister) is enabled.
+     */
+    /**
+     * Method that checks the Full Name has at least one blank
+     *
+     * @param observable
+     * @param oldValue The old value of the text field
+     * @param newValue The new value of the text field
+     */
+    private void fullNameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+
+        if (newValue) {
+
+        } else if (oldValue) {
+            try {
+                checkWhiteSpace(txtFullName.getText(), lblFullNameError);
+            } catch (FullNameException ex) {
+                errorLabel(lblFullNameError, ex);
+            }
+        }
+    }
+    /**
+     * Method that checks if the text has at leat one blank
+     *
+     * @param text The text that is received
+     * @param lblError The label that is shown
+     * @throws FullNameException The exception if the text does not have at
+     * least one blank
+     */
+    private void checkWhiteSpace(String text, Label lblError) throws FullNameException {
+        if (!text.trim().contains(" ")) {
+            btnModify.setDisable(true);
+            throw new FullNameException();
+        } else {
+            btnModify.setDisable(false);
+        }
+
     }
 
     private void usernameTextChanged(ObservableValue observable, String oldValue, String newValue) {
@@ -191,17 +238,23 @@ public class ProfileWindowController {
                 try {
                     throw new EmptyFieldException();
                 } catch (EmptyFieldException ex) {
-                    errorLabel(lblMail, ex);
+                    errorLabel(lblMailError, ex);
                 }
             }
-            if (new String(txtPassword.getText()).isEmpty() && new String(txtRepeatPassword.getText()).isEmpty()) {
+            if (new String(txtPassword.getText()).isEmpty() || new String(txtRepeatPassword.getText()).isEmpty()) {
+                User userAux = userInterface.findUserByLogin(txtUsername.getText());
                 client.setLogin(txtUsername.getText());
                 client.setFullName(txtFullName.getText());
+                client.setPassword(userAux.getPassword());
                 client.setEmail(txtMail.getText());
                 client.setId(userId);
                 client.setEnumPrivilege(EnumPrivilege.CLIENT);
                 client.setEnumStatus(EnumStatus.ACTIVE);
                 clientInterface.edit(client);
+                Alert alertUserModifiedCorrectly = new Alert(Alert.AlertType.INFORMATION);
+                alertUserModifiedCorrectly.setHeaderText("Modifycation correct");
+                alertUserModifiedCorrectly.setContentText("The user information has been updated");
+                alertUserModifiedCorrectly.show();
             } else {
                 if (new String(txtPassword.getText()).equals(new String(txtRepeatPassword.getText()))) {
                     client.setLogin(txtUsername.getText());
@@ -218,7 +271,13 @@ public class ProfileWindowController {
                     String passwordIntr = txi.getEditor().getText().trim();
                     User userAux = userInterface.findUserByLoginAndPassword(txtUsername.getText().trim(), EncriptDecriptClient.encrypt(passwordIntr));
                     String passwordEncripted = EncriptDecriptClient.encrypt(new String(txtPassword.getText().trim()));
+                    clientInterface.edit(client);
                     userInterface.changePasswordByLogin(clientAux.getLogin(), passwordEncripted);
+
+                    Alert alertUserModifiedCorrectly = new Alert(Alert.AlertType.INFORMATION);
+                    alertUserModifiedCorrectly.setHeaderText("Modifycation correct");
+                    alertUserModifiedCorrectly.setContentText("The user information has been updated");
+                    alertUserModifiedCorrectly.show();
 
                 } else {
                     Alert alertPasswordMatch = new Alert(Alert.AlertType.INFORMATION);
@@ -238,6 +297,11 @@ public class ProfileWindowController {
             alertPasswordMatch.setHeaderText("User Error");
             alertPasswordMatch.setContentText("The password introduced is incorrect");
             alertPasswordMatch.show();
+        } catch (NotFoundException ex) {
+            Alert clientNotFound = new Alert(Alert.AlertType.INFORMATION);
+            clientNotFound.setHeaderText("Client not found");
+            clientNotFound.setContentText("Theres no client found");
+            clientNotFound.show();
         } catch (Exception ex) {
             Logger.getLogger(ProfileWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -253,7 +317,14 @@ public class ProfileWindowController {
     }
 
     private void handleButtonDelete(ActionEvent event) {
-        clientInterface.remove(String.valueOf(userId));
+        try {
+            clientInterface.remove(String.valueOf(userId));
+        } catch (NotFoundException ex) {
+            Alert clientNotFound = new Alert(Alert.AlertType.INFORMATION);
+            clientNotFound.setHeaderText("Client not found");
+            clientNotFound.setContentText("Theres no client found");
+            clientNotFound.show();
+        }
     }
 
     private void handleButtonBack(ActionEvent event) {
