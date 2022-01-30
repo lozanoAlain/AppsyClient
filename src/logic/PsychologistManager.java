@@ -17,11 +17,11 @@ import restful.PsychologistRestFul;
  */
 public class PsychologistManager implements PsychologistInterface {
     private PsychologistRestFul psychologistRestFul;
-/*
+
     public PsychologistManager() {
         this.psychologistRestFul = new PsychologistRestFul();
     }
-*/
+
     @Override
     public String countREST() throws ClientErrorException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -61,5 +61,14 @@ public class PsychologistManager implements PsychologistInterface {
         psychologists = psychologistRestFul.findAll(new GenericType<Set<Psychologist>>(){});       
         return psychologists;
     }
+    
+    @Override
+    public Psychologist findPsychologistByFullName(String fullName) throws ClientErrorException {
+        Psychologist psychologist = null;
+        psychologist = psychologistRestFul.findPsychologistByFullName(new GenericType<Psychologist>(){}, fullName);
+        return psychologist;
+    }
+    
+   
     
 }

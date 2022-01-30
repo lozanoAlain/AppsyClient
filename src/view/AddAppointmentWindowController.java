@@ -5,12 +5,13 @@
  */
 package view;
 
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import entities.Appointment;
 import entities.Client;
 import entities.Psychologist;
-import java.sql.Date;
+import exceptions.BusinessLogicException;
 import java.time.LocalDate;
-import java.util.logging.Level;
+import java.time.ZoneId;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,11 +26,10 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javax.naming.OperationNotSupportedException;
 import logic.AppointmentInterface;
-import logic.AppointmentManager;
 import logic.PsychologistFactory;
 import logic.PsychologistInterface;
-import logic.PsychologistManager;
 
 /**
  *
@@ -63,6 +63,7 @@ public class AddAppointmentWindowController {
     private PsychologistInterface psychologistInterface;
     private Client client = null;
     private Appointment appointment;
+    private AppointmentWindowController appointmentWindowController;
 
     @FXML
     private ImageView imgCerebro;
@@ -81,54 +82,106 @@ public class AddAppointmentWindowController {
     @FXML
     private Button btnAdd;
 
-    void initStage(Parent root) {
-        stage = new Stage();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.setTitle("Add Appointment");
-        stage.setResizable(false);
-
-        btnBack.setOnAction(this::handleButtonBack);
-        btnAdd.setOnAction(this::handleButtonAdd);
+    public void initAddWhenClient(Client client, Parent root) {
         
-        stage.show();
-
-    }
-
-    public void initAddWhenClient(Client client) {
         try {
+            stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Add Appointment");
+            stage.setResizable(false);
+
+            btnBack.setOnAction(this::handleButtonBack);
+            btnAdd.setOnAction(this::handleButtonAdd);
+
             this.client = client;
 
             psychologistInterface = PsychologistFactory.createPsychologistRestful();
             ObservableList<Psychologist> psychologists
                     = FXCollections.observableArrayList(psychologistInterface.findAllPsychologist());
             comboPsychologist.setItems(psychologists);
-            Psychologist psychologist = (Psychologist) comboPsychologist.getSelectionModel().getSelectedItem();
-            LocalDate dateSelected = datePicker.getValue();
 
             appointment.setClient(client);
-            Date date = java.sql.Date.valueOf(dateSelected);
-            appointment.setDate(date);
-            appointment.setPsychologist(psychologist);
 
+            comboPsychologist.setOnAction(this::handleComboPsychologist);
+            datePicker.setOnAction(this::handleDatePicker);
+
+            stage.show();
+            LOGGER.info("AddAppointmentWindow opened correctly");
+        } catch (OperationNotSupportedException | BusinessLogicException ex) {
+            LOGGER.severe("Error with the server");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("there is a problem on the server");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
         } catch (Exception ex) {
-            Logger.getLogger(AddAppointmentWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.severe("Error with the server");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("there is a problem on the server");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
         }
+
+        
+    }
+
+    private void handleDatePicker(ActionEvent event) {
+        datePicker.setPromptText("dd/mm/yyyy");
+        LocalDate localDate = datePicker.getValue();
+        java.util.Date date = java.util.Date.from(localDate.atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
+
+        appointment.setDate(date);
+    }
+
+    private void handleComboPsychologist(ActionEvent event) {
+        Psychologist psychologist = (Psychologist) comboPsychologist.getSelectionModel().getSelectedItem();
+
+        appointment.setPsychologist(psychologist);
+
     }
 
     private void handleButtonAdd(ActionEvent event) {
+        try {
+            appointmentInterface.create(appointment);
 
-        appointmentInterface.create(appointment);
+            Alert alertAppointmentAdded = new Alert(Alert.AlertType.INFORMATION);
+            alertAppointmentAdded.setTitle("SIGN UP");
+            alertAppointmentAdded.setHeaderText("User added correctly");
+            alertAppointmentAdded.show();
 
-        Alert alertAppointmentAdded = new Alert(Alert.AlertType.INFORMATION);
-        alertAppointmentAdded.setTitle("SIGN UP");
-        alertAppointmentAdded.setHeaderText("User added correctly");
-        alertAppointmentAdded.show();
-
+            appointmentWindowController.refrescarTabla();
+            LOGGER.info("Appointment added correctly");
+            getStage().close();
+        } catch (BusinessLogicException ex) {
+            LOGGER.severe("Error adding the appointment");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("there was a problem adding de appointment");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
+        }
     }
 
     private void handleButtonBack(ActionEvent event) {
         getStage().close();
+    }
+
+    /**
+     * @return the appointmentWindowController
+     */
+    public AppointmentWindowController getAppointmentWindowController() {
+        return appointmentWindowController;
+    }
+
+    /**
+     * @param appointmentWindowController the apointmentWindowContrller to set
+     */
+    public void setAppointmentWindowController(AppointmentWindowController appointmentWindowController) {
+        this.appointmentWindowController = appointmentWindowController;
     }
 
 }

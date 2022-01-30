@@ -23,4 +23,5 @@ public interface PsychologistInterface {
     public void createPsychologist(Object requestEntity) throws ClientErrorException;
     public Set<Psychologist> findAllPsychologist() throws Exception;
     public void removePsychologist(String id) throws ClientErrorException;
+    public Psychologist findPsychologistByFullName(String fullName) throws ClientErrorException;
 }
