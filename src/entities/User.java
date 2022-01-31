@@ -6,8 +6,11 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -20,7 +23,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 public class User implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static long serialVersionUID = 1L;
     private Integer id;
     private String password;
     private EnumPrivilege enumPrivilege;
@@ -28,13 +31,92 @@ public class User implements Serializable {
     private String fullName;
     private String email;
     private String login;
+    private HashSet<LastSignIn> lastSignIns;
+   
 
-    private Set<LastSignIn> lastSignIns;
+   @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.getId());
+        return hash;
+    }
 
+    /**
+     * 
+     * @param obj
+     * @return 
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        /* if (getClass() != obj.getClass()) {
+        return false;
+        }
+        final User other = (User) obj;
+        if (!Objects.equals(this.password, other.password)) {
+        return false;
+        }
+        if (!Objects.equals(this.fullName, other.fullName)) {
+        return false;
+        }
+        if (!Objects.equals(this.email, other.email)) {
+        return false;
+        }
+        if (!Objects.equals(this.login, other.login)) {
+        return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+        return false;
+        }
+        if (this.getEnumPrivilege() != other.getEnumPrivilege()) {
+        return false;
+        }
+        if (this.getEnumStatus() != other.getEnumStatus()) {
+        return false;
+        }
+        if (!Objects.equals(this.lastSignIns, other.lastSignIns)) {
+        return false;
+        }*/
+        return true;
+    }
+    /**
+     * 
+     * @return 
+     */
+    @Override
+    public String toString() {
+        return "User{" + "id=" + getId() + ", password=" + getPassword() + ", enumPrivilege=" + getEnumPrivilege() + ", enumStatus=" + getEnumStatus() + ", fullName=" + getFullName() + ", email=" + getEmail() + ", login=" + getLogin() + '}';
+    }
+
+    /**
+     * @return the serialVersionUID
+     */
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    /**
+     * @param aSerialVersionUID the serialVersionUID to set
+     */
+    public static void setSerialVersionUID(long aSerialVersionUID) {
+        serialVersionUID = aSerialVersionUID;
+    }
+
+    /**
+     * @return the id
+     */
     public Integer getId() {
         return id;
     }
 
+    /**
+     * @param id the id to set
+     */
     public void setId(Integer id) {
         this.id = id;
     }
@@ -42,7 +124,6 @@ public class User implements Serializable {
     /**
      * @return the password
      */
-    @XmlTransient
     public String getPassword() {
         return password;
     }
@@ -125,77 +206,17 @@ public class User implements Serializable {
     }
 
     /**
-     * @return the lastSignins
+     * @return the lastSignIns
      */
-
-    public Set<LastSignIn> getLastSignins() {
+    public HashSet<LastSignIn> getLastSignIns() {
         return lastSignIns;
     }
 
     /**
-     * @param lastSignins the lastSignins to set
+     * @param lastSignIns the lastSignIns to set
      */
-    public void setLastSignins(Set<LastSignIn> lastSignIns) {
+    public void setLastSignIns(HashSet<LastSignIn> lastSignIns) {
         this.lastSignIns = lastSignIns;
-    }
-
-   @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.id);
-        return hash;
-    }
-
-    /**
-     * 
-     * @param obj
-     * @return 
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final User other = (User) obj;
-        if (!Objects.equals(this.password, other.password)) {
-            return false;
-        }
-        if (!Objects.equals(this.fullName, other.fullName)) {
-            return false;
-        }
-        if (!Objects.equals(this.email, other.email)) {
-            return false;
-        }
-        if (!Objects.equals(this.login, other.login)) {
-            return false;
-        }
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (this.enumPrivilege != other.enumPrivilege) {
-            return false;
-        }
-        if (this.enumStatus != other.enumStatus) {
-            return false;
-        }
-        if (!Objects.equals(this.lastSignIns, other.lastSignIns)) {
-            return false;
-        }
-        return true;
-    }
-    /**
-     * 
-     * @return 
-     */
-    @Override
-    public String toString() {
-        return "User{" + "id=" + id + ", password=" + password + ", enumPrivilege=" + enumPrivilege + ", enumStatus=" + enumStatus + ", fullName=" + fullName + ", email=" + email + ", login=" + login + '}';
     }
 
 }
