@@ -3,6 +3,7 @@ package logic;
 
 import entities.Appointment;
 import exceptions.BusinessLogicException;
+import java.util.Date;
 import java.util.Set;
 
 /*
@@ -17,10 +18,10 @@ import java.util.Set;
  */
 public interface AppointmentInterface {
     public String countREST() throws BusinessLogicException;
-    public void edit(Object requestEntity, String id) throws BusinessLogicException;
+    public void edit(Appointment appointment) throws BusinessLogicException ;
     public Appointment find(String id) throws BusinessLogicException;
     public <T> T findRange(Class<T> responseType, String from, String to) throws BusinessLogicException;
-    public void create(Object requestEntity) throws BusinessLogicException;
+    public void create(Appointment requestEntity) throws BusinessLogicException;
     public Set<Appointment> findAppointmentsOfPsychologist(String psychologistId) throws BusinessLogicException;
     public Set<Appointment> findAppointmentsOfClient(String clientId) throws BusinessLogicException;
     public Set<Appointment> findAppointmentsOfClientByPsychologist(String psychologistId, String clientId) throws BusinessLogicException;

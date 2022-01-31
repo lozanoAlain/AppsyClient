@@ -60,8 +60,8 @@
             <Button fx:id="btnSearch" layoutX="403.0" layoutY="102.0" mnemonicParsing="false" prefWidth="75.0" text="Search" />
             <ComboBox fx:id="comboBox" layoutX="40.0" layoutY="102.0" prefWidth="150.0" promptText="Select filter" />
             <TextField fx:id="txtSelect" layoutX="220.0" layoutY="102.0" />
-            <ComboBox fx:id="comboPsychologist" layoutX="220.0" layoutY="102.0" prefWidth="150.0" />
-            <DatePicker fx:id="datePicker" layoutX="220.0" layoutY="102.0" />
+            <ComboBox fx:id="comboPsychologist" layoutX="220.0" layoutY="102.0" prefHeight="26.0" prefWidth="134.0" />
+            <DatePicker fx:id="datePicker" editable="false" layoutX="220.0" layoutY="102.0" prefHeight="26.0" prefWidth="134.0" />
             <ButtonBar layoutX="2.0" layoutY="385.0" prefHeight="66.0" prefWidth="650.0">
               <buttons>
                 <Button fx:id="btnBack" mnemonicParsing="false" text="Back" />

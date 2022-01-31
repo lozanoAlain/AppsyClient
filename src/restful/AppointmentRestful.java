@@ -5,6 +5,7 @@
  */
 package restful;
 
+import entities.Appointment;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
@@ -45,6 +46,10 @@ public class AppointmentRestful {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
+    public void editAppointment(Object requestEntity, Appointment appointment, String psychologistId, String date) throws ClientErrorException {
+        webTarget.path(java.text.MessageFormat.format("edit/{0}/{1}/{2}", new Object[]{appointment, psychologistId, date})).request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
+    }
+
     public <T> T find(GenericType<T> responseType, String id) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
@@ -72,10 +77,10 @@ public class AppointmentRestful {
         resource = resource.path(java.text.MessageFormat.format("clientId/{0}", new Object[]{clientId}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
-    
+
     public <T> T findAppointmentsOfClientByPsychologist(GenericType<T> responseType, String psychologistId, String clientId) throws ClientErrorException {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("psychologistId/{0}/clientId/{1}", new Object[]{psychologistId,clientId}));
+        resource = resource.path(java.text.MessageFormat.format("psychologistId/{0}/clientId/{1}", new Object[]{psychologistId, clientId}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
@@ -84,7 +89,7 @@ public class AppointmentRestful {
         resource = resource.path(java.text.MessageFormat.format("date/{0}", new Object[]{date}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
-    
+
     public <T> T findAll(GenericType<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
@@ -93,7 +98,7 @@ public class AppointmentRestful {
     public void remove(String id) throws ClientErrorException {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request().delete();
     }
-    
+
     public void removeAppointment(String psychologistId, String clientId) throws ClientErrorException {
         webTarget.path(java.text.MessageFormat.format("delete/{0}/{1}", new Object[]{psychologistId, clientId})).request().delete();
     }
@@ -101,8 +106,5 @@ public class AppointmentRestful {
     public void close() {
         client.close();
     }
-    
+
 }
-
-
-

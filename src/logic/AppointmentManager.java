@@ -7,6 +7,7 @@ package logic;
 
 import entities.Appointment;
 import exceptions.BusinessLogicException;
+import java.util.Date;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,9 +30,9 @@ public class AppointmentManager implements AppointmentInterface {
     }
 
     @Override
-    public void edit(Object appointment, String id) throws BusinessLogicException {
+    public void edit(Appointment appointment) throws BusinessLogicException {
         try {
-            appointmentRestful.edit(appointment, id);
+            appointmentRestful.edit(appointment, String.valueOf(appointment.getAppointmentId()));
         } catch (ClientErrorException ex) {
             LOGGER.log(Level.SEVERE,
                     "AppointmentManager: Exception editing the appointment, {0}",
@@ -55,7 +56,7 @@ public class AppointmentManager implements AppointmentInterface {
     }
 
     @Override
-    public void create(Object requestEntity) throws BusinessLogicException {
+    public void create(Appointment requestEntity) throws BusinessLogicException {
         try {
             appointmentRestful.create(requestEntity);
         } catch (ClientErrorException ex) {
@@ -147,7 +148,7 @@ public class AppointmentManager implements AppointmentInterface {
 
     @Override
     public void remove(String id) throws BusinessLogicException {
-        try{
+        try {
             appointmentRestful.remove(id);
         } catch (ClientErrorException ex) {
             LOGGER.log(Level.SEVERE,
@@ -155,7 +156,7 @@ public class AppointmentManager implements AppointmentInterface {
                     ex.getMessage());
             throw new BusinessLogicException("Error deleting the appointment selected by id:\n" + ex.getMessage());
         }
-        
+
     }
 
     @Override
@@ -165,7 +166,7 @@ public class AppointmentManager implements AppointmentInterface {
 
     @Override
     public void removeAppointment(String psychologistId, String clientId) throws BusinessLogicException {
-        try{
+        try {
             appointmentRestful.removeAppointment(psychologistId, clientId);
         } catch (ClientErrorException ex) {
             LOGGER.log(Level.SEVERE,
@@ -175,5 +176,6 @@ public class AppointmentManager implements AppointmentInterface {
         }
         appointmentRestful.removeAppointment(psychologistId, clientId);
     }
+
 
 }

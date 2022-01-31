@@ -5,8 +5,9 @@
  */
 package view;
 
-import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
+import java.util.logging.Logger;
 import entities.Appointment;
+import entities.AppointmentId;
 import entities.Client;
 import entities.Psychologist;
 import exceptions.BusinessLogicException;
@@ -58,10 +59,10 @@ public class AddAppointmentWindowController {
         this.stage = stage;
     }
 
-    private final static Logger logger = Logger.getLogger(AppointmentWindowController.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(AddAppointmentWindowController.class.getName());
     private AppointmentInterface appointmentInterface;
     private PsychologistInterface psychologistInterface;
-    private Client client = null;
+    private Client client;
     private Appointment appointment;
     private AppointmentWindowController appointmentWindowController;
 
@@ -69,8 +70,6 @@ public class AddAppointmentWindowController {
     private ImageView imgCerebro;
     @FXML
     private Label lblAppointment;
-    @FXML
-    private Label lblPsychologist;
     @FXML
     private ComboBox comboPsychologist;
     @FXML
@@ -83,7 +82,7 @@ public class AddAppointmentWindowController {
     private Button btnAdd;
 
     public void initAddWhenClient(Client client, Parent root) {
-        
+
         try {
             stage = new Stage();
             Scene scene = new Scene(root);
@@ -96,27 +95,28 @@ public class AddAppointmentWindowController {
 
             this.client = client;
 
+            comboPsychologist.requestFocus();
             psychologistInterface = PsychologistFactory.createPsychologistRestful();
+
+            comboPsychologist.setPromptText("Psychologists");
             ObservableList<Psychologist> psychologists
                     = FXCollections.observableArrayList(psychologistInterface.findAllPsychologist());
             comboPsychologist.setItems(psychologists);
 
+            appointment = new Appointment();
             appointment.setClient(client);
-
-            comboPsychologist.setOnAction(this::handleComboPsychologist);
-            datePicker.setOnAction(this::handleDatePicker);
 
             stage.show();
             LOGGER.info("AddAppointmentWindow opened correctly");
         } catch (OperationNotSupportedException | BusinessLogicException ex) {
-            LOGGER.severe("Error with the server");
+            LOGGER.severe("Error with the server1");
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("there is a problem on the server");
             alert.setContentText(ex.getMessage());
             alert.showAndWait();
         } catch (Exception ex) {
-            LOGGER.severe("Error with the server");
+            LOGGER.severe("Error with the server2");
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("there is a problem on the server");
@@ -124,28 +124,30 @@ public class AddAppointmentWindowController {
             alert.showAndWait();
         }
 
-        
-    }
-
-    private void handleDatePicker(ActionEvent event) {
-        datePicker.setPromptText("dd/mm/yyyy");
-        LocalDate localDate = datePicker.getValue();
-        java.util.Date date = java.util.Date.from(localDate.atStartOfDay()
-                .atZone(ZoneId.systemDefault())
-                .toInstant());
-
-        appointment.setDate(date);
-    }
-
-    private void handleComboPsychologist(ActionEvent event) {
-        Psychologist psychologist = (Psychologist) comboPsychologist.getSelectionModel().getSelectedItem();
-
-        appointment.setPsychologist(psychologist);
-
     }
 
     private void handleButtonAdd(ActionEvent event) {
         try {
+
+            Psychologist psychologist = new Psychologist();
+            psychologist = (Psychologist) comboPsychologist.getSelectionModel().getSelectedItem();
+            AppointmentId appointmentId = new AppointmentId();
+            appointmentId.setPsychologistId(psychologist.getId());
+            appointmentId.setClientId(client.getId());
+            //appointment = new Appointment(psychologist, appointmentId);
+            appointment.setClient(client);
+            appointment.setPsychologist(new Psychologist());
+
+            datePicker.setPromptText("dd/mm/yyyy");
+            LocalDate localDate = datePicker.getValue();
+            java.util.Date date = java.util.Date.from(localDate.atStartOfDay()
+                    .atZone(ZoneId.systemDefault())
+                    .toInstant());
+
+            appointment.setDate(date);
+            appointment.setAppointmentId(null);
+            appointment.setDiagnose("");
+            appointment.setPrice(Float.NaN);
             appointmentInterface.create(appointment);
 
             Alert alertAppointmentAdded = new Alert(Alert.AlertType.INFORMATION);

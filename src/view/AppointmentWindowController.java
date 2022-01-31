@@ -8,30 +8,17 @@ package view;
 import entities.Appointment;
 import entities.Client;
 import entities.Psychologist;
-import entities.User;
 import exceptions.BusinessLogicException;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.InvalidationListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableSet;
 import javafx.event.Event;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -248,6 +235,13 @@ public class AppointmentWindowController {
                 tableView = new TableView<>(appointmentsbyDate);
 
             }
+        } catch (NullPointerException ex){
+            LOGGER.severe("Criteria error");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Select a criteria to search an appointment.");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
         } catch (IllegalArgumentException ex) {
             tableView.setPlaceholder(new Label("No rows to display"));
             Alert alertAppointmentModified = new Alert(Alert.AlertType.INFORMATION);
@@ -269,15 +263,22 @@ public class AppointmentWindowController {
 
     private void handleComboBox(Event event) {
         if (comboBox.getValue().toString().equalsIgnoreCase("psychologist")) {
-            txtSelect.setVisible(false);
-            comboPsychologist.setVisible(true);
-            comboPsychologist.setPromptText("Psychologists");
-            ObservableList<String> psychologists = FXCollections.observableArrayList();
-            ObservableList<Appointment> appointments = tblAppointment.getItems();
-            for (Appointment a : appointments) {
-                psychologists.add(a.getPsychologist().getFullName());
+            try {
+                txtSelect.setVisible(false);
+                comboPsychologist.setVisible(true);
+                comboPsychologist.setPromptText("Psychologists");
+                ObservableList<Psychologist> psychologists = FXCollections.observableArrayList(psychologistInterface.findAllPsychologist());
+                
+                
+                ObservableList<String> psychologistsName = FXCollections.observableArrayList();
+                for(Psychologist p : psychologists){
+                        psychologistsName.add(p.getFullName());                    
+                }
+                
+                comboPsychologist.setItems(psychologistsName);
+            } catch (Exception ex) {
+                Logger.getLogger(AppointmentWindowController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            comboPsychologist.setItems(psychologists);
 
         } else if (comboBox.getValue().toString().equalsIgnoreCase("date")) {
             txtSelect.setVisible(false);
