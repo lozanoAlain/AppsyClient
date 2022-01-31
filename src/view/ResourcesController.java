@@ -27,16 +27,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import entities.User;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.scene.control.ChoiceBox;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -132,24 +131,23 @@ public class ResourcesController {
             stage.setOnCloseRequest((event) -> {
                 this.exitApplicationWhenXPressed(event);
             });
-            
-                
+
             //Obtains the layout containing the menu bar from the scene node graph
-            HBox hBoxMenu= (HBox)root.getChildrenUnmodifiable().get(0);
+            HBox hBoxMenu = (HBox) root.getChildrenUnmodifiable().get(0);
             //Get the menu bar from the children of the layout got before
-            MenuBar menuBar= (MenuBar)hBoxMenu.getChildren().get(0);
+            MenuBar menuBar = (MenuBar) hBoxMenu.getChildren().get(0);
             //Get the second menu from the menu bar
-            Menu menuHelp=menuBar.getMenus().get(1);
+            Menu menuHelp = menuBar.getMenus().get(1);
             //Add a listener for the showing property that fires the action event
             //on the first menu item of that menu
             menuHelp.showingProperty().addListener(
-                (observableValue, oldValue, newValue) -> {
-                    if (newValue) {
-                        menuHelp.getItems().get(0).fire();
+                    (observableValue, oldValue, newValue) -> {
+                        if (newValue) {
+                            menuHelp.getItems().get(0).fire();
+                        }
                     }
-                }
             );
-            
+
             //The search button (btnSearch) field is focused.
             stage.setOnShowing(this::handleOnWindow);
 
@@ -201,7 +199,6 @@ public class ResourcesController {
             tableViewResource.getSelectionModel().selectedItemProperty().addListener(this::handleResourceTableSelectionChange);
 
             //handlers button
-            btnBack.setOnAction(this::handleButtonBack);
             btnReport.setOnAction(this::handleButtonReport);
             btnAdd.setOnAction(this::handleButtonAdd);
             btnModify.setOnAction(this::handleButtonModify);
@@ -281,6 +278,7 @@ public class ResourcesController {
      *
      * @param event
      */
+    @FXML
     private void handleButtonReport(ActionEvent event) {
 
     }
@@ -289,6 +287,7 @@ public class ResourcesController {
      *
      * @param event
      */
+    @FXML
     private void handleButtonDelete(ActionEvent event) {
         try {
             //Get selected club data from table view model
@@ -329,6 +328,7 @@ public class ResourcesController {
      *
      * @param event
      */
+    @FXML
     private void handleButtonModify(ActionEvent event) {
         //Get selected data from table view.
         Resource resource = ((Resource) tableViewResource.getSelectionModel().getSelectedItem());
@@ -356,6 +356,7 @@ public class ResourcesController {
      *
      * @param event
      */
+    @FXML
     private void handleButtonAdd(ActionEvent event) {
         //New resource
         Resource resource = new Resource();
@@ -384,41 +385,6 @@ public class ResourcesController {
     }
 
     /**
-     * The method that opens the Sign In window and sends the user
-     *
-     * @param user The user that is send to the Sign In window
-     */
-    private void handleButtonBack(ActionEvent event) {
-
-        /* switch (user.getEnumPrivilege()) {
-        case ADMIN:
-        break;
-        case PSYCHOLOGIST:
-        break;
-        case CLIENT:
-        break;
-        
-        }*/
- /*     try {
-        //Opens the Welcome window
-        //  FXMLLoader loader = new FXMLLoader(getClass().getResource("Welcome.fxml"));
-        //   Parent root = (Parent) loader.load();
-        
-        //Gets Welcome window controller
-        //   WelcomeController welcomeController = ((WelcomeController) loader.getController());
-        
-        welcomeController.setStage(stage);
-        
-        Logger.getLogger(WelcomeController.class.getName()).log(Level.INFO, "Initializing stage.");
-        welcomeController.initStage(root);
-        welcomeController.initWhenSignUp(user);
-        
-        } catch (IOException ex) {
-        Logger.getLogger(WelcomeController.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-    }
-
-    /**
      * Put the confirmation alert on the button exit of the application
      *
      * @param event The event that handles the exit button above the stage.
@@ -433,12 +399,10 @@ public class ResourcesController {
         alert.setContentText(String.format("Are you sure do you want to exit?"));
         alert.initOwner(stage.getOwner());
         Optional<ButtonType> res = alert.showAndWait();
-
         if (res.isPresent()) {
             if (res.get().equals(ButtonType.CANCEL)) {
                 event.consume();
             }
         }
     }
-
 }

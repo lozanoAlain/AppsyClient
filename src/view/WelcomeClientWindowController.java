@@ -5,6 +5,7 @@
  */
 package view;
 
+import entities.User;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -61,8 +62,9 @@ public class WelcomeClientWindowController implements Initializable {
      * Initializes the controller of the Welcome Psychologists window.
      *
      * @param root
+     * @param user
      */
-    public void initialize(Parent root) {
+    public void initialize(Parent root, User user) {
         //Exit button (btnExit) and Log out button (btnLogOut) are enabled.
         Scene scene = new Scene(root);
         stage.setScene(scene);
