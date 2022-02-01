@@ -27,7 +27,6 @@ public class PsychologistRestFul {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:35293/appsyServer/webresources";
     
     
 
