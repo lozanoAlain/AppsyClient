@@ -21,4 +21,8 @@ public class EmptyFieldException extends Exception {
     public EmptyFieldException() {
         super("The field cannot be empty.");
     }
+
+    public EmptyFieldException(Label lblRepeatPasswordError) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

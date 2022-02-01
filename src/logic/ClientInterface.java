@@ -6,6 +6,7 @@
 package logic;
 
 import entities.Client;
+import exceptions.BusinessLogicException;
 import exceptions.PasswordDontMatch;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.NotFoundException;
@@ -15,12 +16,18 @@ import javax.ws.rs.NotFoundException;
  * @author Usuario
  */
 public interface ClientInterface {
-    
-    public void edit(Client client) throws ClientErrorException,NotFoundException;
-    public Client find(String id) throws ClientErrorException,NotFoundException;
-    public <T> T findRange(Class<T> responseType, String from, String to) throws ClientErrorException;
-    public <T> T findAll(Class<T> responseType) throws ClientErrorException;
-    public void remove(String id) throws ClientErrorException,NotFoundException;
-    public void create(Client client) throws ClientErrorException;
-    public Client findClientByFullName(String fullName) throws ClientErrorException,NotFoundException;
+
+    public void edit(Client client) throws BusinessLogicException;
+
+    public Client find(String id) throws BusinessLogicException;
+
+    public <T> T findRange(Class<T> responseType, String from, String to) throws BusinessLogicException;
+
+    public <T> T findAll(Class<T> responseType) throws BusinessLogicException;
+
+    public void remove(String id) throws BusinessLogicException;
+
+    public void create(Client client) throws BusinessLogicException;
+
+    public Client findClientByFullName(String fullName) throws BusinessLogicException;
 }

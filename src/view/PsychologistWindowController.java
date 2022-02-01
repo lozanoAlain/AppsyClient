@@ -6,6 +6,7 @@
 package view;
 
 import entities.Psychologist;
+import exceptions.BusinessLogicException;
 import exceptions.EmptyFieldException;
 import java.io.IOException;
 import java.util.Collection;
@@ -93,6 +94,7 @@ public class PsychologistWindowController {
     PsychologistInterface interfacePsychologist;
     UserInterface userInterface;
     ObservableList<Psychologist> psychologists;
+    private static final Logger LOGGER = Logger.getLogger(PsychologistWindowController.class.getName());
 
     public void initStage(Parent root) {
         try {
@@ -137,7 +139,13 @@ public class PsychologistWindowController {
                     "Email");
             comboSearch.setTooltip(new Tooltip("Select the search criteria"));
             stage.show();
-        } catch (Exception ex) {
+        } catch (BusinessLogicException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+            Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
+            errorCreatingThePsychologist.setHeaderText("Server Error");
+            errorCreatingThePsychologist.setContentText(ex.getMessage());
+            errorCreatingThePsychologist.show();
+        } catch (OperationNotSupportedException ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -208,10 +216,11 @@ public class PsychologistWindowController {
             psychologistNotFound.setHeaderText("Psychologist not found");
             psychologistNotFound.setContentText("The psychologist cant be founded ");
             psychologistNotFound.show();
-        } catch (ClientErrorException ex) {
+        } catch (BusinessLogicException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
-            errorCreatingThePsychologist.setHeaderText("Psychologist creation");
-            errorCreatingThePsychologist.setContentText("The psychologist cant be created ");
+            errorCreatingThePsychologist.setHeaderText("Server Error");
+            errorCreatingThePsychologist.setContentText(ex.getMessage());
             errorCreatingThePsychologist.show();
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
@@ -274,16 +283,17 @@ public class PsychologistWindowController {
             alertDeletePsychologistCancel.setHeaderText("Select criteria");
             alertDeletePsychologistCancel.setContentText("Select a criteria to search a psychologist");
             alertDeletePsychologistCancel.show();
-        } catch  (EmptyFieldException ex){
+        } catch (EmptyFieldException ex) {
             Alert emptyField = new Alert(AlertType.INFORMATION);
             emptyField.setHeaderText("Field empty");
             emptyField.setContentText("The search field cant be empty");
             emptyField.show();
-        } catch (NotFoundException ex) {
-            Alert psychologistNotFound = new Alert(Alert.AlertType.INFORMATION);
-            psychologistNotFound.setHeaderText("Psychologist not found");
-            psychologistNotFound.setContentText("The psychologist cant be founded ");
-            psychologistNotFound.show();
+        } catch (BusinessLogicException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+            Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
+            errorCreatingThePsychologist.setHeaderText("Server Error");
+            errorCreatingThePsychologist.setContentText(ex.getMessage());
+            errorCreatingThePsychologist.show();
         } catch (Exception ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -318,6 +328,22 @@ public class PsychologistWindowController {
         } catch (JRException ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
 
+        }
+
+    }
+
+    public void refrescarTabla() {
+        try {
+            tablePsychologist.getItems().clear();
+            ObservableList<Psychologist> appointments = FXCollections.observableArrayList(interfacePsychologist.findAllPsychologist());
+            tablePsychologist.setItems(appointments);
+            tablePsychologist.refresh();
+        } catch (BusinessLogicException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+            Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
+            errorCreatingThePsychologist.setHeaderText("Server Error");
+            errorCreatingThePsychologist.setContentText(ex.getMessage());
+            errorCreatingThePsychologist.show();
         }
 
     }

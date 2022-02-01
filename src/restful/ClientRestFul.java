@@ -44,7 +44,7 @@ public class ClientRestFul {
 
     public void edit(Object requestEntity, String id) throws ClientErrorException {
         WebTarget resource = webTarget;
-        resource.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
+        resource.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML),new GenericType<Psychologist>(){});
     }
 
     public <T> T find(GenericType<T> responseType, String id) throws ClientErrorException {

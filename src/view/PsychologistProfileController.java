@@ -5,9 +5,11 @@
  */
 package view;
 
+import crypt.EncriptDecriptClient;
 import entities.EnumPrivilege;
 import entities.EnumStatus;
 import entities.Psychologist;
+import exceptions.BusinessLogicException;
 import exceptions.EmptyFieldException;
 import exceptions.FieldTooLongException;
 import java.util.logging.Level;
@@ -24,8 +26,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javax.naming.OperationNotSupportedException;
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.NotFoundException;
 import logic.PsychologistFactory;
 import logic.PsychologistInterface;
 
@@ -83,7 +83,7 @@ public class PsychologistProfileController {
     PsychologistInterface interfacePsychologist;
     int idSelected = 0;
 
-    private final static Logger logger = Logger.getLogger(PsychologistProfileController.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(PsychologistProfileController.class.getName());
 
     /**
      * @return the stage
@@ -136,11 +136,12 @@ public class PsychologistProfileController {
             stage.show();
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(PsychologistProfileController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NotFoundException ex) {
-            Alert psychologistNotFound = new Alert(Alert.AlertType.INFORMATION);
-            psychologistNotFound.setHeaderText("Psychologist not found");
-            psychologistNotFound.setContentText("Theres no psychologist found");
-            psychologistNotFound.show();
+        } catch (BusinessLogicException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+            Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
+            errorCreatingThePsychologist.setHeaderText("Server Error");
+            errorCreatingThePsychologist.setContentText(ex.getMessage());
+            errorCreatingThePsychologist.show();
         }
     }
 
@@ -246,31 +247,41 @@ public class PsychologistProfileController {
                 stage.close();
             }
 
-        } catch (ClientErrorException ex) {
-            Alert alertPsychologistExist = new Alert(Alert.AlertType.INFORMATION);
-            alertPsychologistExist.setHeaderText("Creation error");
-            alertPsychologistExist.setContentText("The Username or the email already exist");
-            alertPsychologistExist.show();
+        } catch (BusinessLogicException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+            Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
+            errorCreatingThePsychologist.setHeaderText("Server Error");
+            errorCreatingThePsychologist.setContentText(ex.getMessage());
+            errorCreatingThePsychologist.show();
         }
 
     }
 
     private void handleButtonModify(ActionEvent event) {
         if (!checkEmptyFields()) {
-            Psychologist psychologistadd = new Psychologist();
+            try {
+                Psychologist psychologistadd = new Psychologist();
 
-            psychologistadd.setId(idSelected);
-            psychologistadd.setFullName(txtFullName.getText());
-            psychologistadd.setLogin(txtUsername.getText());
-            psychologistadd.setEmail(txtMail.getText());
-            psychologistadd.setPassword(new String(txtPassword.getText()));
-            psychologistadd.setOffice(txtOffice.getText());
-            psychologistadd.setSpecialization(txtSpezialitation.getText());
-            psychologistadd.setEnumStatus(EnumStatus.ACTIVE);
-            psychologistadd.setEnumPrivilege(EnumPrivilege.PSYCHOLOGIST);
+                psychologistadd.setId(idSelected);
+                psychologistadd.setFullName(txtFullName.getText());
+                psychologistadd.setLogin(txtUsername.getText());
+                psychologistadd.setEmail(txtMail.getText());
+                String passwordHash = EncriptDecriptClient.hashearTexto(new String(txtPassword.getText()));
+                psychologistadd.setPassword(passwordHash);
+                psychologistadd.setOffice(txtOffice.getText());
+                psychologistadd.setSpecialization(txtSpezialitation.getText());
+                psychologistadd.setEnumStatus(EnumStatus.ACTIVE);
+                psychologistadd.setEnumPrivilege(EnumPrivilege.PSYCHOLOGIST);
 
-            interfacePsychologist.editPsychologist(psychologistadd);
-            stage.close();
+                interfacePsychologist.editPsychologist(psychologistadd);
+                stage.close();
+            } catch (BusinessLogicException ex) {
+                LOGGER.log(Level.SEVERE, ex.getMessage());
+                Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
+                errorCreatingThePsychologist.setHeaderText("Server Error");
+                errorCreatingThePsychologist.setContentText(ex.getMessage());
+                errorCreatingThePsychologist.show();
+            }
         }
 
     }
@@ -305,7 +316,7 @@ public class PsychologistProfileController {
                 throw new EmptyFieldException();
             } catch (EmptyFieldException ex) {
                 errorLabel(lblOfficeError, ex);
-                logger.severe(ex.getMessage());
+                LOGGER.severe(ex.getMessage());
             }
         }
         if (new String(txtSpezialitation.getText()).isEmpty()) {
@@ -315,7 +326,7 @@ public class PsychologistProfileController {
                 throw new EmptyFieldException();
             } catch (EmptyFieldException ex) {
                 errorLabel(lblSpecializationError, ex);
-                logger.severe(ex.getMessage());
+                LOGGER.severe(ex.getMessage());
             }
         }
         if (new String(txtPassword.getText()).isEmpty()) {
@@ -325,7 +336,7 @@ public class PsychologistProfileController {
                 throw new EmptyFieldException();
             } catch (EmptyFieldException ex) {
                 errorLabel(lblPasswordError, ex);
-                logger.severe(ex.getMessage());
+                LOGGER.severe(ex.getMessage());
             }
         }
         if (txtMail.getText().isEmpty()) {
@@ -335,7 +346,7 @@ public class PsychologistProfileController {
                 throw new EmptyFieldException();
             } catch (EmptyFieldException ex) {
                 errorLabel(lblMailError, ex);
-                logger.severe(ex.getMessage());
+                LOGGER.severe(ex.getMessage());
             }
         }
         if (txtUsername.getText().isEmpty()) {
@@ -345,7 +356,7 @@ public class PsychologistProfileController {
                 throw new EmptyFieldException();
             } catch (EmptyFieldException ex) {
                 errorLabel(lblUsernameError, ex);
-                logger.severe(ex.getMessage());
+                LOGGER.severe(ex.getMessage());
             }
         }
         if (txtFullName.getText().isEmpty()) {
@@ -355,7 +366,7 @@ public class PsychologistProfileController {
                 throw new EmptyFieldException();
             } catch (EmptyFieldException ex) {
                 errorLabel(lblFullNameError, ex);
-                logger.severe(ex.getMessage());
+                LOGGER.severe(ex.getMessage());
             }
         }
         return check;
@@ -365,7 +376,7 @@ public class PsychologistProfileController {
         lbl.setVisible(true);
         lbl.setText(ex.getMessage());
         lbl.setStyle("-fx-text-fill: red; -fx-font-size: 13px");
-        logger.severe(ex.getMessage());
+        LOGGER.severe(ex.getMessage());
 
     }
 

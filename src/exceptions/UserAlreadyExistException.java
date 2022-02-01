@@ -9,22 +9,22 @@ package exceptions;
  *
  * @author Usuario
  */
-public class BussinesLogicException extends Exception {
+public class UserAlreadyExistException extends Exception {
 
     /**
-     * Creates a new instance of <code>BussinesLogicException</code> without
+     * Creates a new instance of <code>UserAlreadyExistException</code> without
      * detail message.
      */
-    public BussinesLogicException() {
+    public UserAlreadyExistException() {
     }
 
     /**
-     * Constructs an instance of <code>BussinesLogicException</code> with the
+     * Constructs an instance of <code>UserAlreadyExistException</code> with the
      * specified detail message.
      *
      * @param msg the detail message.
      */
-    public BussinesLogicException(String msg) {
+    public UserAlreadyExistException(String msg) {
         super(msg);
     }
 }

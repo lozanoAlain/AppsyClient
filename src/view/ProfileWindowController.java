@@ -10,6 +10,7 @@ import entities.Client;
 import entities.EnumPrivilege;
 import entities.EnumStatus;
 import entities.User;
+import exceptions.BusinessLogicException;
 import exceptions.EmptyFieldException;
 import exceptions.FieldTooLongException;
 import exceptions.FullNameException;
@@ -87,7 +88,7 @@ public class ProfileWindowController {
     int userId = 0;
     Client clientAux = null;
 
-    private final static Logger logger = Logger.getLogger(PsychologistProfileController.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(PsychologistProfileController.class.getName());
 
     public void initStage(Parent root, int userId) {
         try {
@@ -114,11 +115,14 @@ public class ProfileWindowController {
             stage.show();
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(ProfileWindowController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NotFoundException ex) {
-            Alert clientNotFound = new Alert(Alert.AlertType.INFORMATION);
-            clientNotFound.setHeaderText("Client not found");
-            clientNotFound.setContentText("Theres no client found");
-            clientNotFound.show();
+        } catch (BusinessLogicException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+            Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
+            errorCreatingThePsychologist.setHeaderText("Server Error");
+            errorCreatingThePsychologist.setContentText(ex.getMessage());
+            errorCreatingThePsychologist.show();
+        } catch (Exception ex){
+            
         }
     }
 
@@ -134,7 +138,8 @@ public class ProfileWindowController {
             lblFullNameError.setText(ex.getMessage());
         }
     }
-     /*
+
+    /*
     Check that the Full name (txtFullName) has at least 1 blank (checkWhiteSpace())
     If it is not correct (FullNameException()), an error label (lblFullNameError) is shown and the register button(btnRegister is disabled.
     When the error is corrected the register button(btnRegister) is enabled.
@@ -158,6 +163,7 @@ public class ProfileWindowController {
             }
         }
     }
+
     /**
      * Method that checks if the text has at leat one blank
      *
@@ -242,10 +248,10 @@ public class ProfileWindowController {
                 }
             }
             if (new String(txtPassword.getText()).isEmpty() || new String(txtRepeatPassword.getText()).isEmpty()) {
-                User userAux = userInterface.findUserByLogin(txtUsername.getText());
+                //User userAux = userInterface.findUserByLogin(txtUsername.getText());
                 client.setLogin(txtUsername.getText());
                 client.setFullName(txtFullName.getText());
-                client.setPassword(userAux.getPassword());
+                client.setPassword(clientAux.getPassword());
                 client.setEmail(txtMail.getText());
                 client.setId(userId);
                 client.setEnumPrivilege(EnumPrivilege.CLIENT);
@@ -280,10 +286,7 @@ public class ProfileWindowController {
                     alertUserModifiedCorrectly.show();
 
                 } else {
-                    Alert alertPasswordMatch = new Alert(Alert.AlertType.INFORMATION);
-                    alertPasswordMatch.setHeaderText("Password Error");
-                    alertPasswordMatch.setContentText("The password introduced dont match");
-                    alertPasswordMatch.show();
+                    throw new PasswordDontMatch();
                 }
 
             }
@@ -292,16 +295,12 @@ public class ProfileWindowController {
             alertPasswordMatch.setHeaderText("Password Error");
             alertPasswordMatch.setContentText("The password dont match");
             alertPasswordMatch.show();
-        } catch (NotAuthorizedException ex) {
-            Alert alertPasswordMatch = new Alert(Alert.AlertType.INFORMATION);
-            alertPasswordMatch.setHeaderText("User Error");
-            alertPasswordMatch.setContentText("The password introduced is incorrect");
-            alertPasswordMatch.show();
-        } catch (NotFoundException ex) {
-            Alert clientNotFound = new Alert(Alert.AlertType.INFORMATION);
-            clientNotFound.setHeaderText("Client not found");
-            clientNotFound.setContentText("Theres no client found");
-            clientNotFound.show();
+        } catch (BusinessLogicException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+            Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
+            errorCreatingThePsychologist.setHeaderText("Server Error");
+            errorCreatingThePsychologist.setContentText(ex.getMessage());
+            errorCreatingThePsychologist.show();
         } catch (Exception ex) {
             Logger.getLogger(ProfileWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -312,18 +311,19 @@ public class ProfileWindowController {
         lbl.setVisible(true);
         lbl.setText(ex.getMessage());
         lbl.setStyle("-fx-text-fill: red; -fx-font-size: 13px");
-        logger.severe(ex.getMessage());
+        LOGGER.severe(ex.getMessage());
 
     }
 
     private void handleButtonDelete(ActionEvent event) {
         try {
             clientInterface.remove(String.valueOf(userId));
-        } catch (NotFoundException ex) {
-            Alert clientNotFound = new Alert(Alert.AlertType.INFORMATION);
-            clientNotFound.setHeaderText("Client not found");
-            clientNotFound.setContentText("Theres no client found");
-            clientNotFound.show();
+        } catch (BusinessLogicException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+            Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
+            errorCreatingThePsychologist.setHeaderText("Server Error");
+            errorCreatingThePsychologist.setContentText(ex.getMessage());
+            errorCreatingThePsychologist.show();
         }
     }
 

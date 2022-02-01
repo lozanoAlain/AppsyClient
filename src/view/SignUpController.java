@@ -9,12 +9,13 @@ import entities.Client;
 import entities.EnumPrivilege;
 import entities.EnumStatus;
 import entities.User;
-import exceptions.BussinesLogicException;
+import exceptions.BusinessLogicException;
 import exceptions.EmptyFieldException;
 import exceptions.FieldTooLongException;
 import exceptions.FullNameException;
 import exceptions.MailErrorException;
 import exceptions.RepeatPasswordException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -82,6 +83,7 @@ public class SignUpController {
 
     Stage stage = new Stage();
     ClientInterface clientInterface;
+    private final static Logger LOGGER = Logger.getLogger(PsychologistProfileController.class.getName());
 
     /*
     The fields Full name (txtFullName), Username (txtUsername), Mail (txtMail), Password (txtPassword) and Repeat password (txtRepeatPassword) are enabled.
@@ -352,11 +354,12 @@ public class SignUpController {
                 errorLabel(lblPasswordError, ex);
                 errorLabel(lblRepeatPasswordError, ex);
                 txtPassword.requestFocus();
-            } catch (ClientErrorException ex) {
-                Alert alertDeletePsychologistCancel = new Alert(Alert.AlertType.INFORMATION);
-                alertDeletePsychologistCancel.setHeaderText("User exits");
-                alertDeletePsychologistCancel.setContentText("The user already exist.");
-                alertDeletePsychologistCancel.show();
+            } catch (BusinessLogicException ex) {
+                LOGGER.log(Level.SEVERE, ex.getMessage());
+                Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
+                errorCreatingThePsychologist.setHeaderText("Server Error");
+                errorCreatingThePsychologist.setContentText(ex.getMessage());
+                errorCreatingThePsychologist.show();
             } catch (Exception ex) {
                 Alert alertConnectionError = new Alert(AlertType.INFORMATION);
                 alertConnectionError.setTitle("SIGN UP");
