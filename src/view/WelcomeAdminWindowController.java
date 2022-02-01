@@ -30,7 +30,7 @@ import javafx.stage.Stage;
  *
  * @author Matteo Fernández
  */
-public class WelcomePsychologistWindowController implements Initializable {
+public class WelcomeAdminWindowController implements Initializable {
 
     @FXML
     private Button btnExit;
@@ -64,7 +64,7 @@ public class WelcomePsychologistWindowController implements Initializable {
         Scene scene = new Scene(root);
         stage.setScene(scene);
 
-        Logger.getLogger(WelcomePsychologistWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
+        Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
 
         //The window title
         stage.setTitle("Welcome window psychologist");
@@ -107,10 +107,10 @@ public class WelcomePsychologistWindowController implements Initializable {
             stageManage.initOwner(
                     ((Node) event.getSource()).getScene().getWindow());
 
-            Logger.getLogger(WelcomePsychologistWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
+            Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
             //.initStage(root);
         } catch (IOException ex) {
-            Logger.getLogger(WelcomePsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -141,11 +141,11 @@ public class WelcomePsychologistWindowController implements Initializable {
             stageManage.initOwner(
                     ((Node) event.getSource()).getScene().getWindow());
 
-            Logger.getLogger(WelcomePsychologistWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
+            Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
             //.initStage(root);
 
         } catch (IOException ex) {
-            Logger.getLogger(WelcomePsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -175,11 +175,11 @@ public class WelcomePsychologistWindowController implements Initializable {
             stageManage.initOwner(
                     ((Node) event.getSource()).getScene().getWindow());
 
-            Logger.getLogger(WelcomePsychologistWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
+            Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
             //.initStage(root);
 
         } catch (IOException ex) {
-            Logger.getLogger(WelcomePsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -204,7 +204,7 @@ public class WelcomePsychologistWindowController implements Initializable {
             this.btnExit.setText("Bye, thanks for using our app.");
             stage.close();
         }
-        Logger.getLogger(WelcomePsychologistWindowController.class.getName()).log(Level.INFO, "Exit button pressed.");
+        Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.INFO, "Exit button pressed.");
         stage.close();
     }
 

@@ -23,11 +23,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import entities.User;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
@@ -35,7 +32,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -45,6 +42,7 @@ import javafx.scene.layout.HBox;
 import javax.naming.OperationNotSupportedException;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
+import static jdk.nashorn.internal.objects.NativeString.search;
 import logic.PsychologistFactory;
 import logic.PsychologistInterface;
 import logic.ResourceFactory;
@@ -53,12 +51,10 @@ import logic.ResourceInterface;
 /**
  * FXML Controller class
  *
- * @author Matteo Fernández
+ * @author Matteo FernÃ¡ndez
  */
 public class ResourcesController {
 
-    @FXML
-    private AnchorPane anchorPane;
     @FXML
     private TableView<Resource> tableViewResource;
     @FXML
@@ -156,6 +152,9 @@ public class ResourcesController {
             btnModify.isDisable();
             btnDelete.isDisable();
 
+            //Handles the txt
+            txtTittle.textProperty().addListener(this::txtTittleChanged);
+            txtLink.textProperty().addListener(this::txtLinkChanged);
             //set data to combobox
             psychologistManager = PsychologistFactory.createPsychologistRestful();
 
@@ -203,6 +202,8 @@ public class ResourcesController {
             btnAdd.setOnAction(this::handleButtonAdd);
             btnModify.setOnAction(this::handleButtonModify);
             btnDelete.setOnAction(this::handleButtonDelete);
+            btnSearch.setOnAction(this::handleButtonSearch);
+            /*btnBack.setOnAction(this::handleButtonBack);*/
 
             //some tooltips to help the user
             btnBack.setTooltip(new Tooltip("Click to exit"));
@@ -218,7 +219,29 @@ public class ResourcesController {
         }
     }
 
+    private void txtLinkChanged(ObservableValue observable, String oldValue, String newValue) {
+        if (!newValue.equalsIgnoreCase(oldValue)) {
+            if (!txtTittle.getText().isEmpty() && !comboPsycho.getSelectionModel().isEmpty() && !txtLink.getText().isEmpty()) {
+                btnAdd.setDisable(false);
+            } else {
+                btnAdd.setDisable(true);
+            }
+        }
+    }
+
+    private void txtTittleChanged(ObservableValue observable, String oldValue, String newValue) {
+        if (!newValue.equalsIgnoreCase(oldValue)) {
+            if (!txtLink.getText().isEmpty() && !comboPsycho.getSelectionModel().isEmpty() && !txtTittle.getText().isEmpty()) {
+                btnAdd.setDisable(false);
+            } else {
+                btnAdd.setDisable(true);
+            }
+        }
+    }
+
     /**
+     * When a table row is pressed, the data goes above, and is shown in the
+     * fields.
      *
      * @param observable
      * @param oldVaue
@@ -227,40 +250,47 @@ public class ResourcesController {
     public void handleResourceTableSelectionChange(ObservableValue observable,
             Object oldVaue, Object newValue) {
         //When i click the labels are filled
-        //If the new value for the observable propery is not null, fill the data
-        //else delete the fields data
         if (newValue != null) {
+            //If the new value for the observable propery is not null, fill the data
             Resource resource = tableViewResource.getSelectionModel().getSelectedItem();
+
+            //set the data
             txtTittle.setText(resource.getTittle());
             txtLink.setText(resource.getLink());
             comboPsycho.getSelectionModel().select(resource.getPsychologist());
+
+            //The add button (btnAdd) and search button (btnSearch) are disabled.
+            //Modify button (btnModify) and delete button (btnDelete) are enabled.
             btnSearch.setDisable(true);
+            btnAdd.setDisable(true);
             btnDelete.setDisable(false);
             btnModify.setDisable(false);
         } else {
+
+            //else delete the fields data
             txtTittle.setText("");
             txtLink.setText("");
             comboPsycho.getSelectionModel().clearSelection();
+
+            //disable and enable buttons
             btnDelete.setDisable(true);
             btnModify.setDisable(true);
             btnSearch.setDisable(false);
             btnAdd.setDisable(false);
         }
-
     }
 
-    public void initWhenPsychologist(User user) {
-        //The psychologist combo box (comboPsycho) is enabled until they write 
-        // something in the other fields. If so, the psychologist combo box 
-        // (comboPsycho) is disabled and only the add button (btnAdd) is enabled.
-        if (!txtTittle.getText().isEmpty() || !txtDiagnose.getText().isEmpty() || !txtLink.getText().isEmpty()) {
-            comboPsycho.isDisable();
-            btnSearch.isDisable();
-            btnModify.isDisable();
-            btnDelete.isDisable();
-        }
+    /*    public void initWhenPsychologist(User user) {
+    //The psychologist combo box (comboPsycho) is enabled until they write
+    // something in the other fields. If so, the psychologist combo box
+    // (comboPsycho) is disabled and only the add button (btnAdd) is enabled.
+    if (!txtTittle.getText().isEmpty() || !txtDiagnose.getText().isEmpty() || !txtLink.getText().isEmpty()) {
+    comboPsycho.isDisable();
+    btnSearch.isDisable();
+    btnModify.isDisable();
+    btnDelete.isDisable();
     }
-
+    }*/
     /**
      * Focus the search button.
      *
@@ -280,10 +310,43 @@ public class ResourcesController {
      */
     @FXML
     private void handleButtonReport(ActionEvent event) {
+    }
+
+    @FXML
+    private void handleButtonSearch(ActionEvent event) {
+        String search = null;
+        int option = 0;
+        GenericType<List<Resource>> resourceListType = new GenericType<List<Resource>>() {
+        };
+
+        ObservableList<Resource> resourceData = FXCollections.observableArrayList((List<Resource>) resourceManager.findAll(resourceListType));
+        tableViewResource.setItems((ObservableList<Resource>) resourceData);
+
+        if (txtLink.getText().isEmpty() && !comboPsycho.getSelectionModel().isEmpty() && txtTittle.getText().isEmpty()) {
+            btnSearch.setDisable(false);
+            search = comboPsycho.getSelectionModel().toString();
+            option = 1;
+        } else if (txtLink.getText().isEmpty() && comboPsycho.getSelectionModel().isEmpty() && !txtTittle.getText().isEmpty()) {
+            btnSearch.setDisable(false);
+            search = txtTittle.getText();
+            option = 2;
+        }
+
+        switch (option) {
+            case 1:
+                resourceData = FXCollections.observableArrayList((List<Resource>) resourceManager.getAllResourcesByPsychologist(resourceListType, search));
+                break;
+            case 2:
+                resourceData = FXCollections.observableArrayList((List<Resource>) resourceManager.getAllResourcesByTittle(resourceListType, search));
+                break;
+        }
+        tableViewResource.setItems(resourceData);
+        tableViewResource.refresh();
 
     }
 
     /**
+     * When the user clicks the button, it deletes the selected row
      *
      * @param event
      */
@@ -315,16 +378,22 @@ public class ResourcesController {
 
                 ObservableList<Resource> resourceData = FXCollections.observableArrayList((List<Resource>) resourceManager.findAll(resourceListType));
                 tableViewResource.setItems((ObservableList<Resource>) resourceData);
+
+                Alert deleteOK = new Alert(AlertType.INFORMATION);
+                deleteOK.setHeaderText("Delete suscefully");
+                deleteOK.setContentText("The resource has been deleted.");
+                deleteOK.show();
             }
         } catch (ClientErrorException ex) {
             Alert alert = new Alert(Alert.AlertType.ERROR, ex.getMessage(), ButtonType.OK);
             alert.showAndWait();
             Logger.getLogger(ResourcesController.class.getName()).log(Level.SEVERE, ex.getMessage());
         }
-
     }
 
     /**
+     * When the user clicks the button, it modify the selected row with the new
+     * values
      *
      * @param event
      */
@@ -353,6 +422,8 @@ public class ResourcesController {
     }
 
     /**
+     * When the user clicks the button, it add the selected row with the values
+     * in the fields.
      *
      * @param event
      */
@@ -405,4 +476,27 @@ public class ResourcesController {
             }
         }
     }
+
+    /**
+     * The method that opens the Sign In window and sends the user
+     *
+     * @param user The user that is send to the Sign In window
+     */
+    /*    @FXML
+    public void handleButtonBack(User user) {
+    try {
+    //Opens the Welcome window Client
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("WelcomeClient.fxml"));
+    Parent root1 = (Parent) loader.load();
+    
+    //Gets Welcome window controller
+    WelcomeClientWindowController welcomeClientWindowController = ((WelcomeClientWindowController) loader.getController());
+    welcomeClientWindowController.setStage(stage);
+    
+    Logger.getLogger(WelcomeClientWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
+    welcomeClientWindowController.initialize(root1,user);
+    } catch (IOException ex) {
+    Logger.getLogger(ResourcesController.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    }*/
 }

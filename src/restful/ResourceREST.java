@@ -46,7 +46,7 @@ public class ResourceREST implements ResourceInterface{
      * @throws ClientErrorException
      */
     @Override
-    public <T> T getAllResourcesByPsychologist(Class<T> responseType, String id) throws ClientErrorException {
+    public <T> T getAllResourcesByPsychologist(GenericType<T> responseType, String id) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("getResourcesByPsychologistId/{0}", new Object[]{id}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
@@ -96,7 +96,7 @@ public class ResourceREST implements ResourceInterface{
     }
 
     @Override
-    public <T> T getAllResourcesByTittle(Class<T> responseType, String tittle) throws ClientErrorException {
+    public <T> T getAllResourcesByTittle(GenericType<T> responseType, String tittle) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("getResourcesByTittle/{0}", new Object[]{tittle}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);

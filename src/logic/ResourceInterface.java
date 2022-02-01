@@ -14,7 +14,7 @@ import javax.ws.rs.core.GenericType;
  */
 public interface ResourceInterface {
 
-    public <T> T getAllResourcesByPsychologist(Class<T> responseType, String id) throws ClientErrorException;
+    public <T> T getAllResourcesByPsychologist(GenericType<T> responseType, String id) throws ClientErrorException;
 
     public void edit(Object requestEntity, String id) throws ClientErrorException;
 
@@ -24,7 +24,7 @@ public interface ResourceInterface {
 
     public void create(Object requestEntity) throws ClientErrorException;
 
-    public <T> T getAllResourcesByTittle(Class<T> responseType, String tittle) throws ClientErrorException;
+    public <T> T getAllResourcesByTittle(GenericType<T> responseType, String tittle) throws ClientErrorException;
 
     public <T> T findAll(GenericType<T> responseType) throws ClientErrorException;
 
