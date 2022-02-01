@@ -21,10 +21,10 @@ public class ApplicationAppsy extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ProfileWindow.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PsychologistWindow.fxml"));
         Parent root = (Parent) loader.load();
-        ProfileWindowController psychologistWindowController = loader.getController();
-        psychologistWindowController.initStage(root,1);
+        PsychologistWindowController psychologistWindowController = loader.getController();
+        psychologistWindowController.initStage(root);
     }
 
     /**

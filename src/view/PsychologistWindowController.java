@@ -147,6 +147,12 @@ public class PsychologistWindowController {
             errorCreatingThePsychologist.show();
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex){
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+            Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
+            errorCreatingThePsychologist.setHeaderText("Server Error");
+            errorCreatingThePsychologist.setContentText("Error connecting to the server");
+            errorCreatingThePsychologist.show();
         }
     }
 
@@ -224,6 +230,12 @@ public class PsychologistWindowController {
             errorCreatingThePsychologist.show();
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex){
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+            Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
+            errorCreatingThePsychologist.setHeaderText("Server Error");
+            errorCreatingThePsychologist.setContentText("Error connecting to the server");
+            errorCreatingThePsychologist.show();
         }
     }
 
@@ -250,7 +262,11 @@ public class PsychologistWindowController {
         } catch (ClientErrorException ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+            Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
+            errorCreatingThePsychologist.setHeaderText("Server Error");
+            errorCreatingThePsychologist.setContentText("Error connecting to the server");
+            errorCreatingThePsychologist.show();
         }
 
     }
@@ -295,7 +311,11 @@ public class PsychologistWindowController {
             errorCreatingThePsychologist.setContentText(ex.getMessage());
             errorCreatingThePsychologist.show();
         } catch (Exception ex) {
-            Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+            Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
+            errorCreatingThePsychologist.setHeaderText("Server Error");
+            errorCreatingThePsychologist.setContentText("Error connecting to the server");
+            errorCreatingThePsychologist.show();
         }
 
     }

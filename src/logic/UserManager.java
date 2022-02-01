@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.GenericType;
 import restful.UserRestFul;
 import view.PsychologistProfileController;
@@ -49,7 +50,7 @@ public class UserManager implements UserInterface {
         try {
             user = userRestFul.find(new GenericType<User>() {
             }, id);
-        } catch (ClientErrorException ex) {
+        } catch (NotFoundException ex) {
             LOGGER.log(Level.SEVERE,
                     "PsychologistManager: Exception finding the user , {0}",
                     ex.getMessage());

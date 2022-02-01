@@ -248,7 +248,6 @@ public class ProfileWindowController {
                 }
             }
             if (new String(txtPassword.getText()).isEmpty() || new String(txtRepeatPassword.getText()).isEmpty()) {
-                //User userAux = userInterface.findUserByLogin(txtUsername.getText());
                 client.setLogin(txtUsername.getText());
                 client.setFullName(txtFullName.getText());
                 client.setPassword(clientAux.getPassword());
