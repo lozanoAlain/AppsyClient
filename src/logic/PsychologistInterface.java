@@ -6,10 +6,13 @@
 package logic;
 
 import entities.Psychologist;
+import exceptions.BusinessLogicException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.GenericType;
 
 /**
  *
@@ -17,10 +20,12 @@ import javax.ws.rs.ClientErrorException;
  */
 public interface PsychologistInterface {
     public String countREST() throws ClientErrorException;
-    public void editPsychologist(Object requestEntity, String id) throws ClientErrorException;
-    public Psychologist findPsychologist(String id) throws ClientErrorException;
-    public <T> T findRange(Class<T> responseType, String from, String to) throws ClientErrorException;
-    public void createPsychologist(Object requestEntity) throws ClientErrorException;
-    public Set<Psychologist> findAllPsychologist() throws Exception;
-    public void removePsychologist(String id) throws ClientErrorException;
+   public void editPsychologist(Psychologist psychologist) throws BusinessLogicException, NotFoundException ;
+    public Psychologist findPsychologist(String id) throws BusinessLogicException;
+    public <T> T findRange(Class<T> responseType, String from, String to) throws BusinessLogicException;
+    public void createPsychologist(Psychologist psychologist) throws BusinessLogicException;
+    public Set<Psychologist> findAllPsychologist() throws BusinessLogicException;
+    public void removePsychologist(String id) throws BusinessLogicException;
+    public Psychologist findPsychologistByFullName(String fullName) throws BusinessLogicException;
+    public Psychologist findPsychologistByMail(String email) throws BusinessLogicException;
 }
