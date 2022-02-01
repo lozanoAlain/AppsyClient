@@ -8,6 +8,8 @@ package entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+import javafx.beans.property.SimpleObjectProperty;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -16,24 +18,33 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Matteo Fernández
  */
-
 @XmlRootElement
 public class Resource implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private Integer id;
-    private Psychologist psychologist;
+    private final SimpleObjectProperty<Psychologist> psychologist;
+    //  private Psychologist psychologist;
     private String link;
     private Date dateAdded;
     private String tittle;
     private Set<ClientResource> clientResource;
+
+    public Resource() {
+        this.psychologist = new SimpleObjectProperty();
+    }
+
+    public Resource(Psychologist psychologist) {
+
+        this.psychologist = new SimpleObjectProperty(psychologist);
+    }
 
     /**
      * Is used to ask for a list of ClientResources.
      *
      * @return a list of ClientResources.
      */
-@XmlTransient
+    @XmlTransient
     public Set<ClientResource> getClientResource() {
         return clientResource;
     }
@@ -52,9 +63,9 @@ public class Resource implements Serializable {
      *
      * @return the object Psychologist.
      */
-    @XmlTransient
+    @XmlElement(name = "psychologist")
     public Psychologist getPsychologist() {
-        return psychologist;
+        return this.psychologist.get();
     }
 
     /**
@@ -63,7 +74,7 @@ public class Resource implements Serializable {
      * @param psychologist the object Psychologist.
      */
     public void setPsychologist(Psychologist psychologist) {
-        this.psychologist = psychologist;
+        this.psychologist.set(psychologist);
     }
 
     /**

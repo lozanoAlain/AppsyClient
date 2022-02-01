@@ -6,23 +6,29 @@
 package logic;
 
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.core.GenericType;
 
 /**
  *
- * @author Usuario
+ * @author Matteo Fernández
  */
-public interface UserInterface {
-    public String countREST() throws ClientErrorException;
+public interface ResourceInterface {
+
+    public <T> T getAllResourcesByPsychologist(GenericType<T> responseType, String id) throws ClientErrorException;
+
     public void edit(Object requestEntity, String id) throws ClientErrorException;
-    public <T> T resetPasswordByEmail(Class<T> responseType, String email) throws ClientErrorException;
+
     public <T> T find(Class<T> responseType, String id) throws ClientErrorException;
+
     public <T> T findRange(Class<T> responseType, String from, String to) throws ClientErrorException;
+
     public void create(Object requestEntity) throws ClientErrorException;
-    public <T> T findUserByLoginAndPassword(Class<T> responseType, String login, String password) throws ClientErrorException;
-    public <T> T changePasswordByLogin(Class<T> responseType, String login, String password) throws ClientErrorException;
-    public <T> T findAll(Class<T> responseType) throws ClientErrorException;
+
+    public <T> T getAllResourcesByTittle(GenericType<T> responseType, String tittle) throws ClientErrorException;
+
+    public <T> T findAll(GenericType<T> responseType) throws ClientErrorException;
+
     public void remove(String id) throws ClientErrorException;
-    public <T> T findUserByLogin(Class<T> responseType, String login) throws ClientErrorException;
-    
-    
+
+    public void close();
 }

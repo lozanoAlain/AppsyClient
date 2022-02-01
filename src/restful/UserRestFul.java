@@ -10,6 +10,7 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
+
 import logic.UserInterface;
 
 /**
@@ -30,6 +31,7 @@ public class UserRestFul{
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("URI");
+
 
     public UserRestFul() {
         client = javax.ws.rs.client.ClientBuilder.newClient();

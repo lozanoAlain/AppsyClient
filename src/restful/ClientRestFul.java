@@ -31,6 +31,7 @@ public class ClientRestFul {
     private Client client;
     private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("URI");
 
+
     public ClientRestFul() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(BASE_URI).path("entities.client");

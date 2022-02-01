@@ -20,3 +20,4 @@ public class FieldTooLongException extends Exception {
         super("The field is too long (255 character max).");
     }
 }
+
