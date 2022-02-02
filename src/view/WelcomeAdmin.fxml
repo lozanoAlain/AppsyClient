@@ -14,13 +14,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="480.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.WelcomePsychologistWindowController">
+<VBox prefHeight="480.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.WelcomeAdminWindowController">
     <children>
         <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="515.0" prefWidth="851.0" VBox.vgrow="ALWAYS">
             <children>
                 <ImageView id="imgCerebro" fitHeight="539.0" fitWidth="216.0" layoutY="-3.0" pickOnBounds="true" smooth="false">
                     <image>
-                        <Image url="@cerebro.jpg" />
+                        <Image url="@/resources/cerebro.jpg" />
                     </image>
                 </ImageView>
                 <AnchorPane id="anchorPane" layoutX="238.0" layoutY="174.0" opacity="0.8" prefHeight="300.0" prefWidth="613.0" stylesheets="@../Documents/NetBeansProjects/SignInSignUpClient/src/view/css.css">

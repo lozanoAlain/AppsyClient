@@ -30,6 +30,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
@@ -38,6 +41,7 @@ import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -88,25 +92,45 @@ public class PsychologistWindowController {
     Button btnReport;
     @FXML
     Button btnBack;
+    @FXML
+    MenuItem menuItemModify;
+    @FXML
+    MenuItem menuItemDelete;
 
     private int idSelected = 0;
-    Stage stage = new Stage();
+    private Stage stage = new Stage();
+    /**
+     * @return the stage
+     */
+    public Stage getStage() {
+        return stage;
+    }
+
+    /**
+     * @param stage the stage to set
+     */
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
     PsychologistInterface interfacePsychologist;
     UserInterface userInterface;
     ObservableList<Psychologist> psychologists;
     private static final Logger LOGGER = Logger.getLogger(PsychologistWindowController.class.getName());
+    TableView  tableViewPsychoTableView=tablePsychologist;
 
     public void initStage(Parent root) {
         try {
             btnDelete.setDisable(true);
             btnModify.setDisable(true);
+            menuItemModify.setDisable(true);
+            menuItemDelete.setDisable(true);
 
             Scene scene = new Scene(root);
             interfacePsychologist = PsychologistFactory.createPsychologistRestful();
             userInterface = UserFactory.createUsersRestful();
-            stage.setScene(scene);
-            stage.setResizable(false);
-            //tfLogin.focusedProperty().addListener(this::focusChanged);
+            getStage().setScene(scene);
+            getStage().setResizable(false);
+            
             //Set factories for cell values in users table columns.
             columnLogin.setCellValueFactory(
                     new PropertyValueFactory<>("login"));
@@ -138,7 +162,7 @@ public class PsychologistWindowController {
             comboSearch.getItems().addAll("All", new Separator(), "Name",
                     "Email");
             comboSearch.setTooltip(new Tooltip("Select the search criteria"));
-            stage.show();
+            getStage().show();
         } catch (BusinessLogicException ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
@@ -161,11 +185,17 @@ public class PsychologistWindowController {
             btnAdd.setDisable(true);
             btnModify.setDisable(false);
             btnDelete.setDisable(false);
-
+            menuItemModify.setDisable(false);
+            menuItemDelete.setDisable(false);
+            
+            
         } else {
             btnAdd.setDisable(false);
             btnModify.setDisable(true);
             btnDelete.setDisable(true);
+            menuItemModify.setDisable(true);
+            menuItemDelete.setDisable(true);
+            
         }
     }
 
@@ -182,15 +212,13 @@ public class PsychologistWindowController {
             psychologistModifyProfileController.setStage(stagePsychologistProfile);
 
             stagePsychologistProfile.initModality(Modality.WINDOW_MODAL);
-            stagePsychologistProfile.initOwner(
-                    ((Node) event.getSource()).getScene().getWindow());
-
+            
             Logger.getLogger(PsychologistProfileController.class.getName()).log(Level.INFO, "Initializing stage.");
 
             psychologistModifyProfileController.initStage(root, idSelected);
             psychologists = FXCollections.observableArrayList(interfacePsychologist.findAllPsychologist());
 
-        } catch (IOException ex) {
+        } catch (NullPointerException ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
@@ -251,8 +279,7 @@ public class PsychologistWindowController {
 
             psychologistModifyProfileController.setStage(stagePsychologistProfile);
             stagePsychologistProfile.initModality(Modality.WINDOW_MODAL);
-            stagePsychologistProfile.initOwner(
-                    ((Node) event.getSource()).getScene().getWindow());
+            
 
             Logger.getLogger(PsychologistProfileController.class.getName()).log(Level.INFO, "Initializing stage.");
             psychologistModifyProfileController.initStage(root, 0);
@@ -355,8 +382,8 @@ public class PsychologistWindowController {
     public void refrescarTabla() {
         try {
             tablePsychologist.getItems().clear();
-            ObservableList<Psychologist> appointments = FXCollections.observableArrayList(interfacePsychologist.findAllPsychologist());
-            tablePsychologist.setItems(appointments);
+            ObservableList<Psychologist> psychologists = FXCollections.observableArrayList(interfacePsychologist.findAllPsychologist());
+            tablePsychologist.setItems(psychologists);
             tablePsychologist.refresh();
         } catch (BusinessLogicException ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());

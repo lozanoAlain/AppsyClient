@@ -5,7 +5,7 @@
  */
 package view;
 
-import Application.ClientApplication;
+//import Application.ClientApplication;
 import entities.Psychologist;
 import entities.Resource;
 import java.util.Date;
@@ -89,7 +89,7 @@ public class TestResourcesWindow extends ApplicationTest {
 
     @Override
     public void start(Stage stage) throws Exception {
-        new ClientApplication().start(stage);
+        //new ClientApplication().start(stage);
         /*        FXMLLoader loader = new FXMLLoader(getClass().getResource("ResourcesController.fxml"));
         
         //Creates a new stage

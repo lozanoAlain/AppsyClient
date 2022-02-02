@@ -5,6 +5,7 @@
  */
 package view;
 
+import entities.User;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -30,15 +31,16 @@ import javafx.stage.Stage;
  *
  * @author Matteo Fernández
  */
-public class WelcomeAdminWindowController implements Initializable {
+public class WelcomeAdminWindowController  {
 
     @FXML
     private Button btnExit;
     @FXML
     private Button btnLogOut;
-    @FXML
-    private Stage stage;
+    
+    private Stage stage = new Stage();
 
+    private User user=null;
     //Getters and Setters
     /**
      * @return the stage
@@ -58,9 +60,11 @@ public class WelcomeAdminWindowController implements Initializable {
      * Initializes the controller of the Welcome Psychologists window.
      *
      * @param root
+     * @param user
      */
-    public void initialize(Parent root) {
+    public void initialize(Parent root,User user) {
         //Exit button (btnExit) and Log out button (btnLogOut) are enabled.
+        this.user=user;
         Scene scene = new Scene(root);
         stage.setScene(scene);
 
@@ -78,7 +82,7 @@ public class WelcomeAdminWindowController implements Initializable {
 
         btnLogOut.setOnAction(this::handleBtnLogOutPressed);
         btnExit.setOnAction(this::handleBtnLogOutPressed);
-
+        stage.show();
     }
 
     /**
@@ -97,10 +101,10 @@ public class WelcomeAdminWindowController implements Initializable {
             Parent root = (Parent) loader.load();
 
             //Gets ManagePsychologists controller
-            //PsychologistWindowController psychologistWindowController = ((PsychologistWindowController) loader.getController());
+            PsychologistWindowController psychologistWindowController = ((PsychologistWindowController) loader.getController());
           
             //Set the stage that we already created to the manage psychologist controller
-            //psychologistWindowController.setStage(stageManage);
+            psychologistWindowController.setStage(stageManage);
            
             //Opening application as modal
             stageManage.initModality(Modality.APPLICATION_MODAL);
@@ -108,7 +112,7 @@ public class WelcomeAdminWindowController implements Initializable {
                     ((Node) event.getSource()).getScene().getWindow());
 
             Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
-            //.initStage(root);
+            psychologistWindowController.initStage(root);
         } catch (IOException ex) {
             Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -231,10 +235,5 @@ public class WelcomeAdminWindowController implements Initializable {
             signInWindowController.initStage(root);*/
         }
 
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

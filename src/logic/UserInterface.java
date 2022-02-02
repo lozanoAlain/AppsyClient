@@ -8,8 +8,12 @@ package logic;
 
 import entities.User;
 import exceptions.BusinessLogicException;
+import exceptions.PasswordDontMatch;
 import exceptions.UserAlreadyExistException;
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.core.GenericType;
+
 
 /**
  *

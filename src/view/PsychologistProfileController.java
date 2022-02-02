@@ -84,6 +84,22 @@ public class PsychologistProfileController {
     int idSelected = 0;
 
     private final static Logger LOGGER = Logger.getLogger(PsychologistProfileController.class.getName());
+    private PsychologistWindowController psychologistWindowController = new PsychologistWindowController();
+
+    /**
+     * @return the psychologistWindowController
+     */
+    public PsychologistWindowController getPsychologistWindowController() {
+        return psychologistWindowController;
+    }
+
+    /**
+     * @param psychologistWindowController the psychologistWindowController to
+     * set
+     */
+    public void setPsychologistWindowController(PsychologistWindowController psychologistWindowController) {
+        this.psychologistWindowController = psychologistWindowController;
+    }
 
     /**
      * @return the stage
@@ -244,6 +260,8 @@ public class PsychologistProfileController {
                 psychologistadd.setEnumStatus(EnumStatus.ACTIVE);
 
                 interfacePsychologist.createPsychologist(psychologistadd);
+                psychologistWindowController.refrescarTabla();
+
                 stage.close();
             }
 
@@ -274,6 +292,7 @@ public class PsychologistProfileController {
                 psychologistadd.setEnumPrivilege(EnumPrivilege.PSYCHOLOGIST);
 
                 interfacePsychologist.editPsychologist(psychologistadd);
+                psychologistWindowController.refrescarTabla();
                 stage.close();
             } catch (BusinessLogicException ex) {
                 LOGGER.log(Level.SEVERE, ex.getMessage());

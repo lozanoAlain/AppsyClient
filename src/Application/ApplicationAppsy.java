@@ -5,26 +5,34 @@
  */
 package Application;
 
+import entities.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
+import logic.UserFactory;
+import logic.UserInterface;
 import view.ProfileWindowController;
 import view.PsychologistWindowController;
 import view.SignUpController;
+import view.WelcomeAdminWindowController;
 
 /**
  *
  * @author Usuario
  */
 public class ApplicationAppsy extends Application {
+    
+    
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PsychologistWindow.fxml"));
+        UserInterface userInterface = UserFactory.createUsersRestful();
+        User user = userInterface.find("8");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/WelcomeAdmin.fxml"));
         Parent root = (Parent) loader.load();
-        PsychologistWindowController psychologistWindowController = loader.getController();
-        psychologistWindowController.initStage(root);
+        WelcomeAdminWindowController psychologistWindowController = loader.getController();
+        psychologistWindowController.initialize(root,user);
     }
 
     /**
