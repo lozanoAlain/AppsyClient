@@ -5,24 +5,29 @@
  */
 package logic;
 
-import javax.ws.rs.ClientErrorException;
+
+import entities.User;
+import exceptions.BusinessLogicException;
+import exceptions.UserAlreadyExistException;
+import javax.ws.rs.NotAuthorizedException;
 
 /**
  *
- * @author Usuario
+ * @author Alain Lozano
  */
 public interface UserInterface {
-    public String countREST() throws ClientErrorException;
-    public void edit(Object requestEntity, String id) throws ClientErrorException;
-    public <T> T resetPasswordByEmail(Class<T> responseType, String email) throws ClientErrorException;
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException;
-    public <T> T findRange(Class<T> responseType, String from, String to) throws ClientErrorException;
-    public void create(Object requestEntity) throws ClientErrorException;
-    public <T> T findUserByLoginAndPassword(Class<T> responseType, String login, String password) throws ClientErrorException;
-    public <T> T changePasswordByLogin(Class<T> responseType, String login, String password) throws ClientErrorException;
-    public <T> T findAll(Class<T> responseType) throws ClientErrorException;
-    public void remove(String id) throws ClientErrorException;
-    public <T> T findUserByLogin(Class<T> responseType, String login) throws ClientErrorException;
+
+    public String countREST() throws BusinessLogicException;
+    public void edit(Object requestEntity, String id) throws BusinessLogicException;
+    public <T> T resetPasswordByEmail(Class<T> responseType, String email) throws BusinessLogicException;
+    public User find(String id) throws BusinessLogicException;
+    public <T> T findRange(Class<T> responseType, String from, String to) throws BusinessLogicException;
+    public void create(User user) throws BusinessLogicException;
+    public User findUserByLoginAndPassword(String login, String password) throws BusinessLogicException, NotAuthorizedException;
+    public <T> T findAll(Class<T> responseType) throws BusinessLogicException;
+    public void remove(String id) throws BusinessLogicException;
+    public void findUserByLogin(String login) throws UserAlreadyExistException,BusinessLogicException;
+    public void changePasswordByLogin(String login, String password) throws BusinessLogicException;
     
     
 }

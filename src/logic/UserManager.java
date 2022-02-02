@@ -20,6 +20,7 @@ import javax.ws.rs.core.GenericType;
 import restful.UserRestFul;
 import view.PsychologistProfileController;
 
+
 /**
  *
  * @author Alain Lozano
@@ -40,8 +41,8 @@ public class UserManager implements UserInterface {
     }
 
     @Override
-    public <T> T resetPasswordByEmail(Class<T> responseType, String email) throws BusinessLogicException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void resetPasswordByEmail(String email) throws BusinessLogicException {
+        userRestFul.resetPasswordByEmail(new GenericType<User>(){}, email);
     }
 
     @Override
@@ -91,7 +92,7 @@ public class UserManager implements UserInterface {
             LOGGER.log(Level.SEVERE,
                     "PsychologistManager: Exception finding the user , {0}",
                     ex.getMessage());
-            throw new BusinessLogicException("Error creating the user :\n" + ex.getMessage());
+            throw new BusinessLogicException("Error finding the user :\n" + ex.getMessage());
         }
         return user;
     }

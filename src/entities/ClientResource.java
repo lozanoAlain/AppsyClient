@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlTransient;
 public class ClientResource implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     private IdClientResource idClientResource;
     private Resource resource;
     private Client client;
