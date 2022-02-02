@@ -5,7 +5,6 @@
  */
 package logic;
 
-
 import entities.User;
 import exceptions.BusinessLogicException;
 import exceptions.PasswordDontMatch;
@@ -14,13 +13,11 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.GenericType;
 
-
 /**
  *
- * @author Alain Lozano
+ * @author Usuario
  */
 public interface UserInterface {
-
     public String countREST() throws BusinessLogicException;
     public void edit(Object requestEntity, String id) throws BusinessLogicException;
     public void resetPasswordByEmail(String email) throws BusinessLogicException;

@@ -13,7 +13,7 @@ import javax.ws.rs.NotFoundException;
 
 /**
  *
- * @author Alain Lozano
+ * @author Usuario
  */
 public interface ClientInterface {
 

@@ -22,6 +22,4 @@ public class UserFactory {
         
         return userinterface;
     }
-
 }
-

@@ -218,4 +218,5 @@ public class User implements Serializable {
     public void setLastSignIns(HashSet<LastSignIn> lastSignIns) {
         this.lastSignIns = lastSignIns;
     }
+
 }
