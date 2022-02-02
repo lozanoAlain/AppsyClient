@@ -12,7 +12,10 @@ import exceptions.BusinessLogicException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,6 +51,13 @@ import logic.AppointmentFactory;
 import logic.AppointmentInterface;
 import logic.PsychologistFactory;
 import logic.PsychologistInterface;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -125,6 +135,8 @@ public class AppointmentWindowController {
     private Button btnModify;
     @FXML
     private Button btnDelete;
+    @FXML
+    private Button btnReport;
 
     public void initStage(Parent root) {
         try {
@@ -143,6 +155,7 @@ public class AppointmentWindowController {
             btnBack.setOnAction(this::handleButtonBack);
             btnModify.setOnAction(this::handleButtonModify);
             btnDelete.setOnAction(this::handleButtonDelete);
+            btnReport.setOnAction(this::handleButtonReport);
 
             appointmentInterface = AppointmentFactory.createAppointmentInterface();
             psychologistInterface = PsychologistFactory.createPsychologistRestful();
@@ -235,7 +248,7 @@ public class AppointmentWindowController {
                 tableView = new TableView<>(appointmentsbyDate);
 
             }
-        } catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
             LOGGER.severe("Criteria error");
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
@@ -268,13 +281,12 @@ public class AppointmentWindowController {
                 comboPsychologist.setVisible(true);
                 comboPsychologist.setPromptText("Psychologists");
                 ObservableList<Psychologist> psychologists = FXCollections.observableArrayList(psychologistInterface.findAllPsychologist());
-                
-                
+
                 ObservableList<String> psychologistsName = FXCollections.observableArrayList();
-                for(Psychologist p : psychologists){
-                        psychologistsName.add(p.getFullName());                    
+                for (Psychologist p : psychologists) {
+                    psychologistsName.add(p.getFullName());
                 }
-                
+
                 comboPsychologist.setItems(psychologistsName);
             } catch (Exception ex) {
                 Logger.getLogger(AppointmentWindowController.class.getName()).log(Level.SEVERE, null, ex);
@@ -414,6 +426,30 @@ public class AppointmentWindowController {
 
     private void handleButtonBack(ActionEvent event) {
         getStage().close();
+    }
+
+    private void handleButtonReport(ActionEvent event) {
+        try {
+            JasperReport report
+                    = JasperCompileManager.compileReport(getClass()
+                            .getResourceAsStream("/report/ReportAppointment.jrxml"));
+            //Data for the report: a collection of UserBean passed as a JRDataSource
+            //implementation
+            JRBeanCollectionDataSource dataItems
+                    = new JRBeanCollectionDataSource((Collection<Psychologist>) this.tblAppointment.getItems());
+            //Map of parameter to be passed to the report
+            Map<String, Object> parameters = new HashMap<>();
+            //Fill report with data
+            JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, dataItems);
+            //Create and show the report window. The second parameter false value makes
+            //report window not to close app.
+            JasperViewer jasperViewer = new JasperViewer(jasperPrint, false);
+            jasperViewer.setVisible(true);
+            // jasperViewer.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        } catch (JRException ex) {
+            Logger.getLogger(AppointmentWindowController.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
     }
 
 }

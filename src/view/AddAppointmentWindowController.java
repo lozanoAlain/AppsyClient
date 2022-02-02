@@ -11,8 +11,10 @@ import entities.AppointmentId;
 import entities.Client;
 import entities.Psychologist;
 import exceptions.BusinessLogicException;
+import exceptions.EmptyFieldsException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -131,6 +133,9 @@ public class AddAppointmentWindowController {
 
             Psychologist psychologist = new Psychologist();
             psychologist = (Psychologist) comboPsychologist.getSelectionModel().getSelectedItem();
+            if(comboPsychologist.getSelectionModel().getSelectedIndex() == -1){
+                throw new EmptyFieldsException();
+            }
             AppointmentId appointmentId = new AppointmentId();
             appointmentId.setPsychologistId(psychologist.getId());
             appointmentId.setClientId(client.getId());
@@ -140,6 +145,9 @@ public class AddAppointmentWindowController {
 
             datePicker.setPromptText("dd/mm/yyyy");
             LocalDate localDate = datePicker.getValue();
+            if(localDate == null){
+                throw new EmptyFieldsException();
+            }
             java.util.Date date = java.util.Date.from(localDate.atStartOfDay()
                     .atZone(ZoneId.systemDefault())
                     .toInstant());
@@ -163,6 +171,13 @@ public class AddAppointmentWindowController {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("there was a problem adding de appointment");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
+        } catch (EmptyFieldsException ex) {
+            LOGGER.severe("Error adding the appointment");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("The fields canont be empty");
             alert.setContentText(ex.getMessage());
             alert.showAndWait();
         }

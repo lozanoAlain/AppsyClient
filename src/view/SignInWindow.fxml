@@ -18,7 +18,7 @@
             <children>
                 <AnchorPane id="anchorPane" layoutX="242.0" layoutY="300.0" opacity="0.8" prefHeight="78.0" prefWidth="368.0" stylesheets="@css.css">
                     <children>
-                        <Hyperlink fx:id="hlkRegister" layoutX="295.0" layoutY="10.0" onAction="#hlkHerePressed" prefHeight="34.0" prefWidth="64.0" text="here." textFill="#253ba8" visited="true">
+                        <Hyperlink fx:id="hlkRegister" layoutX="295.0" layoutY="10.0" prefHeight="34.0" prefWidth="64.0" text="here." textFill="#253ba8" visited="true">
                             <font>
                                 <Font size="17.0" />
                             </font>
@@ -33,7 +33,7 @@
                         <Font size="17.0" />
                      </font>
                   </Label>
-                  <Hyperlink fx:id="hlkReset" layoutX="280.0" layoutY="46.0" onAction="#hlkHerePressed" prefHeight="34.0" prefWidth="64.0" text="here." textFill="#253ba8" visited="true">
+                  <Hyperlink fx:id="hlkReset" layoutX="280.0" layoutY="46.0" prefHeight="34.0" prefWidth="64.0" text="here." textFill="#253ba8" visited="true">
                      <font>
                         <Font size="17.0" />
                      </font>

@@ -7,8 +7,7 @@ package logic;
 
 import entities.User;
 import exceptions.BusinessLogicException;
-import exceptions.PasswordDontMatch;
-import javax.ws.rs.ClientErrorException;
+import exceptions.UserAlreadyExistException;
 import javax.ws.rs.NotAuthorizedException;
 
 /**
@@ -16,17 +15,17 @@ import javax.ws.rs.NotAuthorizedException;
  * @author Usuario
  */
 public interface UserInterface {
-    public String countREST() throws ClientErrorException;
-    public void edit(Object requestEntity, String id) throws ClientErrorException;
-    public <T> T resetPasswordByEmail(Class<T> responseType, String email) throws ClientErrorException;
-    public User find(String id) throws ClientErrorException;
-    public <T> T findRange(Class<T> responseType, String from, String to) throws ClientErrorException;
+    public String countREST() throws BusinessLogicException;
+    public void edit(Object requestEntity, String id) throws BusinessLogicException;
+    public void resetPasswordByEmail(String email) throws BusinessLogicException;
+    public User find(String id) throws BusinessLogicException;
+    public <T> T findRange(Class<T> responseType, String from, String to) throws BusinessLogicException;
     public void create(User user) throws BusinessLogicException;
-    public User findUserByLoginAndPassword(String login, String password) throws ClientErrorException, NotAuthorizedException;
-    public <T> T findAll(Class<T> responseType) throws ClientErrorException;
-    public void remove(String id) throws ClientErrorException;
-    public User findUserByLogin(String login) throws ClientErrorException;
-    public void changePasswordByLogin(String login, String password) throws ClientErrorException,PasswordDontMatch;
+    public User findUserByLoginAndPassword(String login, String password) throws BusinessLogicException, NotAuthorizedException;
+    public <T> T findAll(Class<T> responseType) throws BusinessLogicException;
+    public void remove(String id) throws BusinessLogicException;
+    public void findUserByLogin(String login) throws UserAlreadyExistException,BusinessLogicException;
+    public void changePasswordByLogin(String login, String password) throws BusinessLogicException;
     
     
 }
