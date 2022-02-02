@@ -27,9 +27,9 @@ import javax.ws.rs.core.GenericType;
  */
 public class PsychologistRestFul {
 
-    private WebTarget webTarget
+    private WebTarget webTarget;
+    private Client client;
     private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("URI");
-
 
     public PsychologistRestFul() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
