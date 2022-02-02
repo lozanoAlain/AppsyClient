@@ -7,6 +7,7 @@ package restful;
 
 
 import entities.Appointment;
+import java.util.ResourceBundle;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;

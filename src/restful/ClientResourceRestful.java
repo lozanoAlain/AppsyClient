@@ -23,14 +23,14 @@ import javax.ws.rs.client.WebTarget;
  *
  * @author Usuario
  */
-public class ClientResource {
+public class ClientResourceRestful {
 
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("URI");
 
 
-    public ClientResource() {
+    public ClientResourceRestful() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(BASE_URI).path("entities.clientresource");
     }

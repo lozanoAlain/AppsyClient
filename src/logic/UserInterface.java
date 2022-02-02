@@ -23,7 +23,7 @@ public interface UserInterface {
 
     public String countREST() throws BusinessLogicException;
     public void edit(Object requestEntity, String id) throws BusinessLogicException;
-    public <T> T resetPasswordByEmail(Class<T> responseType, String email) throws BusinessLogicException;
+    public void resetPasswordByEmail(String email) throws BusinessLogicException;
     public User find(String id) throws BusinessLogicException;
     public <T> T findRange(Class<T> responseType, String from, String to) throws BusinessLogicException;
     public void create(User user) throws BusinessLogicException;

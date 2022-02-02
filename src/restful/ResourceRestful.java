@@ -26,13 +26,13 @@ import entities.Resource;
  *
  * @author Usuario
  */
-public class ResourceREST implements ResourceInterface{
+public class ResourceRestful implements ResourceInterface{
 
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = "http://localhost:35293/appsyServer/webresources";
 
-    public ResourceREST() {
+    public ResourceRestful() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(BASE_URI).path("entities.resource");
     }
