@@ -7,13 +7,13 @@ package entities;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Embeddable;
+
 
 /**
  *
  * @author Matteo Fernández
  */
-@Embeddable
+
 public class IdClientResource implements Serializable {
 
     private Integer idClient;

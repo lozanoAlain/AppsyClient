@@ -17,19 +17,20 @@ import javax.ws.rs.core.GenericType;
  * [entities.psychologist]<br>
  * USAGE:
  * <pre>
- *        PsychologistRestFul client = new PsychologistRestFul();
- *        Object response = client.XXX(...);
- *        // do whatever with response
- *        client.close();
- * </pre>
+        PsychologistRestFul client = new PsychologistRestFul();
+        Object response = client.XXX(...);
+        // do whatever with response
+        client.close();
+ </pre>
  *
- * @author Usuario
+ * @author Alain Lozano
  */
 public class PsychologistRestFul {
 
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("URI");
+
 
     public PsychologistRestFul() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
@@ -85,6 +86,12 @@ public class PsychologistRestFul {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request().delete();
     }
 
+    public <T> T findPsychologistByFullName(GenericType<T> responseType, String fullName) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("fullName/{0}", new Object[]{fullName}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+    
     public void close() {
         client.close();
     }

@@ -7,16 +7,9 @@ package exceptions;
 
 /**
  *
- * @author Alain Lozano
+ * @author Ilia Consuegra
  */
-public class BusinessLogicException extends Exception {
-
-  
-    /**
-     * Constructs an instance of <code>EmptyFieldsException</code> with the
-     * specified detail message.
-     *
-     */
+public class BusinessLogicException extends Exception{
     public BusinessLogicException(String message){
         super(message);
     }

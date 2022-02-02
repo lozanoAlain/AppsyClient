@@ -23,6 +23,8 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.security.spec.KeySpec;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +34,12 @@ import static javax.crypto.Cipher.DECRYPT_MODE;
 import static javax.crypto.Cipher.ENCRYPT_MODE;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+
 
 /**
  *
@@ -151,6 +159,99 @@ public class EncriptDecriptClient {
         return mensaje;
     }
 
+    
+    public String encryptEmailPassword() {
+        byte[] salt = "esta es la salt!".getBytes();
+        String decodedKey = null;
+        Cipher cipher = null;
+        // Fichero leído
+        InputStream password = getClass().getResourceAsStream("EmailPassword.dat");
+        InputStream key = getClass().getResourceAsStream("Key.dat");
+        KeySpec keySpec = null;
+        SecretKeyFactory secretKeyFactory = null;
+        try {
+            byte[] keyString = new byte[key.available()];
+            key.read(keyString, 0, key.available());
+            
+            byte[] passwordString = new byte[password.available()];
+            password.read(passwordString, 0, password.available());
+            // Obtenemos el keySpec
+            keySpec = new PBEKeySpec(new String(keyString).toCharArray(), salt, 65536, 128); // AES-128
+
+            // Obtenemos una instancide de SecretKeyFactory con el algoritmo "PBKDF2WithHmacSHA1"
+            secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+
+            // Generamos la clave
+            byte[] generatedKey = secretKeyFactory.generateSecret(keySpec).getEncoded();
+
+            // Creamos un SecretKey usando la clave + salt
+            SecretKey privateKey = new SecretKeySpec(generatedKey, 0, generatedKey.length, "AES");
+
+            // Obtenemos una instancide de Cipher con el algoritmos que vamos a usar "AES/CBC/PKCS5Padding"
+            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            // Leemos el fichero codificado
+            IvParameterSpec ivParam = new IvParameterSpec(Arrays.copyOfRange(passwordString, 0, 16));
+            // Iniciamos el Cipher en ENCRYPT_MODE y le pasamos la clave privada y el ivParam
+            cipher.init(ENCRYPT_MODE, privateKey, ivParam);
+            // Le decimos que descifre
+            byte[] decodedMessage = cipher.doFinal(Arrays.copyOfRange(passwordString, 16, passwordString.length));
+
+            // Texto descifrado
+            decodedKey = new String(decodedMessage);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return decodedKey;
+
+    }
+    public String encryptEmailUser() {
+        byte[] salt = "esta es la salt!".getBytes();
+        String decodedKey = null;
+        Cipher cipher = null;
+        // Fichero leído
+        InputStream password = getClass().getResourceAsStream("Email.dat");
+        InputStream key = getClass().getResourceAsStream("Key.dat");
+        KeySpec keySpec = null;
+        SecretKeyFactory secretKeyFactory = null;
+        try {
+            byte[] keyString = new byte[key.available()];
+            key.read(keyString, 0, key.available());
+            
+            byte[] passwordString = new byte[password.available()];
+            password.read(passwordString, 0, password.available());
+            // Obtenemos el keySpec
+            keySpec = new PBEKeySpec(new String(keyString).toCharArray(), salt, 65536, 128); // AES-128
+
+            // Obtenemos una instancide de SecretKeyFactory con el algoritmo "PBKDF2WithHmacSHA1"
+            secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+
+            // Generamos la clave
+            byte[] generatedKey = secretKeyFactory.generateSecret(keySpec).getEncoded();
+
+            // Creamos un SecretKey usando la clave + salt
+            SecretKey privateKey = new SecretKeySpec(generatedKey, 0, generatedKey.length, "AES");
+
+            // Obtenemos una instancide de Cipher con el algoritmos que vamos a usar "AES/CBC/PKCS5Padding"
+            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            // Leemos el fichero codificado
+            IvParameterSpec ivParam = new IvParameterSpec(Arrays.copyOfRange(passwordString, 0, 16));
+            // Iniciamos el Cipher en ENCRYPT_MODE y le pasamos la clave privada y el ivParam
+            cipher.init(ENCRYPT_MODE, privateKey, ivParam);
+            // Le decimos que descifre
+            byte[] decodedMessage = cipher.doFinal(Arrays.copyOfRange(passwordString, 16, passwordString.length));
+
+            // Texto descifrado
+            decodedKey = new String(decodedMessage);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return decodedKey;
+
+    }
+
+
     private static byte[] fileReader(String path) {
         byte[] ret = null;
 
@@ -217,4 +318,6 @@ public class EncriptDecriptClient {
         return os.toByteArray();
     }
 
+
 }
+
