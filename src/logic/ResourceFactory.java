@@ -5,13 +5,13 @@
  */
 package logic;
 
-import restful.ResourceRestful;
+import restful.ResourceREST;
 
 public class ResourceFactory {
 
     public static ResourceInterface getResourceManager() {
 
-        return new ResourceRestful();
+        return new ResourceREST();
     }
 
 }

@@ -5,19 +5,17 @@
  */
 package restful;
 
-import entities.Psychologist;
 import java.util.ResourceBundle;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
 
 /**
- * Jersey REST client generated for REST resource:ClientFacadeREST
- * [entities.client]<br>
+ * Jersey REST client generated for REST resource:AppointmentFacadeREST
+ * [entities.appointment]<br>
  * USAGE:
  * <pre>
- *        ClientRestFul client = new ClientRestFul();
+ *        Appointment client = new Appointment();
  *        Object response = client.XXX(...);
  *        // do whatever with response
  *        client.close();
@@ -25,16 +23,16 @@ import javax.ws.rs.core.GenericType;
  *
  * @author Usuario
  */
-public class ClientRestFul {
+public class Appointment {
 
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("URI");
 
 
-    public ClientRestFul() {
+    public Appointment() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
-        webTarget = client.target(BASE_URI).path("entities.client");
+        webTarget = client.target(BASE_URI).path("entities.appointment");
     }
 
     public String countREST() throws ClientErrorException {
@@ -44,11 +42,10 @@ public class ClientRestFul {
     }
 
     public void edit(Object requestEntity, String id) throws ClientErrorException {
-        WebTarget resource = webTarget;
-        resource.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML),new GenericType<Psychologist>(){});
+        webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
-    public <T> T find(GenericType<T> responseType, String id) throws ClientErrorException {
+    public <T> T find(Class<T> responseType, String id) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
@@ -61,11 +58,20 @@ public class ClientRestFul {
     }
 
     public void create(Object requestEntity) throws ClientErrorException {
-        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).
-                post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), new GenericType<Client>() {
-                });
+        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
+    public <T> T findAppointmentsByPsychologist(Class<T> responseType, String psychologistId) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("psychologistId/{0}", new Object[]{psychologistId}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+
+    public <T> T findAppointmentsByClient(Class<T> responseType, String clientId) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("clientId/{0}", new Object[]{clientId}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
 
     public <T> T findAll(Class<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
@@ -76,14 +82,8 @@ public class ClientRestFul {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request().delete();
     }
 
-    public <T> T findClientByFullName(GenericType<T> responseType, String fullName) throws ClientErrorException {
-        WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("fullName/{0}", new Object[]{fullName}));
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
-    }
-
     public void close() {
         client.close();
     }
-
+    
 }

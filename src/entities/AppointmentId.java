@@ -7,12 +7,13 @@ package entities;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Embeddable;
 
 /**
  *
- * @author Ilia Consuegra
+ * @author 2dam
  */
-
+@Embeddable
 public class AppointmentId implements Serializable {
 
     private Integer psychologistId;

@@ -8,8 +8,8 @@ package entities;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.HashSet;
 import javafx.beans.property.SimpleStringProperty;
-import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * attributes: idUser, password, privilege, status, fullName, email and login.
  * This entity has the fields: specialization and office
  *
- * @author Alain Lozano
+ * @author Ilia Consuegra
  */
 @XmlRootElement(name="psychologist")
 public class Psychologist extends User implements Serializable {
@@ -31,8 +31,8 @@ public class Psychologist extends User implements Serializable {
      */
 
     private String office;
-    private Set<Resource> resources;
-    private Set<Appointment> appointments;
+    private HashSet<Resource> resources;
+    private HashSet<Appointment> appointments;
 
     /**
      * @return the specialization
@@ -42,7 +42,7 @@ public class Psychologist extends User implements Serializable {
     }
 
     /**
-     * @param specialization the specialization to set
+     * @param specialization the specialization to HashSet
      */
     public void setSpecialization(String specialization) {
         this.specialization = specialization;
@@ -56,7 +56,7 @@ public class Psychologist extends User implements Serializable {
     }
 
     /**
-     * @param office the office to set
+     * @param office the office to HashSet
      */
     public void setOffice(String office) {
         this.office = office;
@@ -65,36 +65,35 @@ public class Psychologist extends User implements Serializable {
     /**
      * @return the resources
      */
-    @XmlTransient
-    public Set<Resource> getResources() {
+        @XmlTransient
+    public HashSet<Resource> getResources() {
         return resources;
     }
 
     /**
-     * @param resources the resources to set
+     * @param resources the resources to HashSet
      */
-    public void setResources(Set<Resource> resources) {
+    public void setResources(HashSet<Resource> resources) {
         this.resources = resources;
     }
 
     /**
      * @return the appointments
      */
-    @XmlTransient
-    public Set<Appointment> getAppointments() {
+    public HashSet<Appointment> getAppointments() {
         return appointments;
     }
 
     /**
-     * @param appointments the appointments to set
+     * @param appointments the appointments to HashSet
      */
-    public void setAppointments(Set<Appointment> appointments) {
+    public void setAppointments(HashSet<Appointment> appointments) {
         this.appointments = appointments;
     }
-    
-     @Override
-    public String toString() {
-        return this.getFullName();
-    }
-}
 
+    @Override
+    public String toString() {
+        return getFullName();
+    }
+    
+}

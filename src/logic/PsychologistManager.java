@@ -13,19 +13,19 @@ import java.util.logging.Logger;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.GenericType;
-import restful.PsychologistRestful;
+import restful.PsychologistRestFul;
 
 /**
  *
- * @author Alain Lozano
+ * @author Usuario
  */
 public class PsychologistManager implements PsychologistInterface {
 
-    private PsychologistRestful psychologistRestFul;
+    private PsychologistRestFul psychologistRestFul;
     private static final Logger LOGGER = Logger.getLogger(PsychologistManager.class.getName());
 
     public PsychologistManager() {
-        this.psychologistRestFul = new PsychologistRestful();
+        this.psychologistRestFul = new PsychologistRestFul();
     }
 
     @Override
@@ -140,4 +140,3 @@ public class PsychologistManager implements PsychologistInterface {
 
 }
  
-

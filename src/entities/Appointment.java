@@ -8,54 +8,26 @@ package entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
-import javafx.beans.property.SimpleObjectProperty;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity for the appointments, it has the attributes: psychologist, client,
- * date, diagnose, numApppointment and price.
- *
- * @author Ilia Consuegra
-
+ * date, diagnose, numApppointment and price. Ilia Consuegra
  */
 @XmlRootElement
 public class Appointment implements Serializable {
 
     private static long serialVersionUID = 1L;
+    private AppointmentId appointmentId;
+    private Psychologist psychologist;
+    private Client client;
+    private Date date;
+    private String diagnose;
+    private Integer numAppointment;
+    private Float price;
 
-
-    private SimpleObjectProperty<AppointmentId> appointmentId;
-    private SimpleObjectProperty<Psychologist> psychologist;
-    private SimpleObjectProperty<Client> client;
-    private SimpleObjectProperty<Date> date;
-    private SimpleObjectProperty<String> diagnose;
-    private SimpleObjectProperty<Integer> numAppointment;
-    private SimpleObjectProperty<Float> price;
-
-    public Appointment() {
-        this.appointmentId = new SimpleObjectProperty();
-        this.psychologist = new SimpleObjectProperty();
-        this.client = new SimpleObjectProperty();
-        this.date = new SimpleObjectProperty();
-        this.diagnose = new SimpleObjectProperty();
-        this.numAppointment = new SimpleObjectProperty();
-        this.price = new  SimpleObjectProperty();
-    }
-
-    public Appointment(AppointmentId appointmentId, Psychologist psychologist, Client client, Date date, String diagnose, Integer numAppointment, Float price) {
-        this.psychologist = new SimpleObjectProperty(psychologist);
-        this.appointmentId = new SimpleObjectProperty(appointmentId);
-        this.client = new SimpleObjectProperty(client);
-        this.date = new SimpleObjectProperty(date);
-        this.diagnose = new SimpleObjectProperty(diagnose);
-        this.numAppointment = new SimpleObjectProperty(numAppointment);
-        this.price = new  SimpleObjectProperty(price);
-
-    }
-
-    @Override
+   @Override
     public int hashCode() {
         int hash = 5;
         hash = 67 * hash + Objects.hashCode(this.appointmentId);
@@ -118,29 +90,29 @@ public class Appointment implements Serializable {
      * @return the appointmentId
      */
     public AppointmentId getAppointmentId() {
-        return this.appointmentId.get();
+        return appointmentId;
     }
 
     /**
      * @param appointmentId the appointmentId to set
      */
     public void setAppointmentId(AppointmentId appointmentId) {
-        this.appointmentId.set(appointmentId);
+        this.appointmentId = appointmentId;
     }
 
     /**
      * @return the psychologist
      */
-    @XmlElement(name = "psychologist")
+    @XmlTransient
     public Psychologist getPsychologist() {
-        return this.psychologist.get();
+        return psychologist;
     }
 
     /**
      * @param psychologist the psychologist to set
      */
     public void setPsychologist(Psychologist psychologist) {
-        this.psychologist.set(psychologist);
+        this.psychologist = psychologist;
     }
 
     /**
@@ -148,70 +120,70 @@ public class Appointment implements Serializable {
      */
     @XmlTransient
     public Client getClient() {
-        return this.client.get();
+        return client;
     }
 
     /**
      * @param client the client to set
      */
     public void setClient(Client client) {
-        this.client.set(client);
+        this.client = client;
     }
 
     /**
      * @return the date
      */
     public Date getDate() {
-        return this.date.get();
+        return date;
     }
 
     /**
      * @param date the date to set
      */
     public void setDate(Date date) {
-        this.date.set(date);
+        this.date = date;
     }
 
     /**
      * @return the diagnose
      */
     public String getDiagnose() {
-        return this.diagnose.get();
+        return diagnose;
     }
 
     /**
      * @param diagnose the diagnose to set
      */
     public void setDiagnose(String diagnose) {
-        this.diagnose.set(diagnose);
+        this.diagnose = diagnose;
     }
 
     /**
      * @return the numAppointment
      */
     public Integer getNumAppointment() {
-        return this.numAppointment.get();
+        return numAppointment;
     }
 
     /**
      * @param numAppointment the numAppointment to set
      */
     public void setNumAppointment(Integer numAppointment) {
-        this.numAppointment.set(numAppointment);
+        this.numAppointment = numAppointment;
     }
 
     /**
      * @return the price
      */
     public Float getPrice() {
-        return this.price.get();
+        return price;
     }
 
     /**
      * @param price the price to set
      */
     public void setPrice(Float price) {
-        this.price.set(price);
+        this.price = price;
     }
 
 }
