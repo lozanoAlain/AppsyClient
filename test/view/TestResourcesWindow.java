@@ -192,4 +192,10 @@ public class TestResourcesWindow extends ApplicationTest {
         write("OCD");
         verifyThat(btnAdd, isEnabled());
     }
+    
+     @Test
+    public void testG_ReportButton() {
+        clickOn(btnReport);
+        verifyThat("JasperView", isVisible());
+    }
 }

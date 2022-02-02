@@ -5,9 +5,12 @@
  */
 package view;
 
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import entities.Psychologist;
 import java.util.List;
 import entities.Resource;
+import exceptions.BusinessLogicException;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,7 +30,10 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -42,11 +48,17 @@ import javafx.scene.layout.HBox;
 import javax.naming.OperationNotSupportedException;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
-import static jdk.nashorn.internal.objects.NativeString.search;
 import logic.PsychologistFactory;
 import logic.PsychologistInterface;
 import logic.ResourceFactory;
 import logic.ResourceInterface;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  * FXML Controller class
@@ -81,8 +93,6 @@ public class ResourcesController {
     private Button btnDelete;
     @FXML
     private ComboBox<Psychologist> comboPsycho;
-    @FXML
-    private TextField txtDiagnose;
     @FXML
     private Button btnReport;
     @FXML
@@ -310,38 +320,70 @@ public class ResourcesController {
      */
     @FXML
     private void handleButtonReport(ActionEvent event) {
+        try {
+            JasperReport report
+                    = JasperCompileManager.compileReport(getClass()
+                            .getResourceAsStream("/report/ReportResources.jrxml"));
+            //Data for the report: a collection of UserBean passed as a JRDataSource
+            //implementation
+            JRBeanCollectionDataSource dataItems
+                    = new JRBeanCollectionDataSource((Collection<Resource>) this.tableViewResource.getItems());
+            //Map of parameter to be passed to the report
+            Map<String, Object> parameters = new HashMap<>();
+            //Fill report with data
+            JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, dataItems);
+            //Create and show the report window. The second parameter false value makes
+            //report window not to close app.
+            JasperViewer jasperViewer = new JasperViewer(jasperPrint, false);
+            jasperViewer.setVisible(true);
+            // jasperViewer.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        } catch (JRException ex) {
+            Logger.getLogger(ResourcesController.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
     }
 
+    /**
+     *
+     * @param event
+     */
     @FXML
     private void handleButtonSearch(ActionEvent event) {
-        String search = null;
-        int option = 0;
-        GenericType<List<Resource>> resourceListType = new GenericType<List<Resource>>() {
-        };
+        try {
+            String search = null;
+            int option = 0;
+            GenericType<List<Resource>> resourceListType = new GenericType<List<Resource>>() {
+            };
 
-        ObservableList<Resource> resourceData = FXCollections.observableArrayList((List<Resource>) resourceManager.findAll(resourceListType));
-        tableViewResource.setItems((ObservableList<Resource>) resourceData);
+            ObservableList<Resource> resourceData = FXCollections.observableArrayList((List<Resource>) resourceManager.findAll(resourceListType));
+            tableViewResource.setItems((ObservableList<Resource>) resourceData);
 
-        if (txtLink.getText().isEmpty() && !comboPsycho.getSelectionModel().isEmpty() && txtTittle.getText().isEmpty()) {
-            btnSearch.setDisable(false);
-            search = comboPsycho.getSelectionModel().toString();
-            option = 1;
-        } else if (txtLink.getText().isEmpty() && comboPsycho.getSelectionModel().isEmpty() && !txtTittle.getText().isEmpty()) {
-            btnSearch.setDisable(false);
-            search = txtTittle.getText();
-            option = 2;
+            if (txtLink.getText().isEmpty() && !comboPsycho.getSelectionModel().isEmpty() && txtTittle.getText().isEmpty()) {
+                btnSearch.setDisable(false);
+                search = comboPsycho.getSelectionModel().toString();
+                option = 1;
+            } else if (txtLink.getText().isEmpty() && comboPsycho.getSelectionModel().isEmpty() && !txtTittle.getText().isEmpty()) {
+                btnSearch.setDisable(false);
+                search = txtTittle.getText();
+                option = 2;
+            }
+            switch (option) {
+                case 1:
+                    resourceData = FXCollections.observableArrayList((List<Resource>) resourceManager.getAllResourcesByPsychologist(resourceListType, search));
+                    break;
+                case 2:
+                    resourceData = FXCollections.observableArrayList((List<Resource>) resourceManager.getAllResourcesByTittle(resourceListType, search));
+                    break;
+            }
+            tableViewResource.setItems(resourceData);
+            tableViewResource.refresh();
+        } catch (NullPointerException ex) {
+
+        } catch (IllegalArgumentException ex) {
+
+        } catch (ClientErrorException ex) {
+
         }
-
-        switch (option) {
-            case 1:
-                resourceData = FXCollections.observableArrayList((List<Resource>) resourceManager.getAllResourcesByPsychologist(resourceListType, search));
-                break;
-            case 2:
-                resourceData = FXCollections.observableArrayList((List<Resource>) resourceManager.getAllResourcesByTittle(resourceListType, search));
-                break;
-        }
-        tableViewResource.setItems(resourceData);
-        tableViewResource.refresh();
 
     }
 
@@ -401,21 +443,16 @@ public class ResourcesController {
     private void handleButtonModify(ActionEvent event) {
         //Get selected data from table view.
         Resource resource = ((Resource) tableViewResource.getSelectionModel().getSelectedItem());
-
         //Write the new data
         resource.setTittle(txtTittle.getText());
         resource.setLink(txtLink.getText());
         resource.setPsychologist(comboPsycho.getSelectionModel().getSelectedItem());
-
         ResourceFactory.getResourceManager().edit(resource, resource.getId().toString());
-
         //Clear selection and refresh table view 
         tableViewResource.getSelectionModel().clearSelection();
         resourceManager = ResourceFactory.getResourceManager();
-
         GenericType<List<Resource>> resourceListType = new GenericType<List<Resource>>() {
         };
-
         ObservableList<Resource> resourceData = FXCollections.observableArrayList((List<Resource>) resourceManager.findAll(resourceListType));
         tableViewResource.setItems((ObservableList<Resource>) resourceData);
         tableViewResource.refresh();
@@ -429,6 +466,7 @@ public class ResourcesController {
      */
     @FXML
     private void handleButtonAdd(ActionEvent event) {
+
         //New resource
         Resource resource = new Resource();
 
@@ -453,6 +491,7 @@ public class ResourcesController {
         tableViewResource.setItems(resourceData);
 
         tableViewResource.refresh();
+
     }
 
     /**
