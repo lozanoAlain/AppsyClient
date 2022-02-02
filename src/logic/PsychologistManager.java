@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.GenericType;
-import restful.PsychologistRestFul;
+import restful.PsychologistRestful;
 
 /**
  *
@@ -21,11 +21,11 @@ import restful.PsychologistRestFul;
  */
 public class PsychologistManager implements PsychologistInterface {
 
-    private PsychologistRestFul psychologistRestFul;
+    private PsychologistRestful psychologistRestFul;
     private static final Logger LOGGER = Logger.getLogger(PsychologistManager.class.getName());
 
     public PsychologistManager() {
-        this.psychologistRestFul = new PsychologistRestFul();
+        this.psychologistRestFul = new PsychologistRestful();
     }
 
     @Override
