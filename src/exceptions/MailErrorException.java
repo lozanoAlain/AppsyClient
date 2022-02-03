@@ -15,7 +15,6 @@ public class MailErrorException extends Exception {
      * Constructs an instance of <code>FullNameException</code> with the
      * specified detail message.
      *
-     * @param msg the detail message.
      */
     public MailErrorException() {
         super("The mail is incorrectly written.");

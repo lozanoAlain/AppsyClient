@@ -15,7 +15,6 @@ public class FullNameException extends Exception {
      * Constructs an instance of <code>FullNameException</code> with the
      * specified detail message.
      *
-     * @param msg the detail message.
      */
     public FullNameException() {
         super("The full name is incomplete.");

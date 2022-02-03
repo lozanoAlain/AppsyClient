@@ -1,6 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Provides the JavaFX windows and controller classes for a JavaFX application. Here are the fxml and all the controllers for all the views in the application.
  */
 package view;
