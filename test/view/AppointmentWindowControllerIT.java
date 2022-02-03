@@ -7,14 +7,9 @@ package view;
 
 import Application.ApplicationAppsy;
 import entities.Appointment;
-import entities.Client;
-import java.text.SimpleDateFormat;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -23,13 +18,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.stage.Stage;
-import logic.ClientFactory;
-import logic.ClientInterface;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
@@ -40,9 +30,7 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
-import static org.testfx.matcher.base.NodeMatchers.isInvisible;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
-import org.testfx.matcher.base.WindowMatchers;
 
 /**
  *
@@ -67,27 +55,7 @@ public class AppointmentWindowControllerIT extends ApplicationTest {
     private Button btnModify;
     private Button btnDelete;
     private Button btnSearch;
-    private Client client = new Client();
 
-    /*
-    @Override
-    public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("AppointmentWindow.fxml"));
-
-        //Creates a new stage
-        Parent root = (Parent) loader.load();
-
-        //Gets sign up controller
-        AppointmentWindowController appointmentWindowController = ((AppointmentWindowController) loader.getController());
-
-        ClientInterface clientManager = null;
-        clientManager = ClientFactory.createClientRestful();
-        client.setId(1);
-        client = clientManager.find(String.valueOf(client.getId()));
-        appointmentWindowController.setClient(client);
-        //Set the stage that we already created to the sign up controller
-        appointmentWindowController.initStage(root);
-    }*/
     @BeforeClass
     public static void setUpClass() throws TimeoutException {
         FxToolkit.registerPrimaryStage();
@@ -125,31 +93,43 @@ public class AppointmentWindowControllerIT extends ApplicationTest {
         verifyThat("#tblAppointment", isVisible());
     }
 
-    /*
+    
     @Test
     public void testD_SearchByPsychologist() {
+        comboBox = lookup("#comboBox").query();
+        btnSearch = lookup("#btnSearch").query();
         clickOn(comboBox);
-        clickOn("Psychologist");
+        clickOn("psychologist");
         verifyThat("#comboPsychologist", isEnabled());
-        verifyThat("#datePicker", isDisabled());
-        clickOn(comboPsychologist);
-        clickOn(comboPsychologist.getItems().get(0));
+        press(KeyCode.TAB).release(KeyCode.TAB);
+        press(KeyCode.F4).release(KeyCode.F4);
+        press(KeyCode.DOWN).release(KeyCode.DOWN);
+        press(KeyCode.DOWN).release(KeyCode.DOWN);
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
         clickOn(btnSearch);
         verifyThat("Sigmund Freud", isVisible());
     }
 
     @Test
     public void testE_SearchByDate() {
-        clickOn(comboBox);
-        clickOn("Date");
-        verifyThat("#datePicker", isEnabled());
-        verifyThat("#comboPsychologist", isDisabled());
-        clickOn(datePicker);
-        clickOn(comboPsychologist);
-        clickOn(btnSearch);
-        verifyThat("Sigmund Freud", isVisible());
+        try {
+            comboBox = lookup("#comboBox").query();
+            btnSearch = lookup("#btnSearch").query();
+            clickOn(comboBox);
+            clickOn("date");
+            verifyThat("#datePicker", isEnabled());
+            press(KeyCode.TAB).release(KeyCode.TAB);
+            press(KeyCode.F4).release(KeyCode.F4);
+            press(KeyCode.UP).release(KeyCode.UP);
+            Thread.sleep(1000);
+            press(KeyCode.ENTER).release(KeyCode.ENTER);
+            clickOn(btnSearch);
+            verifyThat("Tabla sin contenido", isVisible());
+        } catch (InterruptedException ex) {
+            Logger.getLogger(AppointmentWindowControllerIT.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-     */
+    @Ignore
     @Test
     public void testF_DeleteAppointment() {
         try {
@@ -172,6 +152,7 @@ public class AppointmentWindowControllerIT extends ApplicationTest {
         }
     }
 
+    @Ignore
     @Test
     public void testG_AddAppointment() {
         try {
@@ -204,14 +185,14 @@ public class AppointmentWindowControllerIT extends ApplicationTest {
             assertNotEquals(rowCountAfter, rowCountBefore);
             assertTrue(tblAppointment.getItems().stream()
                     .filter(appointment -> appointment.getPsychologist().getFullName().equalsIgnoreCase("Sigmund Freud")).count() > 0);
-            //assertTrue("The course value does not match with the one of the filter", tblTeachers.getItems().stream().
-            //filter(teacher -> teacher.getTeacherCourse().getName().equalsIgnoreCase(tfFilter.getText())).count() > 0);
+            
         } catch (InterruptedException ex) {
             Logger.getLogger(AppointmentWindowControllerIT.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
+    @Ignore
     @Test
     public void testH_EditAppointment() {       
         tblAppointment = lookup("#tblAppointment").queryTableView();
