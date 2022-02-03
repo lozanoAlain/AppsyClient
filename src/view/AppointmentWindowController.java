@@ -62,6 +62,10 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
 
 /**
+ * This window shows all the appointments in a table and lets the client add an
+ * appointment, modifiy a selected appointment and delete it. Also lets the user
+ * find an appointment by the psychologist name and the date. And finally lets
+ * the user have a report of all the appointments.
  *
  * @author Ilia Consuegra
  */
@@ -144,6 +148,12 @@ public class AppointmentWindowController {
     @FXML
     MenuItem menuItemDelete;
 
+    /**
+     * This method initialize the AppointmentWindow and establishes the visibility and 
+     * availability of the components.
+     *
+     * @param root
+     */
     public void initStage(Parent root) {
         try {
             stage = new Stage();
@@ -152,6 +162,7 @@ public class AppointmentWindowController {
             stage.setTitle("Appointments");
             stage.setResizable(false);
 
+            //Establish the visibility and availability of the components
             comboPsychologist.setVisible(false);
             datePicker.setVisible(false);
             btnModify.setDisable(true);
@@ -159,6 +170,7 @@ public class AppointmentWindowController {
             menuItemModify.setDisable(true);
             menuItemDelete.setDisable(true);
 
+            //Handlers are defined with method references
             btnAdd.setOnAction(this::handleButtonAdd);
             btnBack.setOnAction(this::handleButtonBack);
             btnModify.setOnAction(this::handleButtonModify);
@@ -168,22 +180,37 @@ public class AppointmentWindowController {
             appointmentInterface = AppointmentFactory.createAppointmentInterface();
             psychologistInterface = PsychologistFactory.createPsychologistRestful();
 
+            //Call to the initWhenClient method with the client as input parameter
             initWhenClient(client);
 
+            //The window is shown
             stage.show();
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(AppointmentWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    /**
+     * This method sets the values for the table and the colums of the table.
+     * It also sets the comboBox data.
+     * @param client
+     * @throws OperationNotSupportedException 
+     */
     public void initWhenClient(Client client) throws OperationNotSupportedException {
         try {
             this.setClient(client);
 
+            //The date formated is inserted on the table column
             tblDate.setCellFactory(column -> {
                 TableCell<Appointment, Date> cell = new TableCell<Appointment, Date>() {
                     private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
+                    /**
+                     * This method checks if the date is empty and if it is not,
+                     * it inserted the date on the table
+                     * @param item
+                     * @param empty 
+                     */
                     @Override
                     protected void updateItem(Date item, boolean empty) {
                         super.updateItem(item, empty);
@@ -199,10 +226,12 @@ public class AppointmentWindowController {
                 return cell;
             });
 
+            //These are the columns of the table
             tblDate.setCellValueFactory(new PropertyValueFactory<>("date"));
             tblPsychologist.setCellValueFactory(new PropertyValueFactory<>("psychologist"));
             tblDiagnose.setCellValueFactory(new PropertyValueFactory<>("diagnose"));
 
+            //The table is fulled
             ObservableList<Appointment> appointments = FXCollections.observableArrayList(appointmentInterface.findAppointmentsOfClient(String.valueOf(client.getId())));
             tblAppointment.setItems(appointments);
             tableView = new TableView<>(appointments);
@@ -216,13 +245,15 @@ public class AppointmentWindowController {
             TableViewSelectionModel<Appointment> selectionModel = tableView.getSelectionModel();
             selectionModel.setSelectionMode(SelectionMode.SINGLE);
 
-            //ObservableList<Appointment> selectedItems = selectionModel.getSelectedItems();
-            //if there is a row selected, the btnModify and btnDelete will be enabled
+            //Event handleTableSelectionChange management with a listener
             tblAppointment.getSelectionModel().selectedItemProperty().addListener(this::handleTableSelectionChange);
             ObservableList<String> items = FXCollections.observableArrayList();
             items.addAll("psychologist", "date");
 
+            //Fill the comboBox
             comboBox.setItems(items);
+            
+            //Handlers are defined with method references
             btnSearch.setOnAction(this::handleButtonSearch);
             comboBox.setOnAction(this::handleComboBox);
         } catch (BusinessLogicException ex) {
@@ -235,23 +266,32 @@ public class AppointmentWindowController {
         }
     }
 
+    /**
+     * This handler is for the search button. The type of search is selected 
+     * and the data of the appointment is displayed.
+     * @param event 
+     */
     public void handleButtonSearch(Event event) {
         try {
+            //The search by psychologist is selected
             if (comboPsychologist.isVisible()) {
                 String psychologistName = comboPsychologist.getSelectionModel().getSelectedItem();
                 psychologist = psychologistInterface.findPsychologistByFullName(psychologistName);
                 ObservableList<Appointment> appointmentsbyPsychologist
                         = FXCollections.observableArrayList(appointmentInterface.findAppointmentsOfClientByPsychologist(String.valueOf(psychologist.getId()), String.valueOf(getClient().getId())));
 
+                //The data is shown
                 tblAppointment.setItems(appointmentsbyPsychologist);
                 tableView = new TableView<>(appointmentsbyPsychologist);
             } else {
+                //The search bydate is selected
                 Date date = Date.from(datePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
                 ObservableList<Appointment> appointmentsbyDate;
                 appointmentsbyDate = FXCollections.observableArrayList(appointmentInterface.findAppointmentsByDate(simpleDateFormat.format(date).toString()));
 
+                //The data is shown
                 tblAppointment.setItems(appointmentsbyDate);
                 tableView = new TableView<>(appointmentsbyDate);
 
@@ -282,30 +322,43 @@ public class AppointmentWindowController {
 
     }
 
+    /**
+     * This method changes the view depending on the selection of the combo.
+     * @param event 
+     */
     private void handleComboBox(Event event) {
+        //The search by psychologist is selected 
         if (comboBox.getSelectionModel().getSelectedItem().toString().equalsIgnoreCase("psychologist")) {
             try {
+                //Set the comboPsychologist visible
                 txtSelect.setVisible(false);
                 comboPsychologist.setVisible(true);
                 comboPsychologist.setPromptText("Psychologists");
                 datePicker.setVisible(false);
+                
+                //Get the list of psychologists
                 ObservableList<Psychologist> psychologists = FXCollections.observableArrayList(psychologistInterface.findAllPsychologist());
 
+                //Get a list of the names of the psychologists
                 ObservableList<String> psychologistsName = FXCollections.observableArrayList();
                 for (Psychologist p : psychologists) {
                     psychologistsName.add(p.getFullName());
                 }
 
+                //Set the names into the comboPsychologist
                 comboPsychologist.setItems(psychologistsName);
             } catch (Exception ex) {
                 Logger.getLogger(AppointmentWindowController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
+        //The search by date is selected
         } else if (comboBox.getSelectionModel().getSelectedItem().toString().equalsIgnoreCase("date")) {
+            //Set the datePicker visible
             txtSelect.setVisible(false);
             datePicker.setVisible(true);
             comboPsychologist.setVisible(false);
 
+        //There is noselection
         } else {
             txtSelect.setVisible(true);
             comboPsychologist.setVisible(false);
@@ -316,13 +369,21 @@ public class AppointmentWindowController {
 
     //if there is a row selected, the btnModify and btnDelete will be enable.
     //if there is not a row selected, the btnModify and btnDelete will be disable.
+    /**
+     * This is the handle for the table when the selected row changes
+     * @param observable
+     * @param oldValue
+     * @param newValue 
+     */
     private void handleTableSelectionChange(ObservableValue observable, Object oldValue, Object newValue) {
         if (newValue != null) {
+            //There is a selected row
             btnModify.setDisable(false);
             btnDelete.setDisable(false);
             menuItemModify.setDisable(false);
             menuItemDelete.setDisable(false);
         } else {
+            //There is not a selected row
             btnModify.setDisable(true);
             btnDelete.setDisable(true);
             menuItemModify.setDisable(true);
@@ -330,6 +391,12 @@ public class AppointmentWindowController {
         }
     }
 
+    /**
+     * This handler is for the modify button. 
+     * It opens the ModifyAppointmentWindow with the data of the appointment 
+     * selected.
+     * @param event 
+     */
     public void handleButtonModify(ActionEvent event) {
 
         try {
@@ -356,6 +423,7 @@ public class AppointmentWindowController {
                             .getName()).log(Level.INFO, "Initializing stage.");
             Appointment selectedAppointment = (Appointment) tblAppointment.getSelectionModel().getSelectedItem();
 
+            //Opens the modify window with the modifyAppointmentController, sending the parent, the client and the selected appointment
             modifyAppointmentController.setAppointmentWindowController(this);
             modifyAppointmentController.initModifyWhenClient(root, getClient(), selectedAppointment);
         } catch (IOException ex) {
@@ -364,6 +432,9 @@ public class AppointmentWindowController {
 
     }
 
+    /**
+     * Method to refresh the table when returning from add and modify windows
+     */
     public void refrescarTabla() {
         try {
             tblAppointment.getItems().clear();
@@ -381,6 +452,11 @@ public class AppointmentWindowController {
 
     }
 
+    /**
+     * This handler is for the delete button. 
+     * It deletes the data of the selected appointment.
+     * @param event 
+     */
     public void handleButtonDelete(ActionEvent event) {
         try {
             //Get selected user data from table view model
@@ -411,6 +487,11 @@ public class AppointmentWindowController {
         }
     }
 
+    /**
+     * This handler is for the add button. 
+     * It opens the AddAppointmentWindow to create a new appointment
+     * @param event 
+     */
     public void handleButtonAdd(ActionEvent event) {
         try {
             //Gets the AddAppointmentClient FXML
@@ -443,10 +524,20 @@ public class AppointmentWindowController {
         }
     }
 
+    /**
+     * This handler is for the back button. 
+     * It closes this window
+     * @param event 
+     */
     public void handleButtonBack(ActionEvent event) {
         getStage().close();
     }
 
+    /**
+     * This handler is for the report button. 
+     * It opens the report of the appointment data
+     * @param event 
+     */
     public void handleButtonReport(ActionEvent event) {
         try {
             JasperReport report

@@ -41,6 +41,8 @@ import logic.PsychologistFactory;
 import logic.PsychologistInterface;
 
 /**
+ * Class to modify an appoinment. The user can modify the psychologist and the
+ * date of the appointment.
  *
  * @author Ilia Consuegra
  */
@@ -92,6 +94,14 @@ public class ModifyAppointmentWindowController {
     @FXML
     private Button btnModify;
 
+    /**
+     * This method initialize the window with the data of the client who is
+     * using the app.
+     *
+     * @param root
+     * @param client
+     * @param selectedAppointment
+     */
     public void initModifyWhenClient(Parent root, Client client, Appointment selectedAppointment) {
 
         try {
@@ -108,13 +118,16 @@ public class ModifyAppointmentWindowController {
 
             psychologistInterface = PsychologistFactory.createPsychologistRestful();
 
+            //Get the list of the psychologist to insert them into the comboBox
             comboPsychologist.setPromptText("Psychologists");
             ObservableList<Psychologist> psychologists
                     = FXCollections.observableArrayList(psychologistInterface.findAllPsychologist());
             comboPsychologist.setItems(psychologists);
 
+            //The modifiedAppointment is used as an auxiliar appointment to modify the data
             modifiedAppointment = new Appointment();
 
+            //Handlers are defined with method references
             btnBack.setOnAction(this::handleButtonBack);
             btnModify.setOnAction(this::handleButtonModify);
 
@@ -139,33 +152,40 @@ public class ModifyAppointmentWindowController {
 
     }
 
-
+    /**
+     * This method collects the psychologist's and date data and modifies 
+     * the appointment with them.
+     * @param event
+     */
     private void handleButtonModify(ActionEvent event) {
-        try {   
+        try {
+            //Get the selected psychologist
             Psychologist psychologist = (Psychologist) comboPsychologist.getSelectionModel().getSelectedItem();
-            
-            if(comboPsychologist.getSelectionModel().getSelectedIndex() == -1){
+
+            //If the user does not select a psychologist, the psychologist will be kept
+            if (comboPsychologist.getSelectionModel().getSelectedIndex() == -1) {
                 psychologist = selectedAppointment.getPsychologist();
             }
-            
+
             AppointmentId appointmentId = new AppointmentId();
             appointmentId.setPsychologistId(psychologist.getId());
             appointmentId.setClientId(client.getId());
             modifiedAppointment.setAppointmentId(appointmentId);
             modifiedAppointment.setPsychologist(psychologist);
             datePicker.setPromptText("dd/mm/yyyy");
-            LocalDate localDate = datePicker.getValue();           
-            Date date;                       
-            if(localDate == null){
+            LocalDate localDate = datePicker.getValue();
+            Date date;
+            //If the user does not select a psychologist, the date will be kept
+            if (localDate == null) {
                 date = selectedAppointment.getDate();
-            }else{
+            } else {
                 date = java.util.Date.from(localDate.atStartOfDay()
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant());
+                        .atZone(ZoneId.systemDefault())
+                        .toInstant());
             }
             DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            String dateString = dateFormat.format(date); 
-            
+            String dateString = dateFormat.format(date);
+
             modifiedAppointment.setDate(date);
 
             modifiedAppointment.setAppointmentId(appointmentId);
@@ -173,8 +193,9 @@ public class ModifyAppointmentWindowController {
             modifiedAppointment.setDiagnose(selectedAppointment.getDiagnose());
             modifiedAppointment.setNumAppointment(selectedAppointment.getNumAppointment());
             modifiedAppointment.setPrice(selectedAppointment.getPrice());
-            
+
             appointmentInterface = AppointmentFactory.createAppointmentInterface();
+            //Call to the edit method of the appointmentInterface
             appointmentInterface.edit(modifiedAppointment);
             appointmentInterface.removeAppointment(String.valueOf(selectedAppointment.getAppointmentId().getPsychologistId()), String.valueOf(selectedAppointment.getAppointmentId().getClientId()));
             Alert alertAppointmentModified = new Alert(Alert.AlertType.INFORMATION);
@@ -182,6 +203,7 @@ public class ModifyAppointmentWindowController {
             alertAppointmentModified.setHeaderText("User modified correctly");
             alertAppointmentModified.show();
 
+            //Call to the refrescarTabla of the appointmentWindowController
             appointmentWindowController.refrescarTabla();
             LOGGER.info("Appointment modified correctly");
             getStage().close();
@@ -197,6 +219,10 @@ public class ModifyAppointmentWindowController {
         }
     }
 
+    /**
+     * This method closes this window
+     * @param event 
+     */
     private void handleButtonBack(ActionEvent event) {
         getStage().close();
     }

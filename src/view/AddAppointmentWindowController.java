@@ -36,7 +36,7 @@ import logic.PsychologistFactory;
 import logic.PsychologistInterface;
 
 /**
- *
+ * Class to add an appoinment selecting a psychologist and the date.
  * @author Ilia Consuegra
  */
 public class AddAppointmentWindowController {
@@ -86,6 +86,12 @@ public class AddAppointmentWindowController {
     @FXML
     private Button btnAdd;
 
+    /**
+     * This method initialize the window with the data of the client who is 
+     * using the app.
+     * @param client
+     * @param root 
+     */
     public void initAddWhenClient(Client client, Parent root) {
 
         try {
@@ -95,6 +101,7 @@ public class AddAppointmentWindowController {
             stage.setTitle("Add Appointment");
             stage.setResizable(false);
 
+            //Handlers are defined with method references
             btnBack.setOnAction(this::handleButtonBack);
             btnAdd.setOnAction(this::handleButtonAdd);
 
@@ -104,6 +111,7 @@ public class AddAppointmentWindowController {
             psychologistInterface = PsychologistFactory.createPsychologistRestful();
             appointmentInterface = AppointmentFactory.createAppointmentInterface();
 
+            //Get the list of the psychologist to insert them into the comboBox
             comboPsychologist.setPromptText("Psychologists");
             ObservableList<Psychologist> psychologists
                     = FXCollections.observableArrayList(psychologistInterface.findAllPsychologist());
@@ -132,23 +140,29 @@ public class AddAppointmentWindowController {
 
     }
 
+    /**
+     * This method collects the psychologist's and date data and creates 
+     * a new appointment with them.
+     * @param event 
+     */
     private void handleButtonAdd(ActionEvent event) {
         try {
-
+            //Get the selected psychologist
             Psychologist psychologist = new Psychologist();
             psychologist = (Psychologist) comboPsychologist.getSelectionModel().getSelectedItem();
+            //If the user does not select a psychologist it shows an alert message
             if(comboPsychologist.getSelectionModel().getSelectedIndex() == -1){
                 throw new EmptyFieldsException();
             }
             AppointmentId appointmentId = new AppointmentId();
             appointmentId.setPsychologistId(psychologist.getId());
             appointmentId.setClientId(client.getId());
-            //appointment = new Appointment(psychologist, appointmentId);
             appointment.setClient(client);
             appointment.setPsychologist(psychologist);
 
             datePicker.setPromptText("dd/mm/yyyy");
             LocalDate localDate = datePicker.getValue();
+            //If the user does not select a date it shows an alert message
             if(localDate == null){
                 throw new EmptyFieldsException();
             }
@@ -160,6 +174,7 @@ public class AddAppointmentWindowController {
             appointment.setAppointmentId(appointmentId);
             appointment.setDiagnose("");
             appointment.setPrice(Float.valueOf("0.0"));
+            //Call to the create method of the appointmentInterface
             appointmentInterface.create(appointment);
 
             Alert alertAppointmentAdded = new Alert(Alert.AlertType.INFORMATION);
@@ -167,6 +182,7 @@ public class AddAppointmentWindowController {
             alertAppointmentAdded.setHeaderText("User added correctly");
             alertAppointmentAdded.show();
 
+            //Call to the refrescarTabla of the appointmentWindowController
             appointmentWindowController.refrescarTabla();
             LOGGER.info("Appointment added correctly");
             getStage().close();
@@ -178,6 +194,7 @@ public class AddAppointmentWindowController {
             alert.setContentText(ex.getMessage());
             alert.showAndWait();
         } catch (EmptyFieldsException ex) {
+            //The user must select the psychologist and date to add the appointment
             LOGGER.severe("Error adding the appointment");
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -187,6 +204,10 @@ public class AddAppointmentWindowController {
         }
     }
 
+    /**
+     * This method closes this window
+     * @param event 
+     */
     private void handleButtonBack(ActionEvent event) {
         getStage().close();
     }
