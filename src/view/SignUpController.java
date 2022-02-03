@@ -42,7 +42,7 @@ import logic.UserInterface;
 /**
  * This is the controller of the Sign Up window
  *
- * @author Alain Lozano, Ilia Consuegra
+ * @author Alain Lozano
  */
 public class SignUpController {
 
@@ -81,7 +81,21 @@ public class SignUpController {
     @FXML
     private Label lblRepeatPasswordError;
 
-    Stage stage = new Stage();
+    private Stage stage = new Stage();
+    /**
+     * @return the stage
+     */
+    public Stage getStage() {
+        return stage;
+    }
+
+    /**
+     * @param stage the stage to set
+     */
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+    
     ClientInterface clientInterface;
     private final static Logger LOGGER = Logger.getLogger(PsychologistProfileController.class.getName());
 
@@ -97,9 +111,9 @@ public class SignUpController {
      */
     public void initStage(Parent root) {
         Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.setTitle("Sign Up Window");
-        stage.setResizable(false);
+        getStage().setScene(scene);
+        getStage().setTitle("Sign Up Window");
+        getStage().setResizable(false);
 
         txtFullName.textProperty().addListener(this::fullNameTextChanged);
         txtFullName.focusedProperty().addListener(this::fullNameFocusChanged);
@@ -116,7 +130,7 @@ public class SignUpController {
         lblRepeatPasswordError.setVisible(false);
         lblUsernameError.setVisible(false);
 
-        stage.show();
+        getStage().show();
         txtFullName.requestFocus();
 
     }
@@ -404,7 +418,7 @@ public class SignUpController {
      */
     private void handleButtonBack(ActionEvent event) {
         try {
-            stage.close();
+            getStage().close();
 
         } catch (Exception ex) {
             lblFullNameError.setText(ex.getMessage());
@@ -492,5 +506,7 @@ public class SignUpController {
         client.setEnumPrivilege(EnumPrivilege.CLIENT);
         return client;
     }
+
+    
 
 }

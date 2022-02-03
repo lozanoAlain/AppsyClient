@@ -17,7 +17,7 @@ import restful.PsychologistRestFul;
 
 /**
  *
- * @author Usuario
+ * @author Alain Lozano
  */
 public class PsychologistManager implements PsychologistInterface {
 

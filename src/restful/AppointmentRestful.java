@@ -25,7 +25,7 @@ import logic.AppointmentInterface;
  *        client.close();
  * </pre>
  *
- * @author Usuario
+ * @author Ilia Consuegra
  */
 public class AppointmentRestful {
 

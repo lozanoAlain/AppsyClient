@@ -7,7 +7,7 @@ package entities;
 
 /**
  * The enumeration class for the user privilege
- * @author Usuario
+ * @author Alain Lozano, Ilia Consuegra
  */
 public enum EnumPrivilege {
     ADMIN,PSYCHOLOGIST,CLIENT

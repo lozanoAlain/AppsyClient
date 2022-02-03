@@ -42,7 +42,7 @@ import logic.PsychologistInterface;
 
 /**
  *
- * @author HP
+ * @author Ilia Consuegra
  */
 public class ModifyAppointmentWindowController {
 

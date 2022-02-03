@@ -15,7 +15,7 @@ import javax.ws.rs.core.GenericType;
 
 /**
  *
- * @author Usuario
+ * @author Alain Lozano
  */
 public interface UserInterface {
     public String countREST() throws BusinessLogicException;

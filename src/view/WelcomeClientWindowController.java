@@ -5,7 +5,9 @@
  */
 package view;
 
+import entities.Client;
 import entities.User;
+import exceptions.BusinessLogicException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -26,13 +28,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javax.naming.OperationNotSupportedException;
+import logic.ClientFactory;
+import logic.ClientInterface;
 
 /**
  * FXML Controller class
  *
  * @author Matteo Fernández
  */
-public class WelcomeClientWindowController implements Initializable {
+public class WelcomeClientWindowController {
 
     @FXML
     private Label lblGreeting;
@@ -43,6 +48,7 @@ public class WelcomeClientWindowController implements Initializable {
     @FXML
     private Stage stage;
 
+    private User user=null;
     //Getters and Setters
     /**
      * @return the stage
@@ -57,7 +63,7 @@ public class WelcomeClientWindowController implements Initializable {
     public void setStage(Stage stage) {
         this.stage = stage;
     }
- 
+
     /**
      * Initializes the controller of the Welcome Psychologists window.
      *
@@ -66,6 +72,7 @@ public class WelcomeClientWindowController implements Initializable {
      */
     public void initialize(Parent root, User user) {
         //Exit button (btnExit) and Log out button (btnLogOut) are enabled.
+        this.user=user;
         Scene scene = new Scene(root);
         stage.setScene(scene);
 
@@ -83,6 +90,7 @@ public class WelcomeClientWindowController implements Initializable {
 
         btnLogOut.setOnAction(this::handleBtnLogOutPressed);
         btnExit.setOnAction(this::handleBtnLogOutPressed);
+        stage.show();
     }
 
     @FXML
@@ -96,16 +104,22 @@ public class WelcomeClientWindowController implements Initializable {
             //Doesn´t want to exit
             this.btnLogOut.setText("Cancelling it...");
         } else {
-            //They choose to log out
-            this.btnLogOut.setText("Bye, thanks for using our app.");
+            try {
+                //They choose to log out
+                this.btnLogOut.setText("Bye, thanks for using our app.");
 
-            //Goes to the Sign in window
-            /*    FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInWindow.fxml"));
-            Parent root = (Parent) loader.load();
-            
-            SignInWindowController signInWindowController = (loader.getController());
-            signInWindowController.setStage(stage);
-            signInWindowController.initStage(root);*/
+                //Goes to the Sign in window
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInWindow.fxml"));
+                Parent root = (Parent) loader.load();
+
+                SignInWindowController signInWindowController = (loader.getController());
+                signInWindowController.setStage(stage);
+                signInWindowController.initStage(root);
+            } catch (IOException ex) {
+                Alert alertErrorLogOut = new Alert(Alert.AlertType.ERROR);
+                alertErrorLogOut.setHeaderText("Error");
+                alertErrorLogOut.setContentText("Error initializing the Sign In window");
+            }
         }
 
     }
@@ -134,8 +148,8 @@ public class WelcomeClientWindowController implements Initializable {
         Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.INFO, "Exit button pressed.");
         stage.close();
     }
-    
-     /**
+
+    /**
      *
      * @param event
      */
@@ -152,10 +166,8 @@ public class WelcomeClientWindowController implements Initializable {
 
             //Gets ResourcesManager controller
             //PsychologistWindowController psychologistWindowController = ((PsychologistWindowController) loader.getController());
-          
             //Set the stage that we already created to the manage psychologist controller
             //psychologistWindowController.setStage(stageManage);
-           
             //Opening application as modal
             stageManage.initModality(Modality.APPLICATION_MODAL);
             stageManage.initOwner(
@@ -168,8 +180,8 @@ public class WelcomeClientWindowController implements Initializable {
             Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-     /**
+
+    /**
      *
      * @param event
      */
@@ -178,32 +190,32 @@ public class WelcomeClientWindowController implements Initializable {
     ) {
         try {
             //Opens the Manage Psychologists
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Profile.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ProfileWindow.fxml"));
 
             //Creates a new stage
             Stage stageManage = new Stage();
             Parent root = (Parent) loader.load();
+            
+            ProfileWindowController profileWindowController = ((ProfileWindowController) loader.getController());
 
+            profileWindowController.setStage(stageManage);
             //Gets Profile controller
             //PsychologistWindowController psychologistWindowController = ((PsychologistWindowController) loader.getController());
-          
             //Set the stage that we already created to the manage psychologist controller
             //psychologistWindowController.setStage(stageManage);
-           
             //Opening application as modal
             stageManage.initModality(Modality.APPLICATION_MODAL);
             stageManage.initOwner(
                     ((Node) event.getSource()).getScene().getWindow());
-
             Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
-            //.initStage(root);
+            profileWindowController.initStage(root, user.getId());
 
         } catch (IOException ex) {
             Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-     /**
+
+    /**
      *
      * @param event
      */
@@ -211,33 +223,45 @@ public class WelcomeClientWindowController implements Initializable {
     public void lblManageApointments(ActionEvent event
     ) {
         try {
+            ClientInterface clientManager = null;
+            clientManager = ClientFactory.createClientRestful();
+
+            Client client = clientManager.find(String.valueOf(user.getId()));
             //Opens the Manage Psychologists
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("ApointmentsWindow.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AppointmentWindow.fxml"));
 
             //Creates a new stage
             Stage stageManage = new Stage();
             Parent root = (Parent) loader.load();
+            AppointmentWindowController appointmentWindowController = ((AppointmentWindowController) loader.getController());
+
+            appointmentWindowController.setStage(stageManage);
 
             //Gets ManageApointments controller
             //PsychologistWindowController psychologistWindowController = ((PsychologistWindowController) loader.getController());
-          
             //Set the stage that we already created to the manage psychologist controller
             //psychologistWindowController.setStage(stageManage);
-           
             //Opening application as modal
+            
             stageManage.initModality(Modality.APPLICATION_MODAL);
             stageManage.initOwner(
                     ((Node) event.getSource()).getScene().getWindow());
 
             Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
-            //.initStage(root);
+            appointmentWindowController.setClient(client);
+            appointmentWindowController.initStage(root);
+            
 
         } catch (IOException ex) {
             Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (OperationNotSupportedException ex) {
+            Logger.getLogger(WelcomeClientWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (BusinessLogicException ex) {
+            Logger.getLogger(WelcomeClientWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-     /**
+
+    /**
      *
      * @param event
      */
@@ -254,10 +278,8 @@ public class WelcomeClientWindowController implements Initializable {
 
             //Gets ManageApointments controller
             //PsychologistWindowController psychologistWindowController = ((PsychologistWindowController) loader.getController());
-          
             //Set the stage that we already created to the manage psychologist controller
             //psychologistWindowController.setStage(stageManage);
-           
             //Opening application as modal
             stageManage.initModality(Modality.APPLICATION_MODAL);
             stageManage.initOwner(
@@ -270,8 +292,8 @@ public class WelcomeClientWindowController implements Initializable {
             Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-     /**
+
+    /**
      *
      * @param event
      */
@@ -288,10 +310,8 @@ public class WelcomeClientWindowController implements Initializable {
 
             //Gets ManageApointments controller
             //PsychologistWindowController psychologistWindowController = ((PsychologistWindowController) loader.getController());
-          
             //Set the stage that we already created to the manage psychologist controller
             //psychologistWindowController.setStage(stageManage);
-           
             //Opening application as modal
             stageManage.initModality(Modality.APPLICATION_MODAL);
             stageManage.initOwner(
@@ -303,11 +323,6 @@ public class WelcomeClientWindowController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-    
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

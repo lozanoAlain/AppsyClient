@@ -14,12 +14,13 @@ import logic.UserFactory;
 import logic.UserInterface;
 import view.ProfileWindowController;
 import view.PsychologistWindowController;
+import view.SignInWindowController;
 import view.SignUpController;
 import view.WelcomeAdminWindowController;
 
 /**
  *
- * @author Usuario
+ * @author Alain Lozano Isasi, Ilia Consuegra
  */
 public class ApplicationAppsy extends Application {
     
@@ -27,12 +28,10 @@ public class ApplicationAppsy extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        UserInterface userInterface = UserFactory.createUsersRestful();
-        User user = userInterface.find("8");
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/WelcomeAdmin.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SignInWindow.fxml"));
         Parent root = (Parent) loader.load();
-        WelcomeAdminWindowController psychologistWindowController = loader.getController();
-        psychologistWindowController.initialize(root,user);
+        SignInWindowController signInWindowController = loader.getController();
+        signInWindowController.initStage(root);
     }
 
     /**

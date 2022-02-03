@@ -14,7 +14,7 @@ import java.util.Set;
 
 /**
  *
- * @author HP
+ * @author Ilia Consuegra
  */
 public interface AppointmentInterface {
     public String countREST() throws BusinessLogicException;

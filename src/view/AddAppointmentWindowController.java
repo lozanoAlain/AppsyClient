@@ -30,13 +30,14 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javax.naming.OperationNotSupportedException;
+import logic.AppointmentFactory;
 import logic.AppointmentInterface;
 import logic.PsychologistFactory;
 import logic.PsychologistInterface;
 
 /**
  *
- * @author HP
+ * @author Ilia Consuegra
  */
 public class AddAppointmentWindowController {
 
@@ -67,6 +68,8 @@ public class AddAppointmentWindowController {
     private Client client;
     private Appointment appointment;
     private AppointmentWindowController appointmentWindowController;
+    
+    
 
     @FXML
     private ImageView imgCerebro;
@@ -99,6 +102,7 @@ public class AddAppointmentWindowController {
 
             comboPsychologist.requestFocus();
             psychologistInterface = PsychologistFactory.createPsychologistRestful();
+            appointmentInterface = AppointmentFactory.createAppointmentInterface();
 
             comboPsychologist.setPromptText("Psychologists");
             ObservableList<Psychologist> psychologists
@@ -141,7 +145,7 @@ public class AddAppointmentWindowController {
             appointmentId.setClientId(client.getId());
             //appointment = new Appointment(psychologist, appointmentId);
             appointment.setClient(client);
-            appointment.setPsychologist(new Psychologist());
+            appointment.setPsychologist(psychologist);
 
             datePicker.setPromptText("dd/mm/yyyy");
             LocalDate localDate = datePicker.getValue();
@@ -151,11 +155,11 @@ public class AddAppointmentWindowController {
             java.util.Date date = java.util.Date.from(localDate.atStartOfDay()
                     .atZone(ZoneId.systemDefault())
                     .toInstant());
-
+            
             appointment.setDate(date);
-            appointment.setAppointmentId(null);
+            appointment.setAppointmentId(appointmentId);
             appointment.setDiagnose("");
-            appointment.setPrice(Float.NaN);
+            appointment.setPrice(Float.valueOf("0.0"));
             appointmentInterface.create(appointment);
 
             Alert alertAppointmentAdded = new Alert(Alert.AlertType.INFORMATION);

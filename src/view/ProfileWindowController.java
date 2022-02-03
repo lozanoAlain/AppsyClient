@@ -41,7 +41,7 @@ import logic.UserInterface;
 /**
  * FXML Controller class
  *
- * @author Usuario
+ * @author Alain Lozano
  */
 public class ProfileWindowController {
 
@@ -82,7 +82,22 @@ public class ProfileWindowController {
     @FXML
     private Button btnBack;
 
-    Stage stage = new Stage();
+    private Stage stage = new Stage();
+    
+    /**
+     * @return the stage
+     */
+    public Stage getStage() {
+        return stage;
+    }
+
+    /**
+     * @param stage the stage to set
+     */
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+    
     ClientInterface clientInterface;
     UserInterface userInterface;
     int userId = 0;
@@ -97,8 +112,8 @@ public class ProfileWindowController {
             this.userId = userId;
             clientAux = clientInterface.find(String.valueOf(userId));
             Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setResizable(false);
+            getStage().setScene(scene);
+            getStage().setResizable(false);
 
             txtFullName.textProperty().addListener(this::fullNameTextChanged);
             txtFullName.focusedProperty().addListener(this::fullNameFocusChanged);
@@ -112,7 +127,7 @@ public class ProfileWindowController {
             txtUsername.setText(clientAux.getLogin());
             txtMail.setText(clientAux.getEmail());
 
-            stage.show();
+            getStage().show();
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(ProfileWindowController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (BusinessLogicException ex) {
@@ -327,7 +342,9 @@ public class ProfileWindowController {
     }
 
     private void handleButtonBack(ActionEvent event) {
-        stage.close();
+        getStage().close();
     }
+
+    
 
 }

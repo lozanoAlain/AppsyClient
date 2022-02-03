@@ -17,7 +17,7 @@ import restful.ClientRestFul;
 
 /**
  *
- * @author Usuario
+ * @author Alain Lozano
  */
 public class ClientManager implements ClientInterface {
 

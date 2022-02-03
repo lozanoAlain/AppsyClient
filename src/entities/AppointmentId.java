@@ -11,7 +11,7 @@ import javax.persistence.Embeddable;
 
 /**
  *
- * @author 2dam
+ * @author Ilia Consuegra
  */
 @Embeddable
 public class AppointmentId implements Serializable {

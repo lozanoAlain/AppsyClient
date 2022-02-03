@@ -32,7 +32,7 @@ import logic.PsychologistInterface;
 /**
  * FXML Controller class
  *
- * @author Usuario
+ * @author Alain Lozano
  */
 public class PsychologistProfileController {
 

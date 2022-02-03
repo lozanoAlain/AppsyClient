@@ -24,7 +24,7 @@ import logic.UserInterface;
         client.close();
  </pre>
  *
- * @author Usuario
+ * @author Alain Lozano
  */
 public class UserRestFul{
 

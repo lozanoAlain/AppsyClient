@@ -20,7 +20,7 @@
             <children>
                 <ImageView id="imgCerebro" fitHeight="539.0" fitWidth="216.0" layoutY="-3.0" pickOnBounds="true" smooth="false">
                     <image>
-                        <Image url="@cerebro.jpg" />
+                        <Image url="@/resources/cerebro.jpg" />
                     </image>
                 </ImageView>
                 <AnchorPane id="anchorPane" layoutX="238.0" layoutY="174.0" opacity="0.8" prefHeight="300.0" prefWidth="613.0" stylesheets="@../Documents/NetBeansProjects/SignInSignUpClient/src/view/css.css">

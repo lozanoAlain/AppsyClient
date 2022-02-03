@@ -21,7 +21,7 @@ import javax.ws.rs.client.WebTarget;
  *        client.close();
  * </pre>
  *
- * @author Usuario
+ * @author Alain Lozano, Ilia Consuegra
  */
 public class LastSignIn {
 

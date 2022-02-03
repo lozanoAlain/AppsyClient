@@ -26,6 +26,7 @@ import javafx.event.Event;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -275,11 +276,12 @@ public class AppointmentWindowController {
     }
 
     private void handleComboBox(Event event) {
-        if (comboBox.getValue().toString().equalsIgnoreCase("psychologist")) {
+        if (comboBox.getSelectionModel().getSelectedItem().toString().equalsIgnoreCase("psychologist")) {
             try {
                 txtSelect.setVisible(false);
                 comboPsychologist.setVisible(true);
                 comboPsychologist.setPromptText("Psychologists");
+                datePicker.setVisible(false);
                 ObservableList<Psychologist> psychologists = FXCollections.observableArrayList(psychologistInterface.findAllPsychologist());
 
                 ObservableList<String> psychologistsName = FXCollections.observableArrayList();
@@ -292,9 +294,10 @@ public class AppointmentWindowController {
                 Logger.getLogger(AppointmentWindowController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-        } else if (comboBox.getValue().toString().equalsIgnoreCase("date")) {
+        } else if (comboBox.getSelectionModel().getSelectedItem().toString().equalsIgnoreCase("date")) {
             txtSelect.setVisible(false);
             datePicker.setVisible(true);
+            comboPsychologist.setVisible(false);
 
         } else {
             txtSelect.setVisible(true);
@@ -331,9 +334,11 @@ public class AppointmentWindowController {
 
             //Set the stage for the addAppojntmentWindow
             modifyAppointmentController.setStage(stageModifyAppointmentWindow);
-
+ 
             //Opening application as modal
             stageModifyAppointmentWindow.initModality(Modality.APPLICATION_MODAL);
+            stageModifyAppointmentWindow.initOwner(
+                    ((Node) event.getSource()).getScene().getWindow());
 
             Logger
                     .getLogger(AddAppointmentWindowController.class
@@ -412,10 +417,13 @@ public class AppointmentWindowController {
 
             //Opening application as modal
             stageAddAppointmentClient.initModality(Modality.APPLICATION_MODAL);
+            stageAddAppointmentClient.initOwner(
+                    ((Node) event.getSource()).getScene().getWindow());
 
             Logger
                     .getLogger(AddAppointmentWindowController.class
                             .getName()).log(Level.INFO, "Initializing stage.");
+            addAppointmentController.setAppointmentWindowController(this);
             addAppointmentController.initAddWhenClient(getClient(), root);
 
         } catch (IOException ex) {

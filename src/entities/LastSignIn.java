@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * This is the class for the signIn entity it has the attributtes: id,user and
  * lastSignIn
  *
- * @author Alain Lozano
+ * @author Alain Lozano, Ilia Consuegra
  */
 @XmlRootElement
 public class LastSignIn implements Serializable {

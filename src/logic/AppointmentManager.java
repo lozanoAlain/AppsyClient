@@ -17,7 +17,7 @@ import restful.AppointmentRestful;
 
 /**
  *
- * @author HP
+ * @author Ilia Consuegra
  */
 public class AppointmentManager implements AppointmentInterface {
 

@@ -211,12 +211,14 @@ public class PsychologistWindowController {
 
             psychologistModifyProfileController.setStage(stagePsychologistProfile);
 
-            stagePsychologistProfile.initModality(Modality.WINDOW_MODAL);
+            stagePsychologistProfile.initModality(Modality.APPLICATION_MODAL);
+            stagePsychologistProfile.initOwner(
+                    ((Node) event.getSource()).getScene().getWindow());
             
             Logger.getLogger(PsychologistProfileController.class.getName()).log(Level.INFO, "Initializing stage.");
 
+            psychologistModifyProfileController.setPsychologistWindowController(this);
             psychologistModifyProfileController.initStage(root, idSelected);
-            psychologists = FXCollections.observableArrayList(interfacePsychologist.findAllPsychologist());
 
         } catch (NullPointerException ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
@@ -278,10 +280,13 @@ public class PsychologistWindowController {
             PsychologistProfileController psychologistModifyProfileController = ((PsychologistProfileController) loader.getController());
 
             psychologistModifyProfileController.setStage(stagePsychologistProfile);
-            stagePsychologistProfile.initModality(Modality.WINDOW_MODAL);
+            stagePsychologistProfile.initModality(Modality.APPLICATION_MODAL);
+            stagePsychologistProfile.initOwner(
+                    ((Node) event.getSource()).getScene().getWindow());
             
 
             Logger.getLogger(PsychologistProfileController.class.getName()).log(Level.INFO, "Initializing stage.");
+            psychologistModifyProfileController.setPsychologistWindowController(this);
             psychologistModifyProfileController.initStage(root, 0);
 
         } catch (IOException ex) {

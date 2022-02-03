@@ -71,7 +71,7 @@ public class WelcomeAdminWindowController  {
         Logger.getLogger(WelcomeAdminWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
 
         //The window title
-        stage.setTitle("Welcome window psychologist");
+        stage.setTitle("Welcome window admin");
 
         //The window (WelcomeWindow) is not resizable.
         stage.setResizable(false);

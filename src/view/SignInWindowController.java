@@ -2,6 +2,7 @@ package view;
 
 import crypt.EncriptDecriptClient;
 import entities.Client;
+import entities.EnumPrivilege;
 import entities.User;
 import exceptions.BusinessLogicException;
 import exceptions.ConnectionErrorException;
@@ -41,7 +42,7 @@ import logic.UserInterface;
 /**
  * This is the controller of the Sign In window
  *
- * @author Matteo Fernández
+ * @author Ilia Consuegra
  */
 public class SignInWindowController {
 
@@ -118,7 +119,7 @@ public class SignInWindowController {
             txtUsername.textProperty().addListener(this::txtUsernameEmpty);
             txtPassword.textProperty().addListener(this::txtPasswordChanged255);
             txtPassword.textProperty().addListener(this::txtPasswordEmpty);
-            //hlkRegister.setOnAction(this::hlkRegister);
+            hlkRegister.setOnAction(this::hlkRegister);
             hlkReset.setOnAction(this::handleReset);
             btnLogin.setOnAction(this::handleBtnLoginPressed);
 
@@ -289,10 +290,16 @@ public class SignInWindowController {
                 Logger.getLogger(SignInWindowController.class.getName()).log(Level.INFO, "Sending the User to the database...");
                 User user = userInterface.findUserByLoginAndPassword(login, passwordCifrada);
                 //Opens the client welcome window
-                if (user.getEnumPrivilege().equals("CLIENT")) {
-                    //openWelcomeClientWindow(user);
-                }else if (user.getEnumPrivilege().equals("ADMIN")){
-                    //openWelcomeAdmintWindow(user);
+                if (user.getEnumPrivilege() == EnumPrivilege.CLIENT) {
+                    openWelcomeClientWindow(user);
+                } else if (user.getEnumPrivilege() == EnumPrivilege.ADMIN) {
+                    openWelcomeAdminWindow(user);
+                } else {
+                    LOGGER.severe("Error");
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setContentText("The psychologist doesnt have a window");
+                    alert.show();
                 }
                 Logger.getLogger(SignInWindowController.class.getName()).log(Level.INFO, "Window open susccefully");
             } catch (BusinessLogicException ex) {
@@ -321,33 +328,34 @@ public class SignInWindowController {
      *
      * @param event The event that manages when the Hyperlink is pressed.
      */
-    /*public void hlkRegister(ActionEvent event) {
-    try {
-    //Opens the Sign Up window
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("SignUpWindow.fxml"));
-    
-    //Creates a new stage
-    Stage stageSignUp = new Stage();
-    Parent root = (Parent) loader.load();
-    
-    //Gets sign up controller
-    SignUpController signUpController = ((SignUpController) loader.getController());
-    
-    //Set the stage that we already created to the sign up controller
-    signUpController.setStage(stageSignUp);
-    
-    //Opening application as modal
-    stageSignUp.initModality(Modality.APPLICATION_MODAL);
-    stageSignUp.initOwner(((Node) event.getSource()).getScene().getWindow());
-    
-    Logger.getLogger(SignInWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
-    signUpController.initStage(root);
-    
-    } catch (IOException ex) {
-    Logger.getLogger(SignInWindowController.class
-    .getName()).log(Level.SEVERE, null, ex);
+    public void hlkRegister(ActionEvent event) {
+        try {
+            //Opens the Sign Up window
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("SignUpWindow.fxml"));
+
+            //Creates a new stage
+            Stage stageSignUp = new Stage();
+            Parent root = (Parent) loader.load();
+
+            //Gets sign up controller
+            SignUpController signUpController = ((SignUpController) loader.getController());
+
+            //Set the stage that we already created to the sign up controller
+            signUpController.setStage(stageSignUp);
+
+            //Opening application as modal
+            stageSignUp.initModality(Modality.APPLICATION_MODAL);
+            stageSignUp.initOwner(((Node) event.getSource()).getScene().getWindow());
+
+            Logger.getLogger(SignInWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
+            signUpController.initStage(root);
+
+        } catch (IOException ex) {
+            Logger.getLogger(SignInWindowController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    }*/
+
     public void handleReset(ActionEvent event) {
         try {
             TextInputDialog txi = new TextInputDialog();
@@ -416,7 +424,6 @@ public class SignInWindowController {
      *
      * @param user The user that is sended.
      */
-    /*
     private void openWelcomeClientWindow(User user) {
         try {
             //Opens the Welcome Client window
@@ -429,20 +436,22 @@ public class SignInWindowController {
             welcomeClientWindowController.setStage(stage);
 
             Logger.getLogger(SignInWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
-            welcomeClientWindowController.initStage(root, user);
+            welcomeClientWindowController.initialize(root, user);
 
         } catch (IOException ex) {
             LOGGER.severe("Error opening the Client Window");
-            Alert alert = new Alert(AlertType.ERROR);
+            LOGGER.severe(ex.getMessage());
+            LOGGER.severe(ex.getLocalizedMessage());
+            LOGGER.severe(ex.getClass().getSimpleName());
+            /*            Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("There was a problem opening the client window");
             alert.setContentText(ex.getMessage());
-            alert.showAndWait();
+            alert.showAndWait();*/
         }
     }
-    */
-    /*
-    private void openWelcomeAdminWindow(User user){
+
+    private void openWelcomeAdminWindow(User user) {
         try {
             //Opens the Welcome Admin window
             FXMLLoader loader = new FXMLLoader(getClass().getResource("WelcomeAdmin.fxml"));
@@ -454,7 +463,7 @@ public class SignInWindowController {
             welcomeAdminWindowController.setStage(stage);
 
             Logger.getLogger(SignInWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
-            welcomeAdminWindowController.initStage(root, user);
+            welcomeAdminWindowController.initialize(root, user);
 
         } catch (IOException ex) {
             LOGGER.severe("Error opening the Client Window");
@@ -465,8 +474,7 @@ public class SignInWindowController {
             alert.showAndWait();
         }
     }
-    */
-    
+
     /**
      * The method that put the label Visible with the error message in red
      *

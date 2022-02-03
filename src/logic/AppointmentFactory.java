@@ -9,7 +9,7 @@ import javax.naming.OperationNotSupportedException;
 
 /**
  *
- * @author HP
+ * @author Ilia Consuegra
  */
 public class AppointmentFactory {
     public static AppointmentInterface createAppointmentInterface() throws OperationNotSupportedException {
