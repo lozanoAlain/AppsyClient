@@ -34,24 +34,26 @@
    </left>
    <top>
       <HBox prefHeight="28.0" prefWidth="850.0" BorderPane.alignment="CENTER">
-         <children>
-            <MenuBar prefHeight="26.0" prefWidth="849.0">
-              <menus>
-                <Menu mnemonicParsing="false" text="Options">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Add" />
-                        <MenuItem mnemonicParsing="false" text="Modify" />
-                        <MenuItem mnemonicParsing="false" text="Delete" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Delete" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-         </children>
+          <children>
+                <MenuBar fx:id="menuBar" prefHeight="29.0" prefWidth="865.0">
+                    <menus>
+                        <Menu fx:id="menuActions" mnemonicParsing="false" text="Actions">
+                            <items>
+                                <MenuItem fx:id="menuItemAdd" mnemonicParsing="false" onAction="#handleButtonAdd" text="Add" />
+                                <MenuItem fx:id="menuItemModify" mnemonicParsing="false" onAction="#handleButtonModify" text="Modify" />
+                                <MenuItem fx:id="menuItemDelete" mnemonicParsing="false" onAction="#handleButtonDelete" text="Delete" />
+                                <MenuItem fx:id="menuItemReport" mnemonicParsing="false" onAction="#handleButtonReport" text="Report" />
+                                <MenuItem fx:id="menuItemBack" mnemonicParsing="false" text="Back" />
+                            </items>
+                        </Menu>
+                        <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
+                            <items>
+                                <MenuItem fx:id="menuItemHelp" mnemonicParsing="false" text="Help" />
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+            </children>
       </HBox>
    </top>
    <right>

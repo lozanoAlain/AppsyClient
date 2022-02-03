@@ -36,6 +36,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -138,6 +139,10 @@ public class AppointmentWindowController {
     private Button btnDelete;
     @FXML
     private Button btnReport;
+    @FXML
+    MenuItem menuItemModify;
+    @FXML
+    MenuItem menuItemDelete;
 
     public void initStage(Parent root) {
         try {
@@ -151,6 +156,8 @@ public class AppointmentWindowController {
             datePicker.setVisible(false);
             btnModify.setDisable(true);
             btnDelete.setDisable(true);
+            menuItemModify.setDisable(true);
+            menuItemDelete.setDisable(true);
 
             btnAdd.setOnAction(this::handleButtonAdd);
             btnBack.setOnAction(this::handleButtonBack);
@@ -228,7 +235,7 @@ public class AppointmentWindowController {
         }
     }
 
-    private void handleButtonSearch(Event event) {
+    public void handleButtonSearch(Event event) {
         try {
             if (comboPsychologist.isVisible()) {
                 String psychologistName = comboPsychologist.getSelectionModel().getSelectedItem();
@@ -313,13 +320,17 @@ public class AppointmentWindowController {
         if (newValue != null) {
             btnModify.setDisable(false);
             btnDelete.setDisable(false);
+            menuItemModify.setDisable(false);
+            menuItemDelete.setDisable(false);
         } else {
             btnModify.setDisable(true);
             btnDelete.setDisable(true);
+            menuItemModify.setDisable(true);
+            menuItemDelete.setDisable(true);
         }
     }
 
-    private void handleButtonModify(ActionEvent event) {
+    public void handleButtonModify(ActionEvent event) {
 
         try {
             //Gets the AddAppointmentWindow FXML
@@ -334,7 +345,7 @@ public class AppointmentWindowController {
 
             //Set the stage for the addAppojntmentWindow
             modifyAppointmentController.setStage(stageModifyAppointmentWindow);
- 
+
             //Opening application as modal
             stageModifyAppointmentWindow.initModality(Modality.APPLICATION_MODAL);
             stageModifyAppointmentWindow.initOwner(
@@ -370,7 +381,7 @@ public class AppointmentWindowController {
 
     }
 
-    private void handleButtonDelete(ActionEvent event) {
+    public void handleButtonDelete(ActionEvent event) {
         try {
             //Get selected user data from table view model
             Appointment selectedAppointment = ((Appointment) tblAppointment.getSelectionModel()
@@ -400,7 +411,7 @@ public class AppointmentWindowController {
         }
     }
 
-    private void handleButtonAdd(ActionEvent event) {
+    public void handleButtonAdd(ActionEvent event) {
         try {
             //Gets the AddAppointmentClient FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("AddAppointmentClient.fxml"));
@@ -432,11 +443,11 @@ public class AppointmentWindowController {
         }
     }
 
-    private void handleButtonBack(ActionEvent event) {
+    public void handleButtonBack(ActionEvent event) {
         getStage().close();
     }
 
-    private void handleButtonReport(ActionEvent event) {
+    public void handleButtonReport(ActionEvent event) {
         try {
             JasperReport report
                     = JasperCompileManager.compileReport(getClass()
