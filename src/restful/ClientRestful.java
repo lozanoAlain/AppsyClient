@@ -23,16 +23,16 @@ import javax.ws.rs.core.GenericType;
  *        client.close();
  * </pre>
  *
- * @author Usuario
+ * @author Alain Lozano
  */
-public class ClientRestFul {
+public class ClientRestful {
 
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("URI");
 
 
-    public ClientRestFul() {
+    public ClientRestful() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(BASE_URI).path("entities.client");
     }

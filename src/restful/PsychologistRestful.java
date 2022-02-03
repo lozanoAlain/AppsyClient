@@ -13,28 +13,28 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 
 /**
- * Jersey REST client generated for REST resource:ClientFacadeREST
- * [entities.client]<br>
+ * Jersey REST client generated for REST resource:PsychologistFacadeREST
+ * [entities.psychologist]<br>
  * USAGE:
  * <pre>
- *        ClientRestFul client = new ClientRestFul();
+ *        PsychologistRestFul client = new PsychologistRestFul();
  *        Object response = client.XXX(...);
  *        // do whatever with response
  *        client.close();
+ * 
  * </pre>
  *
  * @author Alain Lozano
  */
-public class ClientRestFul {
+public class PsychologistRestful {
 
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = ResourceBundle.getBundle("resources.RestFulConfigFile").getString("URI");
 
-
-    public ClientRestFul() {
+    public PsychologistRestful() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
-        webTarget = client.target(BASE_URI).path("entities.client");
+        webTarget = client.target(BASE_URI).path("entities.psychologist");
     }
 
     public String countREST() throws ClientErrorException {
@@ -60,26 +60,30 @@ public class ClientRestFul {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public void create(Object requestEntity) throws ClientErrorException {
-        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).
-                post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), new GenericType<Client>() {
-                });
+    public <T> T findPsychologistByMail(GenericType<T> responseType, String email) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("email/{0}", new Object[]{email}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
+    public void create(Object requestEntity) throws ClientErrorException {
+        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
+                .post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML),new GenericType<Psychologist>(){});
+    }
 
-    public <T> T findAll(Class<T> responseType) throws ClientErrorException {
+    public <T> T findAll(GenericType<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+
+    public <T> T findPsychologistByFullName(GenericType<T> responseType, String fullName) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("fullName/{0}", new Object[]{fullName}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
     public void remove(String id) throws ClientErrorException {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request().delete();
-    }
-
-    public <T> T findClientByFullName(GenericType<T> responseType, String fullName) throws ClientErrorException {
-        WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("fullName/{0}", new Object[]{fullName}));
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
     public void close() {
