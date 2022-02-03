@@ -3,6 +3,9 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<field name="tittle" class="java.lang.String"/>
+	<field name="link" class="java.lang.String"/>
+	<field name="psychologist.fullName" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -11,12 +14,12 @@
 			<staticText>
 				<reportElement x="49" y="20" width="473" height="49" uuid="8c2fc2a2-12a1-4d58-9fb7-ae8a6e2a71d5"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="24" isBold="true"/>
+					<font size="32" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[RESOURCES REPORT]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="455" y="0" width="100" height="20" uuid="f609f415-ed0b-4032-a611-cc4dedb8dfa6"/>
+				<reportElement x="455" y="0" width="100" height="20" uuid="df4440f8-b369-43c1-8f37-3c1176e10924"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>
@@ -27,52 +30,41 @@
 	<columnHeader>
 		<band height="61" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="136" height="61" uuid="3bf161dc-8603-4a6f-8cb7-9cf9dafe1f92"/>
+				<reportElement x="0" y="0" width="200" height="61" uuid="3bf161dc-8603-4a6f-8cb7-9cf9dafe1f92"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="16" isBold="true"/>
+					<font size="20" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[TITTLE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="136" y="0" width="124" height="61" uuid="7d98c489-14ed-43e5-81c6-544293cb1250"/>
+				<reportElement x="200" y="0" width="176" height="61" uuid="7d98c489-14ed-43e5-81c6-544293cb1250"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="16" isBold="true"/>
+					<font size="20" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[LINK]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="260" y="0" width="171" height="61" uuid="faa510fb-c6fe-44c3-8fed-787e5750c720"/>
+				<reportElement x="376" y="0" width="179" height="61" uuid="faa510fb-c6fe-44c3-8fed-787e5750c720"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="16" isBold="true"/>
+					<font size="20" isBold="true" isUnderline="true" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[PSYCHOLOGIST]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="431" y="0" width="124" height="61" uuid="e4f848b2-b126-461e-b740-ee00f7fd305d"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="16" isBold="true"/>
-				</textElement>
-				<text><![CDATA[DATE]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="125" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="136" height="20" uuid="d9005d53-364c-429f-ae5e-5adc16ec444b"/>
-				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+				<reportElement x="0" y="0" width="200" height="20" uuid="d9005d53-364c-429f-ae5e-5adc16ec444b"/>
+				<textFieldExpression><![CDATA[$F{tittle}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="136" y="0" width="124" height="20" uuid="e2812187-baec-41b0-8c82-af19d406e7e2"/>
+				<reportElement x="200" y="0" width="121" height="20" uuid="e2812187-baec-41b0-8c82-af19d406e7e2"/>
 				<textFieldExpression><![CDATA[$F{link}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="260" y="0" width="171" height="20" uuid="cece834f-791d-43c0-b69a-e23fbce49748"/>
-				<textFieldExpression><![CDATA[$F{psychologist}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="431" y="0" width="124" height="20" uuid="75f8ae85-7a9a-4981-bbce-cd6d87df1cdd"/>
-				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{date})]]></textFieldExpression>
+				<reportElement x="376" y="0" width="179" height="20" uuid="cece834f-791d-43c0-b69a-e23fbce49748"/>
+				<textFieldExpression><![CDATA[$F{psychologist.fullName}]]></textFieldExpression>
 			</textField>
 		</band>
 		<band height="50"/>
