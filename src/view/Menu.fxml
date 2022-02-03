@@ -15,12 +15,12 @@
                         <MenuItem fx:id="menuItemReport1" mnemonicParsing="false" onAction="#handleButtonModify" text="Modify" />
                         <MenuItem fx:id="menuItemReport2" mnemonicParsing="false" onAction="#handleButtonDelete" text="Delete" />
                         <MenuItem fx:id="menuItemReport3" mnemonicParsing="false" onAction="#handleButtonReport" text="Report" />
-                        <MenuItem fx:id="menuItemReport4" mnemonicParsing="false" text="Back" />
+                        <MenuItem fx:id="menuItemReport4" mnemonicParsing="false" text="Back" onAction="#handleButtonBack" />
                     </items>
                 </Menu>
                 <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
                     <items>
-                        <MenuItem fx:id="menuItemHelp" mnemonicParsing="false" text="Help" />
+                        <MenuItem fx:id="menuItemHelp" mnemonicParsing="false" text="Help" onAction="#handleButtonHelp"/>
                     </items>
                 </Menu>
             </menus>
