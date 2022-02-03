@@ -5,10 +5,10 @@
  */
 package view;
 
-import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import entities.Psychologist;
 import java.util.List;
 import entities.Resource;
+import entities.User;
 import exceptions.BusinessLogicException;
 import java.io.IOException;
 import java.util.Optional;
@@ -38,6 +38,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Menu;
@@ -63,7 +64,7 @@ import net.sf.jasperreports.view.JasperViewer;
 /**
  * FXML Controller class
  *
- * @author Matteo FernÃ¡ndez
+ * @author Matteo Fernández
  */
 public class ResourcesController {
 
@@ -95,19 +96,25 @@ public class ResourcesController {
     private ComboBox<Psychologist> comboPsycho;
     @FXML
     private Button btnReport;
-    @FXML
-    private Label lblResource;
     private Stage stage;
-    private static final Logger logger = Logger.getLogger("package.class");
     private ResourceInterface resourceManager;
     private PsychologistInterface psychologistManager;
     @FXML
     public DatePicker datePicker;
+    private final static Logger LOGGER = Logger.getLogger(ResourcesController.class.getName());
 
+    /**
+     *
+     * @param stage the stage to set.
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
+    /**
+     *
+     * @return the stage.
+     */
     public Stage getStage() {
         return stage;
     }
@@ -119,7 +126,6 @@ public class ResourcesController {
      * @throws java.lang.Exception
      */
     public void initStage(Parent root) throws Exception {
-
         try {
             //Initializes the stage
             Scene scene = new Scene(root);
@@ -213,7 +219,6 @@ public class ResourcesController {
             btnModify.setOnAction(this::handleButtonModify);
             btnDelete.setOnAction(this::handleButtonDelete);
             btnSearch.setOnAction(this::handleButtonSearch);
-            /*btnBack.setOnAction(this::handleButtonBack);*/
 
             //some tooltips to help the user
             btnBack.setTooltip(new Tooltip("Click to exit"));
@@ -224,11 +229,24 @@ public class ResourcesController {
 
             //Shows stage
             stage.show();
-        } catch (OperationNotSupportedException ex) {
-            Logger.getLogger(ResourcesController.class.getName()).log(Level.SEVERE, null, ex);
+
+            LOGGER.info("Resource window opened correctly.");
+        } catch (OperationNotSupportedException | BusinessLogicException ex) {
+            LOGGER.severe("Error with the server.");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("There is a problem on the server.");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
         }
     }
 
+    /**
+     *
+     * @param observable
+     * @param oldValue The old value of the link.
+     * @param newValue The new value of the link.
+     */
     private void txtLinkChanged(ObservableValue observable, String oldValue, String newValue) {
         if (!newValue.equalsIgnoreCase(oldValue)) {
             if (!txtTittle.getText().isEmpty() && !comboPsycho.getSelectionModel().isEmpty() && !txtLink.getText().isEmpty()) {
@@ -239,6 +257,12 @@ public class ResourcesController {
         }
     }
 
+    /**
+     *
+     * @param observable
+     * @param oldValue The old value of the text field.
+     * @param newValue The new value of the text field.
+     */
     private void txtTittleChanged(ObservableValue observable, String oldValue, String newValue) {
         if (!newValue.equalsIgnoreCase(oldValue)) {
             if (!txtLink.getText().isEmpty() && !comboPsycho.getSelectionModel().isEmpty() && !txtTittle.getText().isEmpty()) {
@@ -254,8 +278,8 @@ public class ResourcesController {
      * fields.
      *
      * @param observable
-     * @param oldVaue
-     * @param newValue is when you click on a row
+     * @param oldVaue The old value of the row.
+     * @param newValue The new value of the row.
      */
     public void handleResourceTableSelectionChange(ObservableValue observable,
             Object oldVaue, Object newValue) {
@@ -290,17 +314,6 @@ public class ResourcesController {
         }
     }
 
-    /*    public void initWhenPsychologist(User user) {
-    //The psychologist combo box (comboPsycho) is enabled until they write
-    // something in the other fields. If so, the psychologist combo box
-    // (comboPsycho) is disabled and only the add button (btnAdd) is enabled.
-    if (!txtTittle.getText().isEmpty() || !txtDiagnose.getText().isEmpty() || !txtLink.getText().isEmpty()) {
-    comboPsycho.isDisable();
-    btnSearch.isDisable();
-    btnModify.isDisable();
-    btnDelete.isDisable();
-    }
-    }*/
     /**
      * Focus the search button.
      *
@@ -378,11 +391,19 @@ public class ResourcesController {
             tableViewResource.setItems(resourceData);
             tableViewResource.refresh();
         } catch (NullPointerException ex) {
+            Alert alerta = new Alert(AlertType.INFORMATION);
+            alerta.setHeaderText("Select criteria");
+            alerta.setContentText("Select a criteria to search a resource.");
+            alerta.show();
 
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException | ClientErrorException ex) {
 
-        } catch (ClientErrorException ex) {
-
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+            Alert error = new Alert(Alert.AlertType.INFORMATION);
+            error.setHeaderText("Server Error");
+            error.setContentText("Error connecting to the server");
+            error.show();
         }
 
     }
@@ -448,7 +469,7 @@ public class ResourcesController {
         resource.setLink(txtLink.getText());
         resource.setPsychologist(comboPsycho.getSelectionModel().getSelectedItem());
         ResourceFactory.getResourceManager().edit(resource, resource.getId().toString());
-        //Clear selection and refresh table view 
+        //Clear selection and refresh table view
         tableViewResource.getSelectionModel().clearSelection();
         resourceManager = ResourceFactory.getResourceManager();
         GenericType<List<Resource>> resourceListType = new GenericType<List<Resource>>() {
@@ -456,6 +477,11 @@ public class ResourcesController {
         ObservableList<Resource> resourceData = FXCollections.observableArrayList((List<Resource>) resourceManager.findAll(resourceListType));
         tableViewResource.setItems((ObservableList<Resource>) resourceData);
         tableViewResource.refresh();
+        Alert resourceModified = new Alert(Alert.AlertType.INFORMATION);
+        resourceModified.setTitle("MODIFY RESOURCE SUSSCEFULLY");
+        resourceModified.setHeaderText("Resource modified correctly");
+        resourceModified.show();
+        LOGGER.info("Resource modified correctly");
     }
 
     /**
@@ -466,31 +492,40 @@ public class ResourcesController {
      */
     @FXML
     private void handleButtonAdd(ActionEvent event) {
+        try {
+            //New resource
+            Resource resource = new Resource();
 
-        //New resource
-        Resource resource = new Resource();
+            //put data
+            resource.setTittle(txtTittle.getText());
+            resource.setLink(txtLink.getText());
+            resource.setPsychologist(comboPsycho.getSelectionModel().getSelectedItem());
 
-        //put data
-        resource.setTittle(txtTittle.getText());
-        resource.setLink(txtLink.getText());
-        resource.setPsychologist(comboPsycho.getSelectionModel().getSelectedItem());
+            resource.setDateAdded(Date.from(Instant.now()));
 
-        resource.setDateAdded(Date.from(Instant.now()));
+            GenericType<List<Resource>> resourceListType = new GenericType<List<Resource>>() {
+            };
 
-        GenericType<List<Resource>> resourceListType = new GenericType<List<Resource>>() {
-        };
+            ObservableList<Resource> resourceData = FXCollections.observableArrayList((List<Resource>) resourceManager.findAll(resourceListType));
+            tableViewResource.setItems((ObservableList<Resource>) resourceData);
 
-        ObservableList<Resource> resourceData = FXCollections.observableArrayList((List<Resource>) resourceManager.findAll(resourceListType));
-        tableViewResource.setItems((ObservableList<Resource>) resourceData);
+            //Create it
+            ResourceFactory.getResourceManager().create(resource);
 
-        //Create it
-        ResourceFactory.getResourceManager().create(resource);
+            //Update the table
+            resourceData = FXCollections.observableList(ResourceFactory.getResourceManager().findAll(resourceListType));
+            tableViewResource.setItems(resourceData);
 
-        //Update the table
-        resourceData = FXCollections.observableList(ResourceFactory.getResourceManager().findAll(resourceListType));
-        tableViewResource.setItems(resourceData);
-
-        tableViewResource.refresh();
+            tableViewResource.refresh();
+        } catch (ClientErrorException ex) {
+            Logger.getLogger(ResourcesController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+            Alert error = new Alert(Alert.AlertType.INFORMATION);
+            error.setHeaderText("Server Error");
+            error.setContentText("Error connecting to the server.");
+            error.show();
+        }
 
     }
 
@@ -521,21 +556,21 @@ public class ResourcesController {
      *
      * @param user The user that is send to the Sign In window
      */
-    /*    @FXML
+    @FXML
     public void handleButtonBack(User user) {
-    try {
-    //Opens the Welcome window Client
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("WelcomeClient.fxml"));
-    Parent root1 = (Parent) loader.load();
-    
-    //Gets Welcome window controller
-    WelcomeClientWindowController welcomeClientWindowController = ((WelcomeClientWindowController) loader.getController());
-    welcomeClientWindowController.setStage(stage);
-    
-    Logger.getLogger(WelcomeClientWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
-    welcomeClientWindowController.initialize(root1,user);
-    } catch (IOException ex) {
-    Logger.getLogger(ResourcesController.class.getName()).log(Level.SEVERE, null, ex);
+        try {
+            //Opens the Welcome window Client
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("WelcomeClientWindowController.fxml"));
+            Parent root1 = (Parent) loader.load();
+
+            //Gets Welcome window controller
+            WelcomeClientWindowController welcomeClientWindowController = ((WelcomeClientWindowController) loader.getController());
+            welcomeClientWindowController.setStage(stage);
+
+            Logger.getLogger(WelcomeClientWindowController.class.getName()).log(Level.INFO, "Initializing stage.");
+            welcomeClientWindowController.initialize(root1, user);
+        } catch (IOException ex) {
+            Logger.getLogger(ResourcesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    }*/
 }
