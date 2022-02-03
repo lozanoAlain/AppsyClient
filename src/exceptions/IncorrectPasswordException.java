@@ -6,7 +6,7 @@
 package exceptions;
 
 /**
- *
+ *  In case the user introduce incorrectly the password to login or to change the password
  * @author  Alain Lozano,Ilia Consuegra
  */
 public class IncorrectPasswordException extends Exception {

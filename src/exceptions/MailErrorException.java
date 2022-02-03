@@ -6,7 +6,7 @@
 package exceptions;
 
 /**
- *
+ *  Exception in case the email is wrondly written
  * @author Alain Lozano,Ilia Consuegra
  */
 public class MailErrorException extends Exception {

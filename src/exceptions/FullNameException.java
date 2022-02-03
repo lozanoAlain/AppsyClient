@@ -6,7 +6,7 @@
 package exceptions;
 
 /**
- *
+ *  Exception in case the full name has no blank spaces
  * @author Alain Lozano,Ilia Consuegra
  */
 public class FullNameException extends Exception {

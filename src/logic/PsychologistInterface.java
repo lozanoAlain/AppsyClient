@@ -15,7 +15,7 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.GenericType;
 
 /**
- *
+ *  This class is the interface of the psychologist, here are all the methods that are implemented by the Manager.
  * @author Alain Lozano
  */
 public interface PsychologistInterface {

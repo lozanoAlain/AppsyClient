@@ -8,7 +8,7 @@ package logic;
 import javax.naming.OperationNotSupportedException;
 
 /**
- *
+ *  This factory returns an instance of the Appointment interface and we use it to separate layers.
  * @author Ilia Consuegra
  */
 public class AppointmentFactory {

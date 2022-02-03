@@ -2,6 +2,7 @@ package view;
 
 import entities.Psychologist;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -10,6 +11,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
+import static org.junit.Assert.assertNotEquals;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
@@ -88,7 +90,7 @@ public class PsychologistWindowControllerIT extends ApplicationTest {
         btnBack = lookup("#btnBack").query();
         btnModify = lookup("#btnModify").query();
         btnSearch = lookup("#btnSearch").query();
-        
+
         release(KeyCode.CONTROL);
 
     }
@@ -115,10 +117,10 @@ public class PsychologistWindowControllerIT extends ApplicationTest {
         clickOn(btnSearch);
         verifyThat("lev@gmail.com", isVisible());
     }
-
+    @Ignore
     @Test
     public void testC_DeleteModifyButton() {
-        
+
         clickOn("Lev Vygotsky");
         verifyThat(btnModify, isEnabled());
         verifyThat(btnDelete, isEnabled());
@@ -143,6 +145,8 @@ public class PsychologistWindowControllerIT extends ApplicationTest {
 
     @Test
     public void testF_DeleteButton() {
+        int rows = tablePsychologist.getItems().size();
+        Node row = lookup(".table-row-cell").nth(tablePsychologist.getItems().size() - 1).query();
         clickOn("Lev Vygotsky");
         clickOn(btnDelete);
         verifyThat("Are you sure you want to delete the psychologist?", isVisible());
@@ -152,9 +156,9 @@ public class PsychologistWindowControllerIT extends ApplicationTest {
         clickOn(btnDelete);
         verifyThat("Are you sure you want to delete the psychologist?", isVisible());
         clickOn("Aceptar");
-        verifyThat("Lev Vygotsky", isVisible());
+        assertNotEquals("Row deleted", rows, tablePsychologist.getItems().size());
     }
-
+    @Ignore
     @Test
     public void testG_ReportButton() {
         clickOn(btnReport);

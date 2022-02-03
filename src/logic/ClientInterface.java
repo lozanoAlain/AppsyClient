@@ -12,7 +12,7 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.NotFoundException;
 
 /**
- *
+ *  This class is the interface of the client, here are all the methods that are implemented by the Manager.
  * @author Alain Lozano
  */
 public interface ClientInterface {

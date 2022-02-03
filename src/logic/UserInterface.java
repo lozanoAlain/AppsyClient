@@ -14,7 +14,7 @@ import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.GenericType;
 
 /**
- *
+ *  This class is the interface of the users, here are all the methods that are implemented by the Manager.
  * @author Alain Lozano
  */
 public interface UserInterface {

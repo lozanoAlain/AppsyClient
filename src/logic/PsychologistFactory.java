@@ -8,7 +8,7 @@ package logic;
 import javax.naming.OperationNotSupportedException;
 
 /**
- *
+ *  This factory returns an instance of the Psychologist interface and we use it to separate layers.
  * @author Alain Lozano
  */
 public class PsychologistFactory {

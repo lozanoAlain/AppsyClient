@@ -6,7 +6,7 @@
 package exceptions;
 
 /**
- *
+ * Exception in case the Server falls 
  * @author Alain Lozano, Ilia Consuegra
  */
 public class ConnectionErrorException extends Exception {

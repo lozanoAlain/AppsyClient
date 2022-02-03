@@ -6,7 +6,7 @@
 package exceptions;
 
 /**
- *
+ *  Exception when the two password introduced are incorrectly
  * @author  Alain Lozano,Ilia Consuegra
  */
 public class RepeatPasswordException extends Exception {

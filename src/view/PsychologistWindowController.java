@@ -61,6 +61,10 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
 
 /**
+ * This window shows all the psychologist in one table and lets the user add a
+ * psychologist modified a selected psychologist and delete a selected
+ * psychologist. Also lets the user find a psychologist buy the full name or the
+ * login. And finally lets the user have a report of all the psychologist
  *
  * @author Alain Lozano
  */
@@ -99,6 +103,7 @@ public class PsychologistWindowController {
 
     private int idSelected = 0;
     private Stage stage = new Stage();
+
     /**
      * @return the stage
      */
@@ -116,8 +121,15 @@ public class PsychologistWindowController {
     UserInterface userInterface;
     ObservableList<Psychologist> psychologists;
     private static final Logger LOGGER = Logger.getLogger(PsychologistWindowController.class.getName());
-    TableView  tableViewPsychoTableView=tablePsychologist;
+    TableView tableViewPsychoTableView = tablePsychologist;
 
+    /**
+     * This method initializa the window and sets the values for the table and
+     * the colums of the table, and also sets the componets disability and their
+     * visibility
+     *
+     * @param root
+     */
     public void initStage(Parent root) {
         try {
             btnDelete.setDisable(true);
@@ -130,7 +142,7 @@ public class PsychologistWindowController {
             userInterface = UserFactory.createUsersRestful();
             getStage().setScene(scene);
             getStage().setResizable(false);
-            
+
             //Set factories for cell values in users table columns.
             columnLogin.setCellValueFactory(
                     new PropertyValueFactory<>("login"));
@@ -149,10 +161,9 @@ public class PsychologistWindowController {
             if (psychologists.size() == 0) {
                 btnReport.setDisable(true);
             }
-            //Show window.
 
             tablePsychologist.getSelectionModel().selectedItemProperty().addListener(this::handleUserSelectionChanged);
-
+            //Adds the handler for the components of the window
             btnAdd.setOnAction(this::handleButtonAdd);
             btnSearch.setOnAction(this::handleButtonSearch);
             btnModify.setOnAction(this::handleButtonModify);
@@ -162,8 +173,10 @@ public class PsychologistWindowController {
             comboSearch.getItems().addAll("All", new Separator(), "Name",
                     "Email");
             comboSearch.setTooltip(new Tooltip("Select the search criteria"));
+            //Shows the window
             getStage().show();
         } catch (BusinessLogicException ex) {
+            //Catch in case the find all psychologist fails
             LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
             errorCreatingThePsychologist.setHeaderText("Server Error");
@@ -171,7 +184,8 @@ public class PsychologistWindowController {
             errorCreatingThePsychologist.show();
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex){
+        } catch (Exception ex) {
+            //Catch in case the server is down
             LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
             errorCreatingThePsychologist.setHeaderText("Server Error");
@@ -179,7 +193,12 @@ public class PsychologistWindowController {
             errorCreatingThePsychologist.show();
         }
     }
-
+    /**
+     * This is the handle for the combobox
+     * @param observableValue
+     * @param oldValue
+     * @param newValue 
+     */
     public void handleUserSelectionChanged(ObservableValue observableValue, Object oldValue, Object newValue) {
         if (newValue != null) {
             btnAdd.setDisable(true);
@@ -187,15 +206,14 @@ public class PsychologistWindowController {
             btnDelete.setDisable(false);
             menuItemModify.setDisable(false);
             menuItemDelete.setDisable(false);
-            
-            
+
         } else {
             btnAdd.setDisable(false);
             btnModify.setDisable(true);
             btnDelete.setDisable(true);
             menuItemModify.setDisable(true);
             menuItemDelete.setDisable(true);
-            
+
         }
     }
 
@@ -214,7 +232,7 @@ public class PsychologistWindowController {
             stagePsychologistProfile.initModality(Modality.APPLICATION_MODAL);
             stagePsychologistProfile.initOwner(
                     ((Node) event.getSource()).getScene().getWindow());
-            
+
             Logger.getLogger(PsychologistProfileController.class.getName()).log(Level.INFO, "Initializing stage.");
 
             psychologistModifyProfileController.setPsychologistWindowController(this);
@@ -260,7 +278,7 @@ public class PsychologistWindowController {
             errorCreatingThePsychologist.show();
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
             errorCreatingThePsychologist.setHeaderText("Server Error");
@@ -283,7 +301,6 @@ public class PsychologistWindowController {
             stagePsychologistProfile.initModality(Modality.APPLICATION_MODAL);
             stagePsychologistProfile.initOwner(
                     ((Node) event.getSource()).getScene().getWindow());
-            
 
             Logger.getLogger(PsychologistProfileController.class.getName()).log(Level.INFO, "Initializing stage.");
             psychologistModifyProfileController.setPsychologistWindowController(this);
