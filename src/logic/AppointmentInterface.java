@@ -13,7 +13,7 @@ import java.util.Set;
  */
 
 /**
- *
+ *  This class is the interface of the appointments, here are all the methods that are implemented by the Manager.
  * @author Ilia Consuegra
  */
 public interface AppointmentInterface {

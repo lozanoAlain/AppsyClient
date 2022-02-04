@@ -41,8 +41,10 @@ public class LastSignIn implements Serializable {
         return user;
     }
 
+    
     /**
-     * @param idUser the idUser to set
+     * 
+     * @param user 
      */
     public void setUser(User user) {
         this.user = user;

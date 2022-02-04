@@ -28,7 +28,7 @@ public class AppointmentManager implements AppointmentInterface {
     public String countREST() throws BusinessLogicException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public void edit(Appointment appointment) throws BusinessLogicException {
         try {

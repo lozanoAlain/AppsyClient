@@ -44,8 +44,6 @@ public class EncriptDecriptClient {
      * Cifra un texto con RSA, modo ECB y padding PKCS5Padding (simétrica) y lo
      * retorna
      *
-     * @param clave La clave del usuario
-     * @param mensaje El mensaje a cifrar
      * @return Mensaje cifrado
      */
     public static String encrypt(String password) throws Exception {

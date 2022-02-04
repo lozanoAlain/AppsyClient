@@ -8,7 +8,7 @@ package exceptions;
 import javafx.scene.control.Label;
 
 /**
- *
+ * Exception when the two password introduced dont match 
  * @author  Alain Lozano,Ilia Consuegra
  */
 public class PasswordDontMatch extends Exception {
