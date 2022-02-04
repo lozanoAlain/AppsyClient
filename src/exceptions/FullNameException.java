@@ -6,7 +6,7 @@
 package exceptions;
 
 /**
- *
+ *  Exception in case the full name has no blank spaces
  * @author Alain Lozano,Ilia Consuegra
  */
 public class FullNameException extends Exception {
@@ -15,7 +15,6 @@ public class FullNameException extends Exception {
      * Constructs an instance of <code>FullNameException</code> with the
      * specified detail message.
      *
-     * @param msg the detail message.
      */
     public FullNameException() {
         super("The full name is incomplete.");

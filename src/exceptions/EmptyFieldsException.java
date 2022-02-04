@@ -6,7 +6,7 @@
 package exceptions;
 
 /**
- *
+ * Exception in case the TextField is empty
  * @author  Alain Lozano,Ilia Consuegra
  */
 public class EmptyFieldsException extends Exception {

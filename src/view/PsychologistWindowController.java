@@ -61,6 +61,10 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
 
 /**
+ * This window shows all the psychologist in one table and lets the user add a
+ * psychologist modifie a selected psychologist and delete a selected
+ * psychologist. Also lets the user find a psychologist by the full name or the
+ * login. And finally lets the user have a report of all the psychologist
  *
  * @author Alain Lozano
  */
@@ -99,6 +103,7 @@ public class PsychologistWindowController {
 
     private int idSelected = 0;
     private Stage stage = new Stage();
+
     /**
      * @return the stage
      */
@@ -116,8 +121,15 @@ public class PsychologistWindowController {
     UserInterface userInterface;
     ObservableList<Psychologist> psychologists;
     private static final Logger LOGGER = Logger.getLogger(PsychologistWindowController.class.getName());
-    TableView  tableViewPsychoTableView=tablePsychologist;
+    TableView tableViewPsychoTableView = tablePsychologist;
 
+    /**
+     * This method initialize the window and sets the values for the table and
+     * the colums of the table, and also sets the componets disability and their
+     * visibility
+     *
+     * @param root
+     */
     public void initStage(Parent root) {
         try {
             btnDelete.setDisable(true);
@@ -130,7 +142,7 @@ public class PsychologistWindowController {
             userInterface = UserFactory.createUsersRestful();
             getStage().setScene(scene);
             getStage().setResizable(false);
-            
+
             //Set factories for cell values in users table columns.
             columnLogin.setCellValueFactory(
                     new PropertyValueFactory<>("login"));
@@ -149,10 +161,9 @@ public class PsychologistWindowController {
             if (psychologists.size() == 0) {
                 btnReport.setDisable(true);
             }
-            //Show window.
 
             tablePsychologist.getSelectionModel().selectedItemProperty().addListener(this::handleUserSelectionChanged);
-
+            //Adds the handler for the components of the window
             btnAdd.setOnAction(this::handleButtonAdd);
             btnSearch.setOnAction(this::handleButtonSearch);
             btnModify.setOnAction(this::handleButtonModify);
@@ -162,8 +173,10 @@ public class PsychologistWindowController {
             comboSearch.getItems().addAll("All", new Separator(), "Name",
                     "Email");
             comboSearch.setTooltip(new Tooltip("Select the search criteria"));
+            //Shows the window
             getStage().show();
         } catch (BusinessLogicException ex) {
+            //Catch in case the find all psychologist fails
             LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
             errorCreatingThePsychologist.setHeaderText("Server Error");
@@ -171,7 +184,8 @@ public class PsychologistWindowController {
             errorCreatingThePsychologist.show();
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex){
+        } catch (Exception ex) {
+            //Catch in case the server is down
             LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
             errorCreatingThePsychologist.setHeaderText("Server Error");
@@ -180,28 +194,45 @@ public class PsychologistWindowController {
         }
     }
 
+    /**
+     * This is the handle for the table when the selected row changes
+     *
+     * @param observableValue
+     * @param oldValue the old selec
+     * @param newValue
+     */
     public void handleUserSelectionChanged(ObservableValue observableValue, Object oldValue, Object newValue) {
         if (newValue != null) {
+            //If the user selects a row we can delete or modify that psychologist and the add button is disable to help the user
             btnAdd.setDisable(true);
             btnModify.setDisable(false);
             btnDelete.setDisable(false);
             menuItemModify.setDisable(false);
             menuItemDelete.setDisable(false);
-            
-            
+
         } else {
+            //If the user deselects a row the modify and delete button are disable and the add button is avariable for the user
             btnAdd.setDisable(false);
             btnModify.setDisable(true);
             btnDelete.setDisable(true);
             menuItemModify.setDisable(true);
             menuItemDelete.setDisable(true);
-            
+
         }
     }
 
+    /**
+     * This handler is for the button modified we select a row from the table
+     * and opens the PsychologistProfileController window with the psychologist
+     * data
+     *
+     * @param event
+     */
     public void handleButtonModify(ActionEvent event) {
         try {
+            //Here we get the psychologist selected id from the table
             idSelected = tablePsychologist.getSelectionModel().getSelectedItem().getId();
+            //Here we initialize the PsychologistProfileController window with the id of the psychologist
             FXMLLoader loader = new FXMLLoader(getClass().getResource("PsychologistProfile.fxml"));
             Stage stagePsychologistProfile = new Stage();
 
@@ -214,7 +245,7 @@ public class PsychologistWindowController {
             stagePsychologistProfile.initModality(Modality.APPLICATION_MODAL);
             stagePsychologistProfile.initOwner(
                     ((Node) event.getSource()).getScene().getWindow());
-            
+
             Logger.getLogger(PsychologistProfileController.class.getName()).log(Level.INFO, "Initializing stage.");
 
             psychologistModifyProfileController.setPsychologistWindowController(this);
@@ -228,31 +259,43 @@ public class PsychologistWindowController {
 
     }
 
+    /**
+     * This is the handler for the delete button we select a row from the table
+     * and we delete that psychologist by the id
+     *
+     * @param event
+     */
     public void handleButtonDelete(ActionEvent event) {
         try {
+            //Here we get the psychologist selected id from the table
             idSelected = tablePsychologist.getSelectionModel().getSelectedItem().getId();
+            //We show the user a comfirmation alert to delete 
             Alert alertDeletePsychologist = new Alert(AlertType.CONFIRMATION);
             alertDeletePsychologist.setHeaderText("Confirmation");
             alertDeletePsychologist.setContentText("Are you sure you want to delete the psychologist?");
             Optional<ButtonType> action = alertDeletePsychologist.showAndWait();
             interfacePsychologist = PsychologistFactory.createPsychologistRestful();
             if (action.get() != ButtonType.OK) {
-                //Doesn´t want to exit
+                //Doesn´t want to delete the user we show an alert showing that we didnt delete the psychologist
                 Alert alertDeletePsychologistCancel = new Alert(AlertType.INFORMATION);
                 alertDeletePsychologistCancel.setHeaderText("Confirmation");
                 alertDeletePsychologistCancel.setContentText("The psychologist hasnt been deleted");
                 alertDeletePsychologistCancel.show();
             } else {
+                //The user agress with the delete process and deletes the psychologist
                 interfacePsychologist.removePsychologist(String.valueOf(idSelected));
+                //We delete the psychologist from the table and we update teh table
                 tablePsychologist.getItems().remove(tablePsychologist.getSelectionModel().getSelectedIndex());
                 tablePsychologist.refresh();
             }
         } catch (NotFoundException ex) {
+            //In case the user id is not found in the database
             Alert psychologistNotFound = new Alert(Alert.AlertType.INFORMATION);
             psychologistNotFound.setHeaderText("Psychologist not found");
             psychologistNotFound.setContentText("The psychologist cant be founded ");
             psychologistNotFound.show();
         } catch (BusinessLogicException ex) {
+            //In case the server thows an error
             LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
             errorCreatingThePsychologist.setHeaderText("Server Error");
@@ -260,7 +303,8 @@ public class PsychologistWindowController {
             errorCreatingThePsychologist.show();
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex){
+        } catch (Exception ex) {
+            //In case the server is down
             LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
             errorCreatingThePsychologist.setHeaderText("Server Error");
@@ -269,6 +313,12 @@ public class PsychologistWindowController {
         }
     }
 
+    /**
+     * This handler is for the add button it opens the
+     * PsychologistProfileController
+     *
+     * @param event
+     */
     public void handleButtonAdd(ActionEvent event) {
         try {
             psychologists.clear();
@@ -283,7 +333,6 @@ public class PsychologistWindowController {
             stagePsychologistProfile.initModality(Modality.APPLICATION_MODAL);
             stagePsychologistProfile.initOwner(
                     ((Node) event.getSource()).getScene().getWindow());
-            
 
             Logger.getLogger(PsychologistProfileController.class.getName()).log(Level.INFO, "Initializing stage.");
             psychologistModifyProfileController.setPsychologistWindowController(this);
@@ -294,6 +343,7 @@ public class PsychologistWindowController {
         } catch (ClientErrorException ex) {
             Logger.getLogger(PsychologistWindowController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
+            //In case the server is down
             LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
             errorCreatingThePsychologist.setHeaderText("Server Error");
@@ -303,11 +353,18 @@ public class PsychologistWindowController {
 
     }
 
+    /**
+     * This handler is for the button search we get the type of search and we
+     * show the psychologist found
+     *
+     * @param event
+     */
     public void handleButtonSearch(ActionEvent event) {
         try {
             psychologists.clear();
+            //we get the search criteria
             String selectedSearch = comboSearch.getSelectionModel().getSelectedItem().toString();
-
+            //We switch the search by the criteria
             switch (selectedSearch) {
                 case "Name":
                     checkTextFieldisEmpty(txtFieldSearch);
@@ -322,27 +379,32 @@ public class PsychologistWindowController {
                     break;
 
             }
+            //We show in the table the result of the search
 
             tablePsychologist.setItems(psychologists);
             tablePsychologist.refresh();
 
         } catch (NullPointerException e) {
+            //In case the there are no psychologist found by the data introduced by the user
             Alert alertDeletePsychologistCancel = new Alert(AlertType.INFORMATION);
             alertDeletePsychologistCancel.setHeaderText("Select criteria");
             alertDeletePsychologistCancel.setContentText("Select a criteria to search a psychologist");
             alertDeletePsychologistCancel.show();
         } catch (EmptyFieldException ex) {
+            //In case the textfield to search the psychologist is empty
             Alert emptyField = new Alert(AlertType.INFORMATION);
             emptyField.setHeaderText("Field empty");
             emptyField.setContentText("The search field cant be empty");
             emptyField.show();
         } catch (BusinessLogicException ex) {
+            //In case the server thorws and error
             LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
             errorCreatingThePsychologist.setHeaderText("Server Error");
             errorCreatingThePsychologist.setContentText(ex.getMessage());
             errorCreatingThePsychologist.show();
         } catch (Exception ex) {
+            //In case the server is down
             LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
             errorCreatingThePsychologist.setHeaderText("Server Error");
@@ -352,6 +414,12 @@ public class PsychologistWindowController {
 
     }
 
+    /**
+     * The method to chech if the search textfield is empty
+     *
+     * @param txt the TextField
+     * @throws EmptyFieldException
+     */
     public void checkTextFieldisEmpty(TextField txt) throws EmptyFieldException {
         if (txtFieldSearch.getText().trim().isEmpty()) {
             txt.requestFocus();
@@ -359,6 +427,12 @@ public class PsychologistWindowController {
         }
     }
 
+    /**
+     * This handler is for the report button it opens a report with the table
+     * data and generates a report to download
+     *
+     * @param event
+     */
     public void handleButtonReport(ActionEvent event) {
         try {
             JasperReport report
@@ -383,7 +457,9 @@ public class PsychologistWindowController {
         }
 
     }
-
+    /**
+     * This method is used to refresh the table in other windows
+     */
     public void refrescarTabla() {
         try {
             tablePsychologist.getItems().clear();

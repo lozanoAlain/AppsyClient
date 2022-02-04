@@ -39,7 +39,8 @@ import logic.UserFactory;
 import logic.UserInterface;
 
 /**
- * FXML Controller class
+ * FXML Controller class is for the user to edit their information and also to
+ * change their password
  *
  * @author Alain Lozano
  */
@@ -83,7 +84,7 @@ public class ProfileWindowController {
     private Button btnBack;
 
     private Stage stage = new Stage();
-    
+
     /**
      * @return the stage
      */
@@ -97,7 +98,7 @@ public class ProfileWindowController {
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-    
+
     ClientInterface clientInterface;
     UserInterface userInterface;
     int userId = 0;
@@ -105,8 +106,16 @@ public class ProfileWindowController {
 
     private final static Logger LOGGER = Logger.getLogger(PsychologistProfileController.class.getName());
 
+    /**
+     * Here we initialize the window and we set the components visibility and
+     * also we set some components disable
+     *
+     * @param root
+     * @param userId the user id from the user that enter the aplicattion
+     */
     public void initStage(Parent root, int userId) {
         try {
+            //We search for the user information
             clientInterface = ClientFactory.createClientRestful();
             userInterface = UserFactory.createUsersRestful();
             this.userId = userId;
@@ -114,7 +123,7 @@ public class ProfileWindowController {
             Scene scene = new Scene(root);
             getStage().setScene(scene);
             getStage().setResizable(false);
-
+            //We set the handlers for the window components
             txtFullName.textProperty().addListener(this::fullNameTextChanged);
             txtFullName.focusedProperty().addListener(this::fullNameFocusChanged);
             txtUsername.textProperty().addListener(this::usernameTextChanged);
@@ -123,10 +132,11 @@ public class ProfileWindowController {
             btnDelete.setOnAction(this::handleButtonDelete);
             btnBack.setOnAction(this::handleButtonBack);
 
+            //We fill in the data of the found user 
             txtFullName.setText(clientAux.getFullName());
             txtUsername.setText(clientAux.getLogin());
             txtMail.setText(clientAux.getEmail());
-
+            //We show the window
             getStage().show();
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(ProfileWindowController.class.getName()).log(Level.SEVERE, null, ex);
@@ -136,11 +146,19 @@ public class ProfileWindowController {
             errorCreatingThePsychologist.setHeaderText("Server Error");
             errorCreatingThePsychologist.setContentText(ex.getMessage());
             errorCreatingThePsychologist.show();
-        } catch (Exception ex){
-            
+        } catch (Exception ex) {
+
         }
     }
 
+    /**
+     * This handler is for the textfield to check if the text introduced is too
+     * long for the database
+     *
+     * @param observable
+     * @param oldValue the old value for the introduces text
+     * @param newValue the new value for the introduced text
+     */
     private void fullNameTextChanged(ObservableValue observable, String oldValue, String newValue) {
 
         try {
@@ -154,17 +172,13 @@ public class ProfileWindowController {
         }
     }
 
-    /*
-    Check that the Full name (txtFullName) has at least 1 blank (checkWhiteSpace())
-    If it is not correct (FullNameException()), an error label (lblFullNameError) is shown and the register button(btnRegister is disabled.
-    When the error is corrected the register button(btnRegister) is enabled.
-     */
     /**
-     * Method that checks the Full Name has at least one blank
+     * This handler is for the textfield to check if the text introduced is too
+     * long for the database
      *
      * @param observable
-     * @param oldValue The old value of the text field
-     * @param newValue The new value of the text field
+     * @param oldValue the old value for the introduces text
+     * @param newValue the new value for the introduced text
      */
     private void fullNameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
@@ -197,6 +211,14 @@ public class ProfileWindowController {
 
     }
 
+    /**
+     * This handler is for the textfield to check if the text introduced is too
+     * long for the database
+     *
+     * @param observable
+     * @param oldValue the old value for the introduces text
+     * @param newValue the new value for the introduced text
+     */
     private void usernameTextChanged(ObservableValue observable, String oldValue, String newValue) {
 
         try {
@@ -211,6 +233,14 @@ public class ProfileWindowController {
         }
     }
 
+    /**
+     * This handler is for the textfield to check if the text introduced is too
+     * long for the database
+     *
+     * @param observable
+     * @param oldValue the old value for the introduces text
+     * @param newValue the new value for the introduced text
+     */
     private void mailTextChanged(ObservableValue observable, String oldValue, String newValue) {
 
         try {
@@ -225,6 +255,14 @@ public class ProfileWindowController {
         }
     }
 
+    /**
+     * Method to check if the text introduced in the text field are too long
+     *
+     * @param text the text of the text field
+     * @param lbl the error label
+     * @throws FieldTooLongException in case the text is longer than 255
+     * characters
+     */
     private void check255(String text, Label lbl) throws FieldTooLongException {
         if (text.length() > 255) {
             btnModify.setDisable(true);
@@ -235,9 +273,16 @@ public class ProfileWindowController {
         }
     }
 
+    /**
+     * The handler for the modify button we colect the user data and we modify
+     * the user in the server sending the information
+     *
+     * @param event
+     */
     private void handleButtonModify(ActionEvent event) {
         try {
             Client client = new Client();
+            //Here we check if the full name, username and mail text field are empty
             if (txtFullName.getText().isEmpty()) {
                 try {
                     txtFullName.requestFocus();
@@ -262,6 +307,7 @@ public class ProfileWindowController {
                     errorLabel(lblMailError, ex);
                 }
             }
+            //If the password fields are empty only the user data is modify
             if (new String(txtPassword.getText()).isEmpty() || new String(txtRepeatPassword.getText()).isEmpty()) {
                 client.setLogin(txtUsername.getText());
                 client.setFullName(txtFullName.getText());
@@ -270,12 +316,15 @@ public class ProfileWindowController {
                 client.setId(userId);
                 client.setEnumPrivilege(EnumPrivilege.CLIENT);
                 client.setEnumStatus(EnumStatus.ACTIVE);
+                //We colect all the user data and we edit the user
                 clientInterface.edit(client);
+                //If the procces is succesfull we show an alert to the user
                 Alert alertUserModifiedCorrectly = new Alert(Alert.AlertType.INFORMATION);
                 alertUserModifiedCorrectly.setHeaderText("Modifycation correct");
                 alertUserModifiedCorrectly.setContentText("The user information has been updated");
                 alertUserModifiedCorrectly.show();
             } else {
+                //If the password fields are completed we check the two passowrd are the same and we edit the user information and also we update the user password
                 if (new String(txtPassword.getText()).equals(new String(txtRepeatPassword.getText()))) {
                     client.setLogin(txtUsername.getText());
                     client.setFullName(txtFullName.getText());
@@ -283,7 +332,7 @@ public class ProfileWindowController {
                     client.setId(userId);
                     client.setEnumPrivilege(EnumPrivilege.CLIENT);
                     client.setEnumStatus(EnumStatus.ACTIVE);
-
+                    //We show an alert to the user to put the original password to prove they know their own password
                     TextInputDialog txi = new TextInputDialog();
                     txi.setHeaderText("Password Change");
                     txi.setContentText("Put here your original password");
@@ -291,9 +340,10 @@ public class ProfileWindowController {
                     String passwordIntr = txi.getEditor().getText().trim();
                     User userAux = userInterface.findUserByLoginAndPassword(txtUsername.getText().trim(), EncriptDecriptClient.encrypt(passwordIntr));
                     String passwordEncripted = EncriptDecriptClient.encrypt(new String(txtPassword.getText().trim()));
+                    //if the password introduces is correct we edit the password and the changed data of the user
                     clientInterface.edit(client);
                     userInterface.changePasswordByLogin(clientAux.getLogin(), passwordEncripted);
-
+                    //We show this alert if the user data is correctly updated
                     Alert alertUserModifiedCorrectly = new Alert(Alert.AlertType.INFORMATION);
                     alertUserModifiedCorrectly.setHeaderText("Modifycation correct");
                     alertUserModifiedCorrectly.setContentText("The user information has been updated");
@@ -305,22 +355,29 @@ public class ProfileWindowController {
 
             }
         } catch (PasswordDontMatch ex) {
+            //In case the password introduces dont match
             Alert alertPasswordMatch = new Alert(Alert.AlertType.INFORMATION);
             alertPasswordMatch.setHeaderText("Password Error");
             alertPasswordMatch.setContentText("The password dont match");
             alertPasswordMatch.show();
         } catch (BusinessLogicException ex) {
+            //In case the server throws and error 
             LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
             errorCreatingThePsychologist.setHeaderText("Server Error");
             errorCreatingThePsychologist.setContentText(ex.getMessage());
             errorCreatingThePsychologist.show();
         } catch (Exception ex) {
+            //In case the server is down
             Logger.getLogger(ProfileWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
-
+    /**
+     * This method is to set the lable visible and set the style of the lable, also the set error text in the label 
+     * @param lbl the label to set the error
+     * @param ex the error
+     */
     private void errorLabel(Label lbl, Exception ex) {
         lbl.setVisible(true);
         lbl.setText(ex.getMessage());
@@ -328,11 +385,15 @@ public class ProfileWindowController {
         LOGGER.severe(ex.getMessage());
 
     }
-
+    /**
+     * This handler is for the delete button we delete the user by the id we got
+     * @param event 
+     */
     private void handleButtonDelete(ActionEvent event) {
         try {
             clientInterface.remove(String.valueOf(userId));
         } catch (BusinessLogicException ex) {
+            //In case the server throws an error
             LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
             errorCreatingThePsychologist.setHeaderText("Server Error");
@@ -340,11 +401,12 @@ public class ProfileWindowController {
             errorCreatingThePsychologist.show();
         }
     }
-
+    /**
+     * This handler is for the back button this closes the window
+     * @param event 
+     */
     private void handleButtonBack(ActionEvent event) {
         getStage().close();
     }
-
-    
 
 }

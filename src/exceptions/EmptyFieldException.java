@@ -8,7 +8,7 @@ package exceptions;
 import javafx.scene.control.Label;
 
 /**
- *
+ *  Exception in case the TextField is empty
  * @author  Alain Lozano,Ilia Consuegra
  */
 public class EmptyFieldException extends Exception {

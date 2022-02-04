@@ -6,7 +6,7 @@
 package exceptions;
 
 /**
- *
+ *  Exception when the user doesnt exist in the database
  * @author Alain Lozano,Ilia Consuegra
  */
 public class UserNotExistException extends Exception {

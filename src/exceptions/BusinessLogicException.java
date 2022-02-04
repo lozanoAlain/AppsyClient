@@ -6,7 +6,7 @@
 package exceptions;
 
 /**
- *
+ * Exception that recibes the messages 
  * @author Alain Lozano
  */
 public class BusinessLogicException extends Exception {

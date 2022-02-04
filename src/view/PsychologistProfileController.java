@@ -30,7 +30,8 @@ import logic.PsychologistFactory;
 import logic.PsychologistInterface;
 
 /**
- * FXML Controller class
+ * FXML Controller class is to edit or to add a psychologuist introducing their
+ * data
  *
  * @author Alain Lozano
  */
@@ -115,6 +116,14 @@ public class PsychologistProfileController {
         this.stage = stage;
     }
 
+    /**
+     * This method is for the initialization of the window sets ten visibility
+     * and disables some components
+     *
+     * @param root
+     * @param idSelected the selected id of the psychologist selected from the
+     * table
+     */
     void initStage(Parent root, int idSelected) {
         try {
             this.idSelected = idSelected;
@@ -123,7 +132,7 @@ public class PsychologistProfileController {
             stage.setResizable(false);
             stage.setTitle("Psychologist Profile Window");
             interfacePsychologist = PsychologistFactory.createPsychologistRestful();
-
+            //In case we enter with a id of one psychologist we search for that psychologist and we complete the data in the text fields and the add button is disabled 
             if (idSelected != 0) {
                 Psychologist psychologist = interfacePsychologist.findPsychologist(String.valueOf(idSelected));
                 txtFullName.setText(psychologist.getFullName());
@@ -134,10 +143,11 @@ public class PsychologistProfileController {
                 btnModify.setDisable(false);
                 btnAdd.setDisable(true);
             } else {
+                //In case the the user came to this window to add a psychologist the modify button is disable and the add button is enable
                 btnModify.setDisable(true);
                 btnAdd.setDisable(false);
             }
-
+            //Here we set the handlers for the window components
             txtFullName.textProperty().addListener(this::fullNameTextChanged);
             txtUsername.textProperty().addListener(this::usernameTextChanged);
             txtMail.textProperty().addListener(this::mailTextChanged);
@@ -153,6 +163,7 @@ public class PsychologistProfileController {
         } catch (OperationNotSupportedException ex) {
             Logger.getLogger(PsychologistProfileController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (BusinessLogicException ex) {
+            //In case the server throws an error
             LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
             errorCreatingThePsychologist.setHeaderText("Server Error");
@@ -160,7 +171,12 @@ public class PsychologistProfileController {
             errorCreatingThePsychologist.show();
         }
     }
-
+    /**
+     * This handler is for the textfield to check if the text introduced is too long for the database
+     * @param observable
+     * @param oldValue the old value for the introduces text
+     * @param newValue the new value for the introduced text
+     */
     private void fullNameTextChanged(ObservableValue observable, String oldValue, String newValue) {
 
         try {
@@ -173,7 +189,12 @@ public class PsychologistProfileController {
             lblFullNameError.setText(ex.getMessage());
         }
     }
-
+    /**
+     * This handler is for the textfield to check if the text introduced is too long for the database
+     * @param observable
+     * @param oldValue the old value for the introduces text
+     * @param newValue the new value for the introduced text
+     */
     private void usernameTextChanged(ObservableValue observable, String oldValue, String newValue) {
 
         try {
@@ -187,7 +208,12 @@ public class PsychologistProfileController {
 
         }
     }
-
+    /**
+     * This handler is for the textfield to check if the text introduced is too long for the database
+     * @param observable
+     * @param oldValue the old value for the introduces text
+     * @param newValue the new value for the introduced text
+     */
     private void passwordTextChanged(ObservableValue observable, String oldValue, String newValue) {
 
         try {
@@ -201,7 +227,12 @@ public class PsychologistProfileController {
 
         }
     }
-
+    /**
+     * This handler is for the textfield to check if the text introduced is too long for the database
+     * @param observable
+     * @param oldValue the old value for the introduces text
+     * @param newValue the new value for the introduced text
+     */
     private void officeTextChanged(ObservableValue observable, String oldValue, String newValue) {
 
         try {
@@ -215,7 +246,12 @@ public class PsychologistProfileController {
 
         }
     }
-
+    /**
+     * This handler is for the textfield to check if the text introduced is too long for the database
+     * @param observable
+     * @param oldValue the old value for the introduces text
+     * @param newValue the new value for the introduced text
+     */
     private void specializationTextChanged(ObservableValue observable, String oldValue, String newValue) {
 
         try {
@@ -229,7 +265,12 @@ public class PsychologistProfileController {
 
         }
     }
-
+    /**
+     * This handler is for the textfield to check if the text introduced is too long for the database
+     * @param observable
+     * @param oldValue the old value for the introduces text
+     * @param newValue the new value for the introduced text
+     */
     private void mailTextChanged(ObservableValue observable, String oldValue, String newValue) {
 
         try {
@@ -243,10 +284,14 @@ public class PsychologistProfileController {
 
         }
     }
-
+    /**
+     * This hanlder is for the button add we colect all the data and we send the psychologist to be created in the server
+     * @param event 
+     */
     private void handleButtonAdd(ActionEvent event) {
         try {
             if (!checkEmptyFields()) {
+                //We check that all the fields are completed with information
                 Psychologist psychologistadd = new Psychologist();
 
                 psychologistadd.setId(null);
@@ -258,14 +303,15 @@ public class PsychologistProfileController {
                 psychologistadd.setSpecialization(txtSpezialitation.getText());
                 psychologistadd.setEnumPrivilege(EnumPrivilege.PSYCHOLOGIST);
                 psychologistadd.setEnumStatus(EnumStatus.ACTIVE);
-
+                //We complete the psychologist data and we sent the psychologist to the database to be created
                 interfacePsychologist.createPsychologist(psychologistadd);
                 psychologistWindowController.refrescarTabla();
-
+                //We close the window once the psychologist is created
                 stage.close();
             }
 
         } catch (BusinessLogicException ex) {
+            //In case the server thorws an error
             LOGGER.log(Level.SEVERE, ex.getMessage());
             Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
             errorCreatingThePsychologist.setHeaderText("Server Error");
@@ -274,9 +320,13 @@ public class PsychologistProfileController {
         }
 
     }
-
+    /**
+     * This is the handler to the modify button we collect all the data for the psycholohist and we send the edited psychologist to the database
+     * @param event 
+     */
     private void handleButtonModify(ActionEvent event) {
         if (!checkEmptyFields()) {
+            //We check that the fields are not empty
             try {
                 Psychologist psychologistadd = new Psychologist();
 
@@ -290,11 +340,14 @@ public class PsychologistProfileController {
                 psychologistadd.setSpecialization(txtSpezialitation.getText());
                 psychologistadd.setEnumStatus(EnumStatus.ACTIVE);
                 psychologistadd.setEnumPrivilege(EnumPrivilege.PSYCHOLOGIST);
+                //We collect all the data from the text field and we complete the psychologust to be edited
 
                 interfacePsychologist.editPsychologist(psychologistadd);
                 psychologistWindowController.refrescarTabla();
+                //The window is close
                 stage.close();
             } catch (BusinessLogicException ex) {
+                //In case the server throws and error 
                 LOGGER.log(Level.SEVERE, ex.getMessage());
                 Alert errorCreatingThePsychologist = new Alert(Alert.AlertType.INFORMATION);
                 errorCreatingThePsychologist.setHeaderText("Server Error");
@@ -304,11 +357,20 @@ public class PsychologistProfileController {
         }
 
     }
-
+    /**
+     * This is the handler for the back button, it closes the window
+     * @param event 
+     */
     private void handleButtonBack(ActionEvent event) {
         stage.close();
     }
-
+    
+    /**
+     * This method is used to check that the text of the fields is not too long 
+     * @param text the textfield to check the text
+     * @param lbl the error label of the textfield
+     * @throws FieldTooLongException 
+     */
     private void check255(String text, Label lbl) throws FieldTooLongException {
         if (text.length() > 255) {
             btnAdd.setDisable(true);
@@ -325,7 +387,10 @@ public class PsychologistProfileController {
             lbl.setVisible(false);
         }
     }
-
+    /**
+     * The method to check if all the fields are completed
+     * 
+     */
     private boolean checkEmptyFields() {
         boolean check = false;
         if (new String(txtOffice.getText()).isEmpty()) {
@@ -390,7 +455,11 @@ public class PsychologistProfileController {
         }
         return check;
     }
-
+    /**
+     * The method to put the error label visible and set the stile of the label, also sets the exception in the label
+     * @param lbl the label to show 
+     * @param ex the error to set in the label
+     */
     private void errorLabel(Label lbl, Exception ex) {
         lbl.setVisible(true);
         lbl.setText(ex.getMessage());

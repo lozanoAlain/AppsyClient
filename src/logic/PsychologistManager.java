@@ -16,7 +16,7 @@ import javax.ws.rs.core.GenericType;
 import restful.PsychologistRestful;
 
 /**
- *
+ *  This class implements the methods that communicate with the server for the transport of the psychologist entity.
  * @author Alain Lozano
  */
 public class PsychologistManager implements PsychologistInterface {
@@ -33,6 +33,11 @@ public class PsychologistManager implements PsychologistInterface {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * This method edits the psychologist that we recived from the windows in the database
+     * @param psychologist the psychologist recived
+     * @throws BusinessLogicException in case the Server throws an error
+     */
     @Override
     public void editPsychologist(Psychologist psychologist) throws BusinessLogicException {
         try {
@@ -50,7 +55,11 @@ public class PsychologistManager implements PsychologistInterface {
     public <T> T findRange(Class<T> responseType, String from, String to) throws BusinessLogicException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    /**
+     * This method is to create a psychologist in the database reciving the information from the windows
+     * @param psychologist the psychologist to create 
+     * @throws BusinessLogicException in case the Server throws an error
+     */
     @Override
     public void createPsychologist(Psychologist psychologist) throws BusinessLogicException {
         try {
@@ -63,7 +72,11 @@ public class PsychologistManager implements PsychologistInterface {
         }
 
     }
-
+    /**
+     * This method removes the psychologist data from the windows and removes the psychologist from the database
+     * @param id the id from the psychologist we recived
+     * @throws BusinessLogicException in case the Server throws an error
+     */
     @Override
     public void removePsychologist(String id) throws BusinessLogicException {
         try {
@@ -76,7 +89,12 @@ public class PsychologistManager implements PsychologistInterface {
         }
 
     }
-
+    /**
+     * This method finds the psychologist by the id that we recives from the windows
+     * @param id the id that we recived 
+     * @return the psychologist found 
+     * @throws BusinessLogicException in case the Server throws an error
+     */
     @Override
     public Psychologist findPsychologist(String id) throws BusinessLogicException {
         Psychologist psychologist = null;
@@ -91,6 +109,12 @@ public class PsychologistManager implements PsychologistInterface {
         }
         return psychologist;
     }
+    
+    /**
+     * This method is to find all the psychologist
+     * @return all the psychologist
+     * @throws BusinessLogicException in case the Server throws an error
+     */
 
     @Override
     public Set<Psychologist> findAllPsychologist() throws BusinessLogicException {
@@ -106,7 +130,12 @@ public class PsychologistManager implements PsychologistInterface {
         }
         return psychologists;
     }
-
+    /**
+     * This method finds a psychologist by the full name we recived from the database
+     * @param fullName the fullname from the psychologist
+     * @return the psychologist found
+     * @throws BusinessLogicException in case the Server throws an error
+     */
     @Override
     public Psychologist findPsychologistByFullName(String fullName) throws BusinessLogicException {
         Psychologist psychologist = null;
@@ -123,6 +152,12 @@ public class PsychologistManager implements PsychologistInterface {
         return psychologist;
     }
 
+    /**
+     * This method finds the psychologist by their mail that we recived from the windows
+     * @param email the email of the psychologist
+     * @return the psychologist found
+     * @throws BusinessLogicException  in case the Server throws an error
+     */
     @Override
     public Psychologist findPsychologistByMail(String email) throws BusinessLogicException {
         Psychologist psychologist = null;

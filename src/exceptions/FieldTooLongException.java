@@ -6,7 +6,7 @@
 package exceptions;
 
 /**
- *
+ * Exception when a field in is too long
  * @author Alain Lozano,Ilia Consuegra
  */
 public class FieldTooLongException extends Exception {

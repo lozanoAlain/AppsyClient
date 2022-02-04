@@ -6,7 +6,7 @@
 package exceptions;
 
 /**
- *
+ * Exception when the user already exist in the database
  * @author Usuario
  */
 public class UserAlreadyExistException extends Exception {
