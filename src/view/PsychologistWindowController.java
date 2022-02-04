@@ -62,8 +62,8 @@ import net.sf.jasperreports.view.JasperViewer;
 
 /**
  * This window shows all the psychologist in one table and lets the user add a
- * psychologist modified a selected psychologist and delete a selected
- * psychologist. Also lets the user find a psychologist buy the full name or the
+ * psychologist modifie a selected psychologist and delete a selected
+ * psychologist. Also lets the user find a psychologist by the full name or the
  * login. And finally lets the user have a report of all the psychologist
  *
  * @author Alain Lozano
@@ -124,7 +124,7 @@ public class PsychologistWindowController {
     TableView tableViewPsychoTableView = tablePsychologist;
 
     /**
-     * This method initializa the window and sets the values for the table and
+     * This method initialize the window and sets the values for the table and
      * the colums of the table, and also sets the componets disability and their
      * visibility
      *
