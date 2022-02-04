@@ -10,7 +10,7 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
- *
+ * Entity for the appointmentId, it has the attributes: psychologistId and clientId
  * @author Ilia Consuegra
  */
 @Embeddable
@@ -18,22 +18,35 @@ public class AppointmentId implements Serializable {
 
     private Integer psychologistId;
     private Integer clientId;
-
+/**
+ * Empty Constructor
+ */
     public AppointmentId() {
     }
-
+/**
+ * constructor with input data
+ * @param psychologistId
+ * @param clientId 
+ */
     public AppointmentId(Integer psychologistId, Integer clientId) {
         this.psychologistId = psychologistId;
         this.clientId = clientId;
     }
-
+/**
+ * 
+ * @return integer
+ */
     @Override
     public int hashCode() {
         int hash = 3;
         hash = 83 * hash + Objects.hashCode(this.psychologistId);
         return hash;
     }
-
+/**
+ * 
+ * @param obj input data
+ * @return boolean
+ */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -52,6 +65,7 @@ public class AppointmentId implements Serializable {
         return true;
     }
 
+    //Getters and Setters
     /**
      * @return the psychologistId
      */

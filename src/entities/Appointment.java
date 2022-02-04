@@ -31,7 +31,9 @@ public class Appointment implements Serializable {
     private SimpleObjectProperty<String> diagnose;
     private SimpleObjectProperty<Integer> numAppointment;
     private SimpleObjectProperty<Float> price;
-
+/**
+ * constructor without input data
+ */
     public Appointment() {
         this.appointmentId = new SimpleObjectProperty();
         this.psychologist = new SimpleObjectProperty();
@@ -41,7 +43,16 @@ public class Appointment implements Serializable {
         this.numAppointment = new SimpleObjectProperty();
         this.price = new  SimpleObjectProperty();
     }
-
+/**
+ * constructor with input data
+ * @param appointmentId
+ * @param psychologist
+ * @param client
+ * @param date
+ * @param diagnose
+ * @param numAppointment
+ * @param price 
+ */
     public Appointment(AppointmentId appointmentId, Psychologist psychologist, Client client, Date date, String diagnose, Integer numAppointment, Float price) {
         this.psychologist = new SimpleObjectProperty(psychologist);
         this.appointmentId = new SimpleObjectProperty(appointmentId);
@@ -52,14 +63,21 @@ public class Appointment implements Serializable {
         this.price = new  SimpleObjectProperty(price);
 
     }
-
+/**
+ * 
+ * @return integer
+ */
     @Override
     public int hashCode() {
         int hash = 5;
         hash = 67 * hash + Objects.hashCode(this.appointmentId);
         return hash;
     }
-
+/**
+ * 
+ * @param obj Object input data
+ * @return boolen
+ */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -92,12 +110,16 @@ public class Appointment implements Serializable {
         }
         return true;
     }
-
+/**
+ * Method to return a string with all the data of the appointment
+ * @return String
+ */
     @Override
     public String toString() {
         return "Appointment{" + "appointmentId=" + appointmentId + ", psychologist=" + psychologist + ", client=" + client + ", date=" + date + ", diagnose=" + diagnose + ", numAppointment=" + numAppointment + ", price=" + price + '}';
     }
-
+    
+    //Setters and Getters
     /**
      * @return the serialVersionUID
      */
