@@ -61,7 +61,9 @@ public class EncriptDecriptClient {
         PublicKey publicKey = keyFactory.generatePublic(keySpec);
 
         byte[] mensajeCifrado = cifrarTexto(publicKey, password);
+        fileWriter("C:\\Users\\Usuario\\Escritorio\\EjemploAsi.dat",mensajeCifrado);
         mensajeCifradoHex = hexadecimal(mensajeCifrado);
+        fileWriter("C:\\Users\\Usuario\\Escritorio\\EjemploAsiHex.dat",mensajeCifradoHex.getBytes());
 
         return mensajeCifradoHex;
     }

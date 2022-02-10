@@ -94,6 +94,7 @@ public class AppointmentWindowControllerIT extends ApplicationTest {
     }
 
     
+    
     @Test
     public void testD_SearchByPsychologist() {
         comboBox = lookup("#comboBox").query();
@@ -110,8 +111,9 @@ public class AppointmentWindowControllerIT extends ApplicationTest {
         verifyThat("Sigmund Freud", isVisible());
     }
 
+   
     @Test
-    public void testE_SearchByDate() {
+    public void testF_SearchByDate() {
         try {
             comboBox = lookup("#comboBox").query();
             btnSearch = lookup("#btnSearch").query();
@@ -129,9 +131,9 @@ public class AppointmentWindowControllerIT extends ApplicationTest {
             Logger.getLogger(AppointmentWindowControllerIT.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    @Ignore
+    
     @Test
-    public void testF_DeleteAppointment() {
+    public void testE_DeleteAppointment() {
         try {
             tblAppointment = lookup("#tblAppointment").queryTableView();
             btnDelete = lookup("#btnDelete").query();
@@ -152,7 +154,7 @@ public class AppointmentWindowControllerIT extends ApplicationTest {
         }
     }
 
-    @Ignore
+    
     @Test
     public void testG_AddAppointment() {
         try {
@@ -192,7 +194,6 @@ public class AppointmentWindowControllerIT extends ApplicationTest {
 
     }
 
-    @Ignore
     @Test
     public void testH_EditAppointment() {       
         tblAppointment = lookup("#tblAppointment").queryTableView();
@@ -202,7 +203,7 @@ public class AppointmentWindowControllerIT extends ApplicationTest {
         clickOn(btnModify);
         
         press(KeyCode.F4).release(KeyCode.F4);
-        clickOn("Lev Vygotsky");
+        clickOn("Wilhelm Wundt");
         
         verifyThat("#panel2", isVisible());
  
@@ -212,7 +213,7 @@ public class AppointmentWindowControllerIT extends ApplicationTest {
         clickOn("Aceptar");
 
         assertTrue(tblAppointment.getItems().stream()
-                .filter(appointment -> appointment.getPsychologist().getFullName().equalsIgnoreCase("Lev Vygotsky")).count() > 0);
+                .filter(appointment -> appointment.getPsychologist().getFullName().equalsIgnoreCase("Wilhelm Wundt")).count() > 0);
         
     }
 
